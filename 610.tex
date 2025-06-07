@@ -1,0 +1,1348 @@
+% This LaTeX document needs to be compiled with XeLaTeX.
+\documentclass[
+  10
+]{article}
+\usepackage[margin=2cm,includehead=true,includefoot=true,centering,]{geometry}
+\usepackage{xcolor}
+\usepackage{ucharclasses}
+\usepackage{hyperref}
+\usepackage{amsmath,amssymb}
+\usepackage{amsfonts}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{bbold}
+\usepackage{polyglossia}
+\usepackage{fontspec}
+\usepackage{ctex}
+\usepackage[export]{adjustbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\usepackage{setspace}
+\setstretch{1.2}
+
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=cyan,}
+\urlstyle{same}
+
+\usepackage{colortbl}
+\definecolor{table-row-color}{HTML}{999999}
+\definecolor{table-rule-color}{HTML}{999999}
+%\arrayrulecolor{black!40}
+\arrayrulecolor{table-rule-color}     % color of \toprule, \midrule, \bottomrule
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
+
+
+\setotherlanguages{english}
+\IfFontExistsTF{Source Han Serif CN}
+{\newfontfamily\chinesefont{Source Han Serif CN}}
+{\IfFontExistsTF{Noto Serif CJK SC}
+  {\newfontfamily\chinesefont{Noto Serif CJK SC}}
+  {\IfFontExistsTF{SimSun}
+    {\newfontfamily\chinesefont{SimSun}}
+    {\IfFontExistsTF{FangSong}
+      {\newfontfamily\chinesefont{FangSong}}
+      {\newfontfamily\chinesefont{Arial Unicode MS}}
+}}}
+\IfFontExistsTF{Times New Roman}
+{\newfontfamily\englishfont{Times New Roman}}
+{\IfFontExistsTF{Liberation Serif}
+  {\newfontfamily\englishfont{Liberation Serif}}
+  {\IfFontExistsTF{DejaVu Serif}
+    {\newfontfamily\englishfont{DejaVu Serif}}
+    {\newfontfamily\englishfont{Arial}}
+}}
+
+
+\author{}
+\date{}
+
+\begin{document}
+
+
+\section{Optimal Subsampling for Data Streams with Measurement
+Constrained Categorical
+Responses}\label{optimal-subsampling-for-data-streams-with-measurement-constrained-categorical-responses}
+
+Jun Yu, Zhiqiang Ye, Mingyao Ai \& Ping Ma
+
+To cite this article: Jun Yu, Zhiqiang Ye, Mingyao Ai \& Ping Ma (18 Dec
+2024): Optimal Subsampling for Data Streams with Measurement Constrained
+Categorical Responses, Journal of Computational and Graphical
+Statistics, DOI: 10.1080/10618600.2024.2421990
+
+To link to this article: https://doi.org/10.1080/10618600.2024.2421990
+
+\section{Optimal Subsampling for Data Streams with Measurement
+Constrained Categorical
+Responses}\label{optimal-subsampling-for-data-streams-with-measurement-constrained-categorical-responses-1}
+
+Jun \(\mathsf { Y u ^ { a } }\) , Zhiqiang
+\(\mathsf { Y e } ^ { \mathsf { b } }\) , Mingyao
+\(\mathsf { A i } ^ { \mathsf { b } } \oplus\) , and Ping Mac
+
+aSchool of Mathematics and Statistics, Beijing Institute of Technology,
+Beijing, China; bLMAM, School of Mathematical Sciences and Center for
+Statistical Science, Peking University, Beijing, China; cDepartment of
+Statistics, University of Georgia, Athens, GA
+
+\section{ABSTRACT}\label{abstract}
+
+High-velocity, large-scale data streams have become pervasive.
+Frequently, the associated labels for such data prove costly to measure
+and are not always available upfront. Consequently, the analysis of such
+data poses a significant challenge. In this article, we develop a method
+that addresses this challenge by employing an online subsampling
+procedure and a multinomial logistic model for efficient analysis of
+high-velocity, large-scale data streams. Our algorithm is designed to
+sequentially update parameter estimation based on the A-optimality
+criterion. Moreover, it significantly increases computational efficiency
+while imposing minimal storage requirements. Theoretical properties are
+rigorously established to quantify the asymptotic behavior of the
+estimator. The method's efficacy is further demonstrated through
+comprehensive numerical studies on both simulated and real-world
+datasets. Supplementary materials for this article are available online.
+
+ARTICLE HISTORY Received February 2024 Accepted October 2024
+
+\section{KEYWORDS}\label{keywords}
+
+Massive data; Multinomial logistic model; Online updating; Poisson
+sampling; Semi-supervised learning
+
+\section{1. Introduction}\label{introduction}
+
+Data streams represent a sequence of data points, with each point
+arriving sequentially---a phenomenon that has become ubiquitous in
+contemporary settings (Li et al.~2019; Xie, Bai, and Ma 2023). Unlike
+the analysis of static data, the examination of data streams presents
+two distinct challenges. First, data volumes often surpass the storage
+capacity of a single device, especially when dealing with high-velocity
+data streams. This poses a significant hurdle in storing the data points
+and providing timely analysis. Second, the process of labeling data can
+be both expensive and time-consuming, leading to a scenario where labels
+for many records may be unavailable, despite the presence of covariates.
+This challenge is commonly referred to as measurement constraints or
+semi-supervised learning in the statistical literature. For example, in
+the analysis of forest cover types, environmental information can be
+easily obtained by remote sensing, but relaying that information from
+the remote sensor to the forest cover types is usually handled manually
+and slower than the data collection velocity of the sensors. Addressing
+these multifaceted challenges is imperative to unlock the full potential
+of data-driven analytics.
+
+To analyze high-velocity, unlabeled streaming data effectively, a
+desired statistical approach needs to meet the following three
+principles. First, online analytical processing should provide a timely
+and accurate response. Second, to solve the measurement constraint
+problem, the algorithm can sample a relatively small portion of the data
+batch at a time when the expensive responses will be measured and the
+resultant sampling estimator is statistically efficient. Finally, the
+analysis should reduce data storage, and the analytical processing tries
+to avoid accessing the historical data (Schifano et al.~2016).
+
+To meet the first two principles, one natural solution is subsampling.
+Ample evidence shows that the subsampling efficiently balances the
+statistical accuracy and computational cost. Typical works in this line
+of research include but are not limited to, Wang, Zhu, and Ma (2018),
+Wang, Yang, and Stufken (2019), Han et al.~(2020), and Wang et
+al.~(2021). Particularly, the leverage score subsampling (Ma, Mahoney,
+and \(\mathrm { Y u } 2 0 1 5\) ; Ma et al.~2022), Lowcon (Meng et
+al.~2020), and OSMUC subsampling (Zhang, Ning, and Ruppert 2021b) were
+proposed for linear/generalized linear model raise an efficient solution
+on analysis the massive data under measurement constraint. Recently, Wu
+et al.~(2024) proposed a predictive-inference-based subsampling for
+semi-supervised learning. Unfortunately, these approaches typically
+assume access to the full sample before initiating the subsampling
+procedure. Thus, they may fail to give a timely response to analyzing
+high-velocity data streams. Moreover, most subsampling strategies do not
+consider how the selected subsample at the current stage affects the
+online data analysis in the future stages. Methods that hold promise in
+addressing the challenges of analyzing data streams are distributed
+subsampling methods. These methods divide the data into several subsets
+and then apply the subsampling method or subdata selection to each
+subset separately. Examples of such works include Yu et al.~(2022) and
+Zhang and Wang (2021), along with mini-batch stochastic gradient descent
+methods proposed by Robbins and Monro (1951), Dekel et al.~(2012), and
+Zhang et al.~(2021a). Nevertheless, these methods largely adhere to the
+three principles when applied directly to high-velocity data streams,
+especially in cases where storing or accessing historical data is not
+feasible. In an online learning framework, the full dataset cannot be
+used by iterating over it, as unselected data points are discarded and
+cannot be revisited. As a result, conventional mini-batch stochastic
+gradient descent may become inefficient, and leveraging informative data
+points for parameter updates can naturally enhance statistical
+efficiency. However, the large sampling variance from simple random
+sampling leads to inexact gradient information, affecting the
+optimality, convergence, and overall implementation of algorithms.
+Therefore, an optimal sequential subsampling method and an online
+updating estimator, based on selected subsamples, are crucial to
+addressing the challenges posed by data storage and measurement
+constraints in large-scale, high-velocity data streams.
+
+The primary goal of our work is to develop a sequential subsampling
+strategy for online estimating procedures for measurement constrained
+categorical responses when data arrives in a high-velocity stream. Here
+we restrict ourselves to categorical responses since they are prevalent
+in big data, particularly under measurement constraints. In pursuing
+this goal, we opt for the multinomial logistic model, widely recognized
+for its efficacy in modeling categorical responses across diverse
+scientific disciplines. Note that multinomial logistic models encompass
+logistic regression and softmax regression as special cases. In our
+proposed method, we introduce an online updating estimation approach
+based on the sequentially selected subsample with theoretical backups,
+including consistency and asymptotic normality. We employ a first-order
+gradient-based method to meet the needs of online updating without
+revisiting the historical information. Moreover, we develop optimal
+sequential subsampling procedures that minimize the asymptotic MSE of
+onestep updating and online updating with the number of blocks going to
+infinity, respectively. We show that consecutively applying the optimal
+probabilities for a one-step estimator does not yield an optimal
+solution for online data analysis. Furthermore, the first-order
+gradient-based method can further accelerate computation compared to
+Newton-type methods, making the method more responsive to high-velocity
+data streams. More precisely, the proposed method eliminates the need to
+update the Hessian matrix during online updating, making it particularly
+well-suited for scenarios where the selected subsampling in the data
+chunk is small, and the corresponding Hessian matrix does not exist.
+
+The rest of this article is organized as follows. In Section 2, we
+introduce the multinomial logistic models and illustrate the general
+online subsampling and estimation procedure. The consistency of the
+resulting estimator is also derived. In Section 3, the optimal
+subsampling probabilities for one-step updating and online updating are
+derived. Some practical implementation of the optimal subsampling
+procedures is also considered. Simulation studies and real data analyses
+are provided in Section 4. Section 5 concludes this article. All proofs
+are postponed to the supplementary material.
+
+\section{2. Multinomial Logistic Model and its Online
+Updating}\label{multinomial-logistic-model-and-its-online-updating}
+
+\section{2.1. Multinomial Logistic
+Model}\label{multinomial-logistic-model}
+
+Let \(\{ ( \pmb { x } _ { i } , y _ { i } ) \} _ { i = 1 } ^ { N }\) be
+a sequence of independent and identically distributed random variables
+with response \(y _ { i } \in \{ 1 , . . . , J \} ( J \geq\) 2). The
+response \(y _ { i }\) can be regarded as a random variable coming from
+a multinomial distribution with \(\pi _ { i j } ( \beta )\) being the
+conditional probability that the response \(y _ { i }\) is
+\(j ( j = 1 , \ldots , J )\) given the covariate \(x _ { i } , ~ \beta\)
+is the unknown parameter vector. More precisely, the \(\pi _ { i j }\)
+is characterized by the following parametric form:
+
+\[
+\begin{array} { l } { \pi _ { i j } ( \beta ) = \displaystyle \frac { \exp ( f ( x _ { i } , \beta _ { 0 } , \beta _ { j } ) ) } { 1 + \sum _ { k = 1 } ^ { J - 1 } \exp ( f ( x _ { i } , \beta _ { 0 } , \beta _ { k } ) ) } , \quad \mathrm { f o r ~ } j = 1 , \ldots , J - 1 , } \\ { \pi _ { i J } ( \beta ) = \displaystyle \frac { 1 } { 1 + \sum _ { k = 1 } ^ { J - 1 } \exp ( f ( x _ { i } , \beta _ { 0 } , \beta _ { k } ) ) } , } \end{array}
+\]
+
+where \(f ( \cdot )\) is a known function,
+\(\pmb { \beta } _ { 0 } \in \mathbb { R } ^ { d _ { 0 } }\) stands for
+the common parameters among all categories,
+\(\beta _ { j } ~ \in ~ \mathbb { R } ^ { d _ { j } } ( j ~ = ~ 1 , \ldots , J ~ -\)
+1) stands for the individual parameters belonging to the jth category
+only, and
+\(\pmb { \beta } = ( \pmb { \beta } _ { 0 } ^ { \mathrm { T } } , \dots , \pmb { \beta } _ { J - 1 } ^ { \mathrm { T } } ) ^ { \mathrm { T } } \in \mathbb { R } ^ { d }\)
+being parameters of interest for the entire model. Here
+\(d = d _ { 0 } + \dots + d _ { J - 1 }\) denotes the dimension of the
+parameter space. Consequently, we can rewrite the model as
+
+\[
+\log \left( \frac { \pi _ { i j } ( \pmb { \beta } ) } { \pi _ { i J } ( \pmb { \beta } ) } \right) = f ( \pmb { x } _ { i } , \pmb { \beta } _ { 0 } , \pmb { \beta } _ { j } ) ,
+\]
+
+which is known as the multinomial logistic model with the baseline
+category link function. The true parameter vector
+\(\beta _ { \mathrm { { _ { t r u e } } } }\) is the maximizer of the
+expected population likelihood
+
+\[
+\begin{array} { l } { \displaystyle \mathrm { E L } ( \pmb { \beta } ) = \mathrm { E } \left( \sum _ { j = 1 } ^ { J - 1 } \mathbb { I } ( y = j ) f ( \pmb { x } , \pmb { \beta } _ { 0 } , \pmb { \beta } _ { j } ) \right. } \\ { \displaystyle \left. - \log \left( 1 + \sum _ { j = 1 } ^ { J - 1 } \exp \left( f ( \pmb { x } , \pmb { \beta } _ { 0 } , \pmb { \beta } _ { j } ) \right) \right) \right) , } \end{array}
+\]
+
+where \(\mathbb { I } ( \cdot )\) is an indicator function. Clearly,
+when
+\(f ( \pmb { x } _ { i } , \beta _ { 0 } , \pmb { \beta } _ { j } ) =\)
+\(\pmb { x } _ { i } ^ { \mathrm { T } } \pmb { \beta } _ { j }\) with
+\(\beta _ { 0 } \quad = \quad 0\) , Model (1) reduces to be the softmax
+regression whose subsampling strategies are considered in Yao and Wang
+(2019). More specifically, for the case \(J = 2\) , Models (1) become
+the well-known logistic regression, and the subsampling methods are
+studied in Wang, Zhu, and Ma (2018). It is worth mentioning that the
+baseline category function is not the only link function associated with
+a multinomial logistic model. The cumulative link function,
+adjacent-categories link function, and continuation-ratio link functions
+are also widely adopted in practice. For clarity, we state the results
+for Model (1) in the main text and relegate the results for the other
+three links to the supplementary material.
+
+\section{2.2. Online Subsampling and Estimation
+Procedure}\label{online-subsampling-and-estimation-procedure}
+
+In the online semi-supervised learning framework, the full dataset is no
+longer provided all at once. Instead, it arrives in a data block
+\(\{ \boldsymbol { z } _ { t i } \} _ { i = 1 } ^ { n }\) for
+\(t = 0 , . . . , T\) from a large data stream, where \(n\) is the
+number of observations in each block and \(T\) is the number of blocks.
+We assume the first block contains all the labeled historical data, that
+is,
+\(\boldsymbol { z } _ { t i } ~ = ~ ( \boldsymbol { x } _ { t i } ^ { \mathrm { T } } , \boldsymbol { y } _ { t i } ) ^ { \mathrm { T } }\)
+for \(t = 0\) and the unlabeled data arrives in the rest blocks with
+\(z _ { t i } = x _ { t i }\) for \(t = 1 , . . . , T\) . An online
+subsampling is referred to a method that selects \(r \leq n\) unlabeled
+data from tth block
+\(\{ \boldsymbol { z } _ { t i } \} _ { i = 1 } ^ { n }\) with \(t\)
+ranging from 1 to \(T\) . Once the selected sample of each block is
+obtained, we can get access to the labels of them and then update the
+estimator via the labeled data in the current batch.
+
+To develop an appealing online sampling strategy, we propose to use a
+gradient-based method that only requires the information on the previous
+estimator and the selected subsample points, and does not demand the
+whole data storage. Compared with the divide-and-conquer based approach,
+our method can handle the scenario where only a small portion of data in
+each block can be measured, even when the selected data points are less
+than the number of parameters. To be precise, the estimator of \(\beta\)
+is updated via the following formula when the tth block arrives:
+
+\[
+\tilde { \pmb { \beta } } ^ { ( t ) } = \tilde { \pmb { \beta } } ^ { ( t - 1 ) } - \eta _ { t } \tilde { \pmb { g } } _ { t } ( \tilde { \pmb { \beta } } ^ { ( t - 1 ) } ) ,
+\]
+
+where \(\tilde { \pmb { \beta } } ^ { ( 0 ) }\) is defined as the
+initial estimator obtained from the historical data, \(\eta _ { t }\) is
+the pre-specified learning rate, and
+\(\tilde { g } _ { t } ( \pmb { \beta } )\) is the subsample estimator
+of the gradient, that is,
+
+\[
+g _ { t } ( \beta ) = - \frac { 1 } { n } \sum _ { i = 1 } ^ { n } \sum _ { j = 1 } ^ { J } \mathbb { I } ( y _ { t i } = j ) \frac { \partial \log \pi _ { t i , j } ( \beta ) } { \partial \beta } .
+\]
+
+The reasons we adopt (3) as the online updating equation are 2- fold.
+First, only the gradient and latest estimator are needed to be held in
+the memory. Thus, data storage is not necessary. Second, the
+gradient-based method is more computationally tractable compared with
+Newton-type methods, since it only requires the information on
+\(\tilde { \pmb { \beta } } ^ { ( t - 1 ) }\) and the selected subsample
+data points. It is worth mentioning that the proposed method can handle
+the case that only an extremely small portion of the data in the tth
+block can be measured, especially for the scenario that the selected
+data points are less than the number of parameters.
+
+To further relax memory constraints, it is natural to select a subsample
+in the tth block through Poisson sampling (Särndal, Swensson, and
+Wretman 2003) since it only needs scanning the data line by line via
+independent Bernoulli trials. To ease the presentation, denote
+\(\overset { - } { \pmb { u } } _ { t i } ( { \tilde { \pmb { \beta } } } ^ { ( t - 1 ) } )\)
+be the negative score function of ith observation in tth block, that is,
+− jJ=1 I(yti = j)∂ log πti,j(β)/∂β. The gradient gt(β˜ (t−1)) is
+naturally estimated by the Horvitz-Thompson method (Horvitz and Thompson
+1952), that is,
+
+\[
+\begin{array} { r l r } {  { \tilde { \boldsymbol g } _ { t } ( \tilde { \boldsymbol \beta } ^ { ( t - 1 ) } ) = \sum _ { i = 1 } ^ { n } \frac { R _ { t i } } { n p _ { t i } } \boldsymbol u _ { t i } ( \tilde { \boldsymbol \beta } ^ { ( t - 1 ) } ) } } \\ & { } & { = - \sum _ { i = 1 } ^ { n } \frac { R _ { t i } } { n p _ { t i } } \sum _ { j = 1 } ^ { J } { \mathbb I } ( y _ { t i } = j ) \frac { \partial \log \pi _ { t i , j } ( { \boldsymbol \beta } ) } { \partial { \boldsymbol \beta } } , } \end{array}
+\]
+
+where \(R _ { t i }\) is an indicator function with \(R _ { t i } = 1\)
+if and only if the ith sample in the tth block is selected and
+\(p _ { t i }\) is the inclusion probability. We denote the expected
+number of subsampled items as \(r\) , which implies that the subsampling
+probabilities are selected such that
+\(p _ { t 1 } + \cdot \cdot \cdot + p _ { t n } = r .\) . While the
+subsample sample size in each data block is random, as shown in Ai et
+al.~(2021), the number of subsampled items, say \(\hat { r }\) , will
+naturally concentrate around \(r\) with
+\(\mathrm { p r } ( | \hat { r } - r | / r \le t ) \le 1 - 2 \mathrm { e x p } ( - 2 r ^ { 2 } t ^ { 2 } / n )\)
+.
+
+Thus, the computational cost is still under control. Without loss of
+generality, we assume the targeted subsample sizes are the same in all
+blocks. As suggested in Polyak and Juditsky (1992), the step sizes can
+be chosen by
+\(\eta _ { t } ~ = ~ \eta _ { 0 } t ^ { - \alpha } ( t ~ \geq ~ 1 )\)
+with \(\eta _ { 0 }\) and \(\alpha\) being predetermined
+hyper-parameters. For clarity, the proposed method is summarized in
+Algorithm 1.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 0\tabcolsep) * \real{1.0000}}@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Algorithm1: Online Poisson subsampling for multino- mial logistic
+regression. \\
+\begin{minipage}[t]{\linewidth}\raggedright
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{-1}
+\tightlist
+\item
+  Input An initial estimator β and sampling probabilities
+  \{ti=1,.,t=..T. for t=1,\ldots,Tdo \textsubscript{(t)}(t-1) Setβ←β
+  fori=1,\ldots,n do Generate a Bernoulli variable Rti \textasciitilde{}
+  Bernoulli(pti). if Rti=1 then Measure the response yti under covariate
+  Xti
+\end{enumerate}
+\end{minipage} \\
+\end{longtable}
+
+Output: The estimator β˜ (T).
+
+To establish our asymptotic results, we need the following regularity
+assumptions.
+
+Assumption 1. The regression parameters lie in a compact parameter space
+\(\Lambda\) , with the true parameter vector
+\(\beta _ { \mathrm { t r u e } }\) being the inner points of this
+parameter space. Further assume that
+\(\operatorname { E } g _ { t } ( \beta )\) is well defined for all
+\(\pmb { \beta } \in \mathbb { R } ^ { d }\) and
+\(\begin{array} { r } { \operatorname* { l i m } _ { \| \beta \|  \infty } \operatorname { E L } ( \beta ) = \infty } \end{array}\)
+with EL \(( \beta )\) and \({ \pmb g } _ { t } ( { \pmb \beta } )\)
+defining in (2) and (5), respectively.
+
+Assumption 2. Suppose that
+\(\mathrm { p r } ( f ( \pmb { x } , \pmb { \beta } ) \neq f ( \pmb { x } , \pmb { \beta } _ { \mathrm { t r u e } } ) ) > 0\)
+with probability one for all
+\(\beta \neq \beta _ { \mathrm { t r u e } }\) and \(\pmb { x }\) comes
+from \(F _ { x }\) , where \(F _ { x }\) is the distribution of
+\(\pmb { x }\) .
+
+Assumption 3. Assume that for all \(\pmb { \beta } \in \Lambda\) , the
+risk function (2) is twice continuously differentiable with respect to
+\(\beta\) . Moreover, the matrix
+
+\[
+\Psi = - \mathrm { E } \left( \sum _ { j = 1 } ^ { J } \mathbb { I } ( y = j ) \frac { \partial ^ { 2 } \log \pi _ { j } ( \pmb { \beta } _ { \mathrm { t r u e } } ) } { \partial \pmb { \beta } \partial \pmb { \beta } ^ { \operatorname { T } } } \right)
+\]
+
+is positive definite.
+
+Assumption 4. \(\mathrm { F o r } j = 1 , \dotsc , J - 1\) , the
+quantity
+\(\| \partial f ( \pmb { x } , \pmb { \beta } _ { 0 } , \pmb { \beta } _ { j } ) /\)
+\(\begin{array} { r l r } { \partial \pmb { \beta } \| } & { { } \le } & { h ( \pmb { x } ) } \end{array}\)
+, such that
+\(\begin{array} { r l r } { \mathrm { ~ E ~ } ( h ^ { 3 } ( { \pmb x } ) ) } & { { } < } & { \infty } \end{array}\)
+. Furthermore, E
+\(\mathbf { \Gamma } ( \| \partial ^ { 2 } f ( \pmb { x } , \pmb { \beta } _ { 0 } , \pmb { \beta } _ { j } ) / \partial \pmb { \beta } ^ { \mathrm { T } } \partial \pmb { \beta } \| _ { s } ) \ < \ \infty\)
+, where \(\| \cdot \| _ { s }\) denotes the matrix spectrum norm.
+
+Assumption 5. The following conditions hold with probability one:
+
+\[
+\begin{array} { l } { \displaystyle \operatorname* { s u p } _ { t } \mathrm { E } \left( \sum _ { i = 1 } ^ { n } \frac { r h ^ { 2 } ( x _ { t i } ) } { n ^ { 2 } \dot { p } _ { t i } } \bigg | \mathcal { F } _ { t - 1 } \right) < \infty , } \\ { \displaystyle \operatorname* { s u p } _ { t } \mathrm { E } \left( \frac { r ^ { 3 / 2 } } { n ^ { 3 } } \sum _ { i = 1 } ^ { n } \frac { h ^ { 3 } ( x _ { t i } ) } { { P } _ { t i } ^ { 2 } } \bigg | \mathcal { F } _ { t - 1 } \right) < \infty , } \end{array}
+\]
+
+where \(\mathcal { F } _ { t - 1 }\) be the \(\sigma\) -field generated
+by
+\(\{ ( \boldsymbol { x } _ { k i } ^ { \mathrm { T } } , \boldsymbol { y } _ { k i } , \boldsymbol { R } _ { k i } ) ^ { \mathrm { T } } : 1 \leq k \leq\)
+\(t - 1 , 1 \leq i \leq n \}\) .
+
+Assumptions 1 are the regularity conditions of multinomial logistic
+regressions. This assumption is to ensure the boundedness of the
+sequence
+\(\tilde { \pmb { \beta } } ^ { ( t ) } ( t \ = \ 0 , 1 , \ldots )\) .
+We also require the boundedness of
+\(\beta _ { \mathrm { { t r u e } } }\) as in McCullagh and Nelder
+(1989). Assumption 2 is the identification condition to ensure that the
+\(\beta _ { \mathrm { t r u e } }\) is unique, which is also required in
+Han et al.~(2020). Assumption 3 can be satisfied when the risk function
+is convex. Assumptions 4 and 5 are the moment assumptions imposed on the
+full sample and subsample. Specifically, the envelop function
+\(h ( \pmb { x } )\) in Assumption 4 can be simply specified as
+\(\| \pmb { x } \|\) for the softmax regression problem. Similar
+assumptions are used in Wang, Zhu, and Ma (2018), and
+\(\mathrm { Y u }\) et al.~(2022). The reason for using the conditional
+expectation is that the subsampling probabilities
+\(\{ { p } _ { t i } \} _ { i = 1 } ^ { n }\) may depend on
+\(\mathcal { F } _ { t - 1 }\) . A typical example is that the
+subsampling probabilities rely on the pilot estimator derived in the
+previous step.
+
+At the end of this section, we establish the consistency of the
+estimator achieved by Algorithm 1.
+
+Theorem 2.1. If Assumptions 1--5 hold, and
+\(\eta _ { t } = \eta _ { 0 } t ^ { - \alpha }\) for some constants
+\(\eta _ { 0 } > 0\) , \(\alpha \in ( 1 / 2 , 1 )\) , and
+\(r / ( \sum _ { t = 1 } t ^ { - \alpha } ) ^ { 2 } \to 0\) , then β(T)
+c onverges to \(\beta _ { \mathrm { { t r u e } } }\) almost surely as
+\(T \to \infty\) .
+
+Compared with the divide-and-conquer-based online updating methods, such
+as Schifano et al.~(2016), in which the number of blocks is usually less
+than the root of the total sample size, our method focuses on the case
+that the number of blocks \(( T )\) goes to infinity and is probably
+faster than \(n\) . Moreover, Theorem 2.1 implies \(r\) can be either
+fixed or go to infinity, which differs from most existing subsampling
+works. We believe this is more suitable for the online system which
+needs responsive service for data streams. It is worth mentioning that
+when \(T\) is finite or much slower than \(r ^ { 1 / 3 }\) , the
+distributed subsampling method proposed in Yu et al.~(2022) can be
+applied directly. Thus, we focus our attention on the scenario that
+\(T \to \infty\) . As for the case that \(T\) goes to infinity with a
+fixed and small \(n\) , the subsampling is not essential since we can
+handle each block timely.
+
+\section{3. Subsampling Strategies for Online
+Updating}\label{subsampling-strategies-for-online-updating}
+
+\section{3.1. Optimal Poisson Subsampling for One-Step
+Updating}\label{optimal-poisson-subsampling-for-one-step-updating}
+
+For the one-step updating in (4), simple calculation yields that
+\(\mathrm { E } ( \Vert \tilde { \pmb { \beta } } ^ { ( t ) } - \pmb { \beta } _ { \mathrm { t r u e } } \Vert ^ { 2 } \ \vert \ \tilde { \pmb { \beta } } ^ { ( t - 1 ) } , \boldsymbol { X } _ { t } )\)
+can be decomposed into the following three terms:
+\(\| \mathrm { E } ( \tilde { \pmb { \beta } } ^ { ( t ) } \mathrm { ~  ~ \cdot ~ } | \tilde { \pmb { \beta } } ^ { ( t - 1 ) } , X _ { t } ) - \pmb { \beta } _ { \mathrm { t r u e } } \| ^ { 2 } ,\)
+\(\mathrm { t r } [ \mathrm { v a r } \{ \mathrm { E } ( \tilde { \pmb { \beta } } ^ { ( t ) } | \tilde { \pmb { \beta } } ^ { ( t - 1 ) } , X _ { t } , Y _ { t } ) | \tilde { \pmb { \beta } } ^ { ( t - 1 ) } , X _ { t } \} ] ,\)
+and
+\(\operatorname { t r } [ \operatorname { E } \{ \operatorname { v a r } ( { \tilde { \boldsymbol { \beta } } } ^ { ( t ) } |\)
+\(\tilde { \boldsymbol { \beta } } ^ { ( t - 1 ) } , \boldsymbol { X } _ { t } , \boldsymbol { Y } _ { t } ) \quad | \quad \tilde { \boldsymbol { \beta } } ^ { ( t - 1 ) } , \boldsymbol { X } _ { t } \} ]\)
+. From the detailed calculation given in Section S.2.2, one can observe
+that the first two terms are not related to the subsampling
+probabilities and the third term corresponds to the sampling variance of
+g˜t(β˜ (t−1)). Thus, it is desirable to design subsampling probabilities
+to well approximate the gradient information. Due to measurement
+constraints, the responses are unknown. Thus, we propose to minimize its
+expectation instead, that is, we resort to minimizing the matrix
+\(\begin{array} { r } { \mathrm { E } \{ \mathrm { v a r } ( \tilde { \pmb g } _ { t } ( \tilde { \pmb \beta } ^ { ( t - 1 ) } ) \mid \tilde { \pmb \beta } ^ { ( t - 1 ) } , \boldsymbol X _ { t } , Y _ { t } ) \mid \tilde { \pmb \beta } ^ { ( t - 1 ) } , \boldsymbol X _ { t } \} , } \end{array}\)
+, where
+\(X _ { t } ~ = ~ \{ \pmb { x } _ { t i } \} _ { i = 1 } ^ { n }\) ,
+\({ Y _ { t } } ~ = ~ \{ y _ { t i } \} _ { i = 1 } ^ { n }\) . In
+general, one cannot expect to optimize the matrix
+\(\begin{array} { r l } { \mathrm { E } \{ \mathrm { v a r } ( \tilde { \pmb g } _ { t } ( \tilde { \pmb \beta } ^ { ( t - 1 ) } ) } & { { } | \quad \tilde { \pmb \beta } ^ { ( t - 1 ) } , X _ { t } , Y _ { t } ) } \end{array}\)
+\textbar{} β˜ (t−1), X in the sense of the Loewner ordering (Horn and
+Johnson 2012). Therefore, we opt to minimize the trace of
+\(\operatorname { E } \{ \operatorname { v a r } ( \tilde { \pmb { g } } _ { t } ( \tilde { \pmb { \beta } } ^ { ( t - 1 ) } ) \ | \ \tilde { \pmb { \beta } } ^ { ( t - 1 ) } , X _ { t } , Y _ { t } ) \ | \ \tilde { \pmb { \beta } } ^ { ( t - 1 ) } , X _ { t } \}\)
+, which is known as the \(A\) -optimality criterion in the design of
+experiments.
+
+The explicit form of
+\(\mathrm { E } \{ \mathrm { v a r } ( \tilde { \pmb g } _ { t } ( \tilde { \pmb \beta } ^ { ( t - 1 ) } ) \quad | \quad \bar { \pmb \beta } ^ { ( t - 1 ) } , \boldsymbol { X } _ { t } , \boldsymbol { Y } _ { t } )\)
+\(\tilde { \pmb { \beta } } ^ { ( t - 1 ) } , X _ { t } \}\) can be
+derived as follows.
+
+Lemma 3.1. For each data block \(( X _ { t } , Y _ { t } )\) , we have
+
+{\$\$ \textbackslash begin\{array\} \{ r l \} \& \{
+\textbackslash mathrm \{ E \} \textbackslash\{ \textbackslash mathrm \{
+v a r \} ( \textbackslash tilde \{ g \} \_ \{ t \} (
+\textbackslash tilde \{ \textbackslash beta \} \^{} \{ ( t - 1 ) \} )
+\textbackslash mid \textbackslash tilde \{ \textbackslash beta \} \^{}
+\{ ( t - 1 ) \} , X \_ \{ t \} , Y \_ \{ t \} ) \textbackslash mid
+\textbackslash tilde \{ \textbackslash beta \} \^{} \{ ( t - 1 ) \} , X
+\_ \{ t \} \textbackslash\} \} \textbackslash\textbackslash{} \& \{
+\textbackslash quad = \textbackslash cfrac \{ 1 \} \{ n \^{} \{ 2 \} \}
+\textbackslash cfrac \{ n \} \{ i = 1 \} \textbackslash cfrac \{ 1 -
+\textbackslash gamma \_ \{ t i \} \} \{ \textbackslash gamma \_ \{ t i
+\} \} \textbackslash displaystyle \textbackslash sum \_ \{ j = 1 \} \^{}
+\{ J \} \textbackslash pi \_ \{ t i , j \} ( \textbackslash beta \_ \{
+\textbackslash mathrm \{ t r u e \} \} ) \}
+\textbackslash\textbackslash{} \& \{ \textbackslash quad
+\textbackslash cfrac \{ \textbackslash partial \textbackslash log
+\textbackslash pi \_ \{ t i , j \} ( \textbackslash tilde \{
+\textbackslash beta \} \^{} \{ ( t - 1 ) \} ) \} \{
+\textbackslash partial \textbackslash beta \} \textbackslash left(
+\textbackslash frac \{ \textbackslash partial \textbackslash log
+\textbackslash pi \_ \{ t i , j \} ( \textbackslash tilde \{
+\textbackslash beta \} \^{} \{ ( t - 1 ) \} ) \} \{
+\textbackslash partial \textbackslash beta \} \textbackslash right) \^{}
+\{ \textbackslash top \} . \} \textbackslash end\{array\} \$\$}
+
+From Lemma 3.1, the optimal subsampling probabilities that minimize the
+expected variance of the gradient
+\(\tilde { g } _ { t } ( \tilde { \boldsymbol { \beta } } ^ { ( t - 1 ) } )\)
+, that is the trace of (6), are derived as follows. The corresponding
+subsampling probabilities are so-called
+\(\mathrm { ^ { \ast } M V g ^ { \prime } }\) .
+
+Theorem 3.2. Let
+\(\begin{array} { r } { \pmb { h } _ { t i } ^ { \mathrm { M V g } } = ( \sum _ { j = 1 } ^ { J } \pi _ { t i , j } ( \pmb { \beta } _ { t r u e } ) \Vert \partial \log \pi _ { t i , j } ( \tilde { \pmb { \beta } } ^ { ( t - 1 ) } ) / } \end{array}\)
+\(\partial \pmb { \beta } \| ^ { 2 } ) ^ { 1 / 2 }\) . Then the
+asymptotic mean square error of the gradient, that is,
+\(\mathrm { t r } ( \mathrm { E } [ \mathrm { v a r } \{ \tilde { \pmb { g } } _ { t } ( \tilde { \pmb { \beta } } ^ { ( t - 1 ) } ) \ | \ \tilde { \pmb { \beta } } ^ { ( t - 1 ) } , X _ { t } , Y _ { t } \} \ | \ \tilde { \ { \pmb { \beta } } } ^ { ( t - 1 ) } , X _ { t } ] )\)
+attains its minimum if \(\mathbf { \nabla } P t i\) 's are chosen to be
+
+\[
+p _ { t i } ^ { \mathrm { M V g } } = r \frac { \hbar _ { t i } ^ { \mathrm { M V g } } \wedge M _ { t } ^ { \mathrm { M V g } } } { \sum _ { j = 1 } ^ { n } \hbar _ { t j } ^ { \mathrm { M V g } } \wedge M _ { t } ^ { \mathrm { M V g } } } , \quad i = 1 , \dots , n ,
+\]
+
+where \(M _ { t } ^ { \mathrm { M V g } }\) is the maximum number such
+that \$r ( \_ \{ t i \} \^{} \{ \} \$
+\(\begin{array} { r } { M _ { t } ^ { \mathrm { M V g } } ) \leq \sum _ { j = 1 } ^ { n } \hbar _ { t j } ^ { \mathrm { M V g } } \wedge M _ { t } ^ { \mathrm { M V g } } } \end{array}\)
+and \(a \wedge b = \operatorname* { m i n } ( a , b )\) .
+
+Remark 1. In Theorem 3.2, the thresholds
+\(M _ { t } ^ { \mathrm { M V g } } s ^ { \prime }\) are used to ensure
+the inclusion probabilities lie between zero and one. When \(r / n  0\)
+, which is common in big data subsampling settings, one may expect that
+\(r \hbar _ { t i } ^ { \mathrm { M V g } } / ( \sum _ { j = 1 } ^ { n } \hbar _ { t j } ^ { \mathrm { M V g } } ) ~ < ~ 1\)
+. As a result, the optimal subsampling probabilities in each data block
+reduce to pti
+\(\begin{array} { r } { \boldsymbol { p } _ { t i } ^ { \mathrm { M V g } } ~ = ~ { r } \hbar _ { t i } ^ { \mathrm { M V g } } / ( \sum _ { j = 1 } ^ { n } \hbar _ { t j } ^ { \mathrm { M V g } } ) } \end{array}\)
+. As for the cases that \(r / n > 0\) , it may exist some \(i\) such
+that
+\(\begin{array} { r } { r \hbar _ { t i } ^ { \mathrm { M V g } } / ( \sum _ { j = 1 } ^ { n } \hbar _ { t j } ^ { \mathrm { M V g } } ) > 1 } \end{array}\)
+for the tth block. The explicit form solution is presented given in the
+supplementary material. As pointed out in Yu et al.~(2022), finding the
+exact solution of \(M _ { t } ^ { \mathrm { { \hat { M } V g } } }\)
+needs \(O ( n + r \log r )\) times. To reduce the computational cost,
+the \(M _ { t } ^ { \mathrm { M V g } }\) can be estimated by some
+quantile of \(\hbar _ { t i } ^ { \mathrm { \tilde { M V g } } }\) under
+this scenario.
+
+\section{3.2. Optimal Poisson Subsampling for Online
+Updating}\label{optimal-poisson-subsampling-for-online-updating}
+
+The subsampling method proposed in Section 3.1 leads to an estimator
+that achieves the smallest mean squared error of β˜ (t) in the tth step.
+One of the naive ideas is to adopt the proposed subsampling
+probabilities in each step recursively which is known as the greedy
+method in numerical analysis. It is well known that the greedy method
+will not always lead to an optimal solution for the final estimator
+(Cormen et al.~2009). Thus, some calibration is needed on the
+subsampling probabilities to achieve the minimal asymptotic mean squared
+error (AMSE) of \(\beta\) as \(T \to \infty\) .
+
+In our online learning setting, we not only allow \(p _ { i t }\) to
+depend on \(\{ \pmb { x } _ { t i } \} _ { i = 1 } ^ { n }\) at the tth
+batch but also on \(\mathcal { F } _ { t - 1 }\) which is defined in
+Assumption 5. To calibrate the greedy subsampling probabilities obtained
+in Theorem 3.2, we restrict our attention to the following scenario in
+the rest of this article.
+
+Assumption 6. The subsampling probabilities are designed such that
+\(\mathrm { E } ( \Gamma _ { t } ( \pmb { \beta } _ { \mathrm { t r u e } } ) | \mathcal { F } _ { t - 1 } )\)
+is a stable quantity against \(t ,\) , where
+\(\begin{array} { r } { \Gamma _ { t } ( \pmb { \beta } ) = r n ^ { - 2 } \sum _ { i = 1 } ^ { n } { p _ { t i } } ^ { - 1 } \pmb { u } _ { t i } ( \pmb { \beta } ) \pmb { u } _ { t i } ^ { \mathrm { T } } ( \pmb { \beta } ) } \end{array}\)
+. That is to say, as \$T \$ \(\infty\) ,
+\(\mathrm { E } ( \Gamma _ { t } ( \pmb { \beta } _ { \mathrm { t r u e } } ) | \mathcal { F } _ { t - 1 } )  \Gamma\)
+almost surely, where \(\Gamma\) is a positive definite matrix.
+
+This assumption is to ensure that the sampling effect is stable against
+\(t\) and can be satisfied when the proposed subsampling probability in
+Theorems 3.2 or 3.4 (will be shown later) is adopted. Clearly, the
+uniform subsampling also satisfied this assumption under Assumption 2.
+The asymptotic normality of (T) as \(T \to \infty\) is presented as
+follows.
+
+Theorem 3.3. If Assumptions 1--6 hold, and
+\(\eta _ { t } = \eta _ { 0 } t ^ { - \alpha }\) for some constants
+\(\eta _ { 0 } > 0 , \alpha \in ( 1 / 2 , 1 )\) , then the following
+results hold.
+
+\begin{enumerate}
+\def\labelenumi{\roman{enumi}.}
+\tightlist
+\item
+  As \(T , n , r  \infty\) with
+  \(r / ( \sum _ { t = 1 } t ^ { - \alpha } ) ^ { 2 } \to \mathsf { \bar { 0 } }\)
+  , and further assume that \(r\) is functional independent of \(t , T\)
+  , it follows that
+  \(( r ^ { 1 / \alpha } T ) ^ { \alpha / 2 } ( \tilde { \beta } ^ { ( T ) } - \beta _ { \mathrm { t r u e } } )  N ( \stackrel { \sim } { 0 } , \eta _ { 0 } V ) .\)
+  , where \(V\) is the unique solution of the following equation:
+\end{enumerate}
+
+\[
+\Psi V + V \Psi = \Gamma ,
+\]
+
+with \(\Psi\) defined in Assumption 3.
+
+\begin{enumerate}
+\def\labelenumi{\roman{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  As \(T , n \ \to \ \infty\) with fixed r,
+  \(T ^ { \alpha / 2 } ( \tilde { \pmb \beta } ^ { ( T ) } - { \pmb \beta } _ { \mathrm { t r u e } } ) \ \)
+  \(N ( 0 , \eta _ { 0 } V _ { \mathrm { f i x } } )\) , where
+  \(V _ { \mathrm { f i x } }\) is the unique solution of the equation
+  \(\Psi V _ { \mathrm { f i x } } + V _ { \mathrm { f i x } } \Psi = r ^ { - 1 } \Gamma\)
+  .
+\end{enumerate}
+
+Theorem 3.3 characterizes the asymptotic behavior when both the number
+of data blocks \(T\) and the size of each block \(n\) goes to infinity.
+These results enable us to calibrate the subsampling probabilities in
+Theorem 3.2 such that \(\tilde { \boldsymbol { \beta } } ^ { ( T ) }\)
+achieves the minimum asymptotic variance (and the minimum AMSE due to
+the asymptotic unbiasedness). Thus, we denote the sampling probabilities
+by \(^ { \ast } \mathrm { { M V } ^ { \ast } }\) .
+
+Theorem 3.4. Let
+\(\begin{array} { r l r } { \hbar _ { t i } ^ { \mathrm { M V } } } & { { } } & { = } \end{array} \quad \begin{array} { r l r } { \{ \sum _ { j = 1 } ^ { J } \pi _ { t i , j } ( \beta _ { t r u e } ) \| \Psi ^ { - 1 / 2 } } \end{array}\)
+\(( \partial \log \pi _ { t i , j } ( \pmb { \beta } _ { t r u e } ) / \partial \pmb { \beta } ) \| ^ { 2 } \} ^ { 1 / 2 }\)
+. Then the AMSE of \(\tilde { \pmb { \beta } } ^ { ( T ) }\) attains its
+minimum if \(\mathop { p _ { t i } { ' } s }\) are chosen to be
+
+\[
+p _ { t i } ^ { \mathrm { { M V } } } = r \frac { \hbar _ { t i } ^ { \mathrm { { M V } } } \wedge M _ { t } ^ { \mathrm { { M V } } } } { \sum _ { j = 1 } ^ { n } \hbar _ { t j } ^ { \mathrm { { M V } } } \wedge M _ { t } ^ { \mathrm { { M V } } } } , \quad t = 1 , \dots , T , i = 1 , \dots , n ,
+\]
+
+where
+\(\begin{array} { r } { \sum _ { j = 1 } ^ { n } \hbar _ { t j } ^ { \mathrm { M V } } \wedge M _ { t } ^ { \mathrm { M V } } } \end{array}\)
+\(M _ { t } ^ { \mathrm { M V } }\) is the maximum number such that .
+\(r ( \hbar _ { t i } ^ { \mathrm { M V } } \wedge M _ { t } ^ { \mathrm { M V } } ) \leq\)
+
+Clearly, the proposed optimal subsampling probabilities depend only on
+the covariates, but not on the responses. Thus, it is applicable to
+scenarios with measurement constraints. Moreover, one can clearly see
+that the optimal subsampling probabilities for minimizing the AMSE of
+\(\tilde { \boldsymbol { \beta } } ^ { ( T ) }\) are different from the
+optimal subsampling probabilities for minimizing the expected variance
+of the gradient in each step. In contrast to the subsampling
+probabilities which focus on well estimating the gradient information in
+each step, the Fisher information matrix also plays an important role in
+the subsampling probabilities to achieve the AMSE of
+\(\tilde { \boldsymbol { \beta } } ^ { ( T ) }\)
+
+To take a close look at the proposed subsampling probabilities, we take
+the logistic regression as an example. Clearly, it is a special case of
+Model (1) with \(J = 2\) and
+\(f ( \pmb { x } , \pmb { \beta } _ { 0 } , \pmb { \beta } _ { 1 } ) =\)
+\(\pmb { x } ^ { \mathrm { T } } \pmb { \beta } _ { 1 }\) . As discussed
+in Remark 1, we focus on the cases that
+\(\begin{array} { r l r } { r \hbar _ { t i } ^ { \mathrm { M V } } / ( \sum _ { j = 1 } ^ { n } \hbar _ { t j } ^ { \mathrm { M V } } ) } & { { } < } & { 1 } \end{array}\)
+for all \(i\) . Simple calculation yields that
+\(\begin{array} { r l } { \dot { P } _ { t i } ^ { \mathrm { M V } } \propto } & { { } \{ \pi _ { t i , 1 } ( \beta _ { \mathrm { t r u e } } ) ( 1 - \pi _ { t i , 1 } ( \beta _ { \mathrm { t r u e } } ) ) { \boldsymbol x } _ { i } ^ { \mathrm { T } } \Psi ^ { - 1 } { \boldsymbol x } _ { i } \} ^ { 1 / 2 } } \end{array}\)
+, which corresponds to the square root leverage score of logistic models
+(Lee 1987). Similar to the results of leverage score sampling for the
+linear model discussed in Ma et al.~(2022), the data point that has a
+large impact on the prediction naturally contains more information.
+Thus, it is reasonable to select the large leverage score points to
+improve the estimation performance. For the one step updating considered
+in Section 3.1, the optimal subsampling probabilities turn into ptiMV
+\(\begin{array} { r l r } { \dot { P } _ { t i } ^ { M V } } & { { } \propto } & { \{ \hat { \pi } _ { t i , 1 } ( \pmb { \beta } _ { \mathrm { t r u e } } ) ( 1 - \pi _ { t i , 1 } ( \pmb { \beta } _ { \mathrm { t r u e } } ) ) \} ^ { 1 / 2 } \| \pmb { x } _ { i } \| _ { 2 } } \end{array}\)
+which can be regarded as \(L\) -optimal sampling probabilities under
+measurement constraints with
+\(\begin{array} { c c c c c } { T } & { = } & { 1 , r , n } & { \to } & { \infty . } \end{array}\)
+. It is also interesting to see that when the learning rate in (3) is
+selected as the second-order derivative of the loss function
+\(L _ { n T } ( \pmb { \beta } )\) at \(\pmb { \beta } ^ { ( t - 1 ) }\)
+, the optimal subsampling probabilities reduce to ptMiV ∝
+\(\{ \pi _ { t i , 1 } ( \widehat { \pmb { \beta } } _ { \mathrm { t r u e } } ) ( 1 - \pi _ { t i , 1 } ( \widehat { \pmb { \beta } } _ { \mathrm { t r u e } } ) ) \} ^ { \bar { 1 } / 2 } \| \Psi ^ { - 1 } \pmb { x } _ { i } \| _ { 2 }\)
+, which is the \(A\) -optimal sampling probabilities under measurement
+constraints with \(T = 1 , r , n  \infty\) (Zhang, Ning, and Ruppert
+2021b). Compared with the optimal subsampling strategies for one-step
+updating described in Theorem 3.2, one can find that the greedy methods
+will not lead to the optimal solution as \(T \to \infty\) . Instead, the
+squared root leverage score subsampling is much more suitable for online
+learning.
+
+\section{3.3. Practical Considerations}\label{practical-considerations}
+
+Note that the optimal subsampling probabilities presented in both
+Theorems 3.2 and 3.4 depend on the unknown true parameter vector
+\(\beta _ { \mathrm { t r u e } }\) . Thus, the optimal subsampling
+strategies cannot be applied directly. A practical way is to replace the
+unknown true parameter in the tth iteration with the estimator obtained
+in the (t − 1)th iteration, that is, β˜ (t−1), s ince it is a consistent
+estimator of \(\beta _ { \mathrm { { t r u e } } }\) as \(t\) goes to
+infinity. To better approximate the subsampling probabilities, we use a
+consistent estimator estimated by the historical data or the data in the
+first block as the initial values in Algorithm 1. In the streaming
+setting, if the historical data is limited, we can initialize \(\Psi\)
+based on the historical data at first, and periodically update it using
+new stream subsamples to ensure that \(\Psi\) is consistent. As
+suggested in Xie et al.~(2019), an infrequent update of \(\Psi\) with a
+small probability is sufficient.
+
+In the big data era, it is common to see that the subsample budget \(r\)
+in each data block is relatively small compared with
+
+Algorithm 2: Optimal online Poisson subsampling for multinomial logistic
+regression.\\
+Input Historical labeled data
+\(\mathcal { F } _ { 0 } = \{ ( \boldsymbol { x } _ { 0 i } ^ { \mathrm { T } } , \boldsymbol { y } _ { 0 i } ) ^ { \mathrm { T } } \} _ { i = 1 } ^ { n }\)
+and unlabeled data stream
+\(\{ \pmb { x } _ { t i } \} _ { i = 1 } ^ { n }\) with
+\(t = 1 , \dots , T\) . The (shrinkage)\\
+parameter \(\rho\) .\\
+Initial estimator Find the maximum likelihood estimator
+\(\tilde { \boldsymbol { \beta } } ^ { ( 0 ) }\) for multinomial
+logistic regression based on \(\mathcal { F } _ { 0 }\) . Calculate\\
+\(\begin{array} { r } { \hat { \Psi } = - \frac { 1 } { n } \sum _ { i = 1 } ^ { n } \bigg ( \sum _ { j = 1 } ^ { J } \mathbb { I } ( y _ { 0 i } = j ) \frac { \partial ^ { 2 } \log \pi _ { 0 i , j } ( \tilde { \pmb { \beta } } ^ { ( 0 ) } ) } { \partial \beta \partial \beta ^ { \mathrm { T } } } \bigg ) . } \end{array}\)\\
+for \(t = 1 , \dots , T\) do Set β˜ (t) ← β˜ (t−1). Calculate
+\(\begin{array} { r } { \boldsymbol { \lambda } ^ { \mathrm { M V } }  \sum _ { i = 1 } ^ { n } \Big \{ \sum _ { j = 1 } ^ { J } \pi _ { t i , j } ( \tilde { \pmb { \beta } } ^ { ( t - 1 ) } ) \| \hat { \Psi } ^ { - 1 / 2 } ( \partial \log \pi _ { t i , j } ( \tilde { \pmb { \beta } } ^ { ( t - 1 ) } ) / \partial \pmb { \beta } ) \| ^ { 2 } \Big \} ^ { 1 / 2 } . } \end{array}\)
+for \(i = 1 , \ldots , n\) do Calculate
+\(\begin{array} { r } { \cdot \tilde { p } _ { t i } ^ { \mathrm { M V } } \gets \left[ ( 1 - \rho ) \frac { r \left\{ \sum _ { j = 1 } ^ { J } \pi _ { t i , j } ( \tilde { \beta } ^ { ( t - 1 ) } ) \| \hat { \Psi } ^ { - 1 / 2 } ( \partial \log \pi _ { t i , j } ( \tilde { \beta } ^ { ( t - 1 ) } ) / \partial \beta ) \| ^ { 2 } \right\} ^ { 1 / 2 } } { \lambda ^ { \mathrm { M V } } } + \rho \frac { r } { n } \right] \wedge 1 . } \end{array}\)
+Generate a Bernoulli variable \(R _ { t i } \sim\) Bernoulli
+\(\dot { ( p _ { t i } ^ { \mathrm { M V } } ) }\) . if
+\(R _ { t i } = 1\) then Measure the response \(y _ { t i }\) under
+covariate \(\pmb { x } _ { t i }\) and update
+\(\tilde { \pmb \beta } ^ { ( t ) } \gets \tilde { \pmb \beta } ^ { ( t - 1 ) } - \frac { \eta _ { t } } { n \dot { p } _ { t i } ^ { \mathrm { M V } } } \pmb u _ { t i } ( \tilde { \pmb \beta } ^ { ( t - 1 ) } ) .\)
+
+tsheledonummtboermeofe otbhse revaetinotntsh \(n\) oArs
+\(\hbar _ { t i } ^ { \mathrm { M V g } } > M _ { t } ^ { \mathrm { M V g } }\)
+\(\hbar _ { t i } ^ { \mathrm { M V } } ~ > ~ M _ { t } ^ { \mathrm { M V } }\)
+happens. In practice, when r/n is relatively small, the MtMVg or
+\(M _ { t } ^ { \mathrm { M V } }\) can be taken as infinity with no
+significant effect on the optimal subsampling probabilities in Theorems
+3.2 and 3.4.
+
+Let \({ \lambda } ^ { \mathrm { M V g } }\) or
+\({ \boldsymbol { \lambda } } ^ { \mathrm { M V } }\) denote the
+denominator for optimal onestep subsampling and optimal online
+subsampling, respectively. To make the estimators more stable and
+robust, Ma, Mahoney, and Yu (2015) first proposed a shrinkage-based
+subsampling method, which is a linear combination of the optimal
+probabilities and the uniform subsampling probabilities. Thereby it is
+natural to obtain the benefits of both two methods.
+
+The computational cost is \(O ( n T )\) of Algorithm 2. The storage
+demand is \(O ( 1 )\) since the analysis only need to keep
+\(\tilde { \pmb { \beta } } ^ { ( t - \top ) }\) and
+\({ \pmb u } _ { t i } ( { \tilde { \pmb \beta } } ^ { ( t - 1 ) } )\) .
+When the pilot estimator or the initial guess is consistent, the
+denominators in the subsampling probabilities are very similar across
+different data blocks. Thus, we can use the first block to estimate the
+denominator. In this scenario,
+\(\dot { P } _ { t i } ^ { \mathrm { M V } }\) only depends on the ith
+data points itself together with the estimated denominator. Thus, the
+cost of the RAM is also \(O ( 1 )\) since the Poisson subsampling can be
+implemented by loading the data line-by-line. Note that the responses of
+the data stream are expensive. It should be emphasis that the main cost
+in our problem is the data annotation.
+
+The results of consistency and asymptotic normality for the practical
+implementation are presented in the following theorems.
+
+Assumption 7. Suppose that
+
+\[
+\mathrm { E } \left( \frac { r } { n ^ { 2 } } \sum _ { i = 1 } ^ { n } \frac { u _ { \mathrm { 1 } i } ( \beta _ { \mathrm { t r u e } } ) u _ { \mathrm { 1 } i } ^ { \mathrm { { T } } } ( \beta _ { \mathrm { t r u e } } ) } { \left\{ ( 1 - \rho ) \frac { r h _ { \mathrm { 1 } i } ^ { \mathrm { { M V } } } } { \sum _ { i = 1 } ^ { n } \hbar _ { \mathrm { 1 } i } ^ { \mathrm { { M V } } } } + \rho \frac { r } { n } \right\} \wedge 1 } \right) = \Gamma ^ { \mathrm { M V } }
+\]
+
+holds almost surely with \(\Gamma ^ { \mathrm { M V } }\) being a
+positive definite matrix, where
+\(\hbar _ { 1 i } ^ { \mathrm { M V } }\) is defined in Theorem 3.4.
+
+Theorem 3.5. If Assumptions 1--4 and 7 hold, and
+\(\eta _ { t } = \eta _ { 0 } t ^ { - \alpha }\) for some constants
+\(\eta _ { 0 } ~ > ~ 0 , \alpha ~ \in ~ ( 1 / 2 , 1 )\) , then
+\(\tilde { \boldsymbol { \beta } } ^ { ( t ) }\) achieved by Algorithm 1
+with \(\{ \grave { p } _ { t i } ^ { \mathrm { M V } } \}\) converges to
+\(\beta _ { \mathrm { { t r u e } } }\) almost surely as
+\(t \to \infty\) . Moreover, the following results hold.
+
+\begin{enumerate}
+\def\labelenumi{\roman{enumi}.}
+\item
+  As \(T , n , r \ \to \ \infty\) with
+  \(\bar { r } / ( \sum _ { t = 1 } t ^ { - \alpha } ) ^ { 2 } \ \to \ 0\)
+  and \(r\) is functionally independent of \$t , T , ( r \^{} \{ 1 / \}
+  T ) \^{} \{ / 2 \} ( \^{} \{ ( T ) \} - \_ \{ \} ) \$
+  \(N ( 0 , \eta _ { 0 } V _ { \mathrm { p r a c } } )\) , where \(V\)
+  is the unique solution of the equation
+  \(\Psi V _ { \mathrm { p r a c } } + V _ { \mathrm { p r a c } } \Psi = \Gamma ^ { \mathrm { M V } } .\)
+  .
+\item
+  As \(T , n  \infty\) with fixed
+  \(r , \ T ^ { \alpha / 2 } ( \tilde { \pmb { \beta } } ^ { ( T ) } \ - \ \pmb { \beta } _ { \mathrm { t r u e } } ) \ \)
+  \(N ( 0 , \eta _ { 0 } V _ { \mathrm { p r a c , f } } )\) , where
+  \(V\) is the unique solution of the equation
+  \(\Psi V _ { \mathrm { p r a c , f } } + V _ { \mathrm { p r a c , f } } \Psi = r ^ { - 1 } \Gamma ^ { \mathrm { M V } }\)
+  .
+\end{enumerate}
+
+The Assumption 7 is to ensure that when the
+\(\beta _ { \mathrm { t r u e } }\) is known, the proposed subsampling
+method will not lead to a trivial solution, that is, the
+\(V _ { \mathrm { p r a c } }\) goes to zero. Furthermore, if (8) also
+holds when \(\hbar _ { 1 i } ^ { \mathrm { M V } }\) is replaced by
+\(\hbar _ { 1 i } ^ { \mathrm { M V g } }\) and denote the expectation
+as \(\Gamma ^ { \mathrm { M V g } }\) with
+\(\Gamma ^ { \mathrm { M V g } }\) being a positive definite matrix. The
+results are also hold when
+\(\{ \grave { p } _ { t i } ^ { \mathrm { M V g } } \}\) are adopted by
+replacing \(\Gamma ^ { \mathrm { M V } }\) with
+\(\Gamma ^ { \mathrm { M V g } }\) .
+
+\section{4. Numerical Studies}\label{numerical-studies}
+
+This section is to evaluate the performances of the methods proposed in
+Section 3 via some simulated and real datasets. To account for the
+randomness in the subsampling phases, the implementation is repeated
+1000 times for each case in this section. The empirical mean squared
+error (MSE) of the resultant estimator is used to evaluate the accuracy
+of the algorithms in estimating the model parameter. To be precise, for
+the tth iteration \(( t = 1 , . . . , T )\) , we calculate
+\(\begin{array} { r l } { } & { { } 5 0 0 ^ { - 1 } \sum _ { k = 1 } ^ { 5 0 0 } \| \tilde { \boldsymbol { \beta } } _ { p , k } ^ { ( t ) } - \boldsymbol { \beta } _ { \mathrm { t r u e } } \| ^ { 2 } ; } \end{array}\)
+swcherme \(\tilde { \pmb { \beta } } _ { p , k } ^ { ( t ) }\)
+fhroprmotbhaeb
+\(\pmb { \dot { p } } = \{ p _ { t i } : t = 1 , . . . , T ; i = 1 , . . . , n \}\)
+\(k { \mathrm { t h } }\) subsample. All the computations are performed
+via \(\mathtt { R }\) (R Core Team 2021).
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/4122950f4ef661eb51a7bd31d1f9f86db1c4953ca1e270ca84742355269b3f6c.jpg}}\\
+Figure 1. The log of MSEs for Model (9) with the number of updates based
+on the MV (triangle), MVg (square), and uniform subsampling (circle)
+method
+
+\section{4.1. Simulations}\label{simulations}
+
+In the following, we take Model (1) with \(J = 3\) as an example to
+illustrate our methods. More precisely, we consider the following model:
+
+\[
+\begin{array} { r l } & { \log \left( \frac { \pi _ { i 1 } ( \pmb { \beta } ) } { \pi _ { i 3 } ( \pmb { \beta } ) } \right) = \pmb { x } _ { t i ( 0 ) } ^ { \mathrm { { T } } } \pmb { \beta } _ { 0 } + \pmb { x } _ { t i ( 1 ) } ^ { \mathrm { { T } } } \pmb { \beta } _ { 1 } , } \\ & { \log \left( \frac { \pi _ { i 2 } ( \pmb { \beta } ) } { \pi _ { i 3 } ( \pmb { \beta } ) } \right) = \pmb { x } _ { t i ( 0 ) } ^ { \mathrm { { T } } } \pmb { \beta } _ { 0 } + \pmb { x } _ { t i ( 2 ) } ^ { \mathrm { { T } } } \pmb { \beta } _ { 2 } . } \end{array}
+\]
+
+Here we set the true parameter vector
+\(\pmb { \beta } _ { 0 } = \pmb { \beta } _ { 1 } = \pmb { \beta } _ { 2 } =\)
+\(( 1 , 1 , 1 , 1 ) ^ { \mathrm { T } }\) . The number of data blocks is
+set to \(T = 1 0 0 0\) with \(n = 1 0 0 0\) observations in each block.
+The corresponding covariates
+\(\pmb { x } _ { t i } = ( \pmb { x } _ { t i ( 0 ) } ^ { \mathrm { T } } , \pmb { x } _ { t i ( 1 ) } ^ { \mathrm { T } } , \pmb { x } _ { t i ( 2 ) } ^ { \mathrm { T } } ) ^ { \mathrm { T } }\)
+, are independent and identically distributed and generated as follows.
+
+Case 1 The covariate \(x\) follows a multivariate t distribution with
+degree four, that is, \(t _ { 4 } ( \mathbf { 0 } , \Sigma _ { 1 } )\) ,
+where \(\Sigma _ { 1 }\) is a matrix with all diagonal elements equal to
+one and off-diagonal elements equal to 0.5.\\
+Case 2 The covariate \(x\) follows a multivariate normal distribution
+\(N ( \mathbf { 0 } , 2 \Sigma _ { 1 } )\) , where
+\({ \boldsymbol { \Sigma } } _ { 1 }\) is the same as in Case 1.\\
+Case 3 The covariate \(x\) is the same as Case 1 expect the correlation
+structure is changed to \(\Sigma _ { 2 }\) , that is,
+\(t _ { 4 } ( \mathbf { 0 } , \Sigma _ { 2 } )\) . Here
+\(\Sigma _ { 2 }\) is a matrix with the \(( i , j )\) th entry being
+\(0 . 5 ^ { | i - j | }\) .\\
+Case 4 The covariate \(x\) follows a mixture distribution
+\(0 . 5 N ( \mathbf { 0 } . 5 , 2 \Sigma _ { 1 } ) + 0 . 5 t _ { 4 } ( \mathbf { 0 } , \Sigma _ { 1 } )\)
+.
+
+We first test our method in a multivariate t distribution case since it
+is common to see the heavy-tailed distribution in the big data era. Here
+we select four as the degree of multivariate t distribution since we
+need to ensure that the third order moment exists as we imposed in
+Assumption 4. Case 2 considers a lighter-tailed distribution compared
+with Case 1. The constant in front of the correlation matrix is to
+ensure the variances of the four cases are the same. Case 3 considers a
+different correlation structure. Case 4 further considers the case that
+covariates come from mixture distribution and are asymmetric.
+
+Now we evaluate the performances of our methods based on different
+choices of subsampling probabilities. The uniform subsampling method is
+also considered for comparison. We regard the first block as historical
+data and set the hyperparameters
+\(\rho ~ = ~ 0 . 2 , \eta _ { 0 } ~ = ~ 1\) , and
+\(\alpha \ = \ 0 . 9 9\) throughout this section. To verify the
+convergence of the subsample-based estimator, the empirical log of MSEs
+with different numbers of updates are presented in Figure 1, where the
+number of updates \(t\) ranges from 1 to 1000 and the target subsample
+size is fixed at \(r = 6\) .
+
+From Figure 1, one can see that the MSEs for all subsampling methods
+decrease as \(t\) increases, which confirms the theoretical result in
+Theorem 2.1. In addition, subsampling methods based on the MV and
+\(\operatorname { M V g }\) always result in smaller empirical MSEs
+compared with uniform subsampling. Clearly, when the number of updates
+is small, the \(\operatorname { M V g }\) method may perform better than
+the MV method. However, the MV method results in smaller MSEs than those
+in the \(\operatorname { M V g }\) method as \(t\) grows up. This is
+because the \(\operatorname { M V g }\) method is a greedy approach and
+may not lead to the smallest MSE of the final estimator.
+
+To evaluate the influence of the target subsample size \(r _ { : }\) ,
+we implement Algorithm 1 by fixing \(T\) at 100, changing \(r\) among 6,
+18, 30, 60, and 120. Case 1 is selected as an example and the results
+are reported in Figures 2(a). The results for all the data in each block
+are also reported by the dashed line. We also illustrate the case that
+the total target subsample size, that is, \(r T _ { : }\) , is fixed at
+6000, which can explore the effect of the allocations between \(r\) and
+\(T\) . The results are reported in Figure 2(b).
+
+Clearly, the MSEs for all subsampling methods decrease as \(r\)
+increases since more data are used. One can find that there is a linear
+relationship between the log(MSE) and \(\log ( r )\) with the slope
+around \(- 0 . 5\) , which implies as \(r\) increasing the convergence
+rate is around \(r ^ { 1 / 2 }\) . This echoes the convergence results
+in the first part of Theorem 3.3. As \(r\) increased, the difference
+between our method and uniform sampling became smaller, since the
+uniform subsampling has more chance to select the informative points.
+One can see that when \(r = 1 2 0\) , the MSE is very close to the MSE
+that all the data in the block is used, although only \(12 \%\) data in
+each block is used. This reveals that our methods are particularly
+useful for the scenario where the responses are expensive to be measured
+when the data is updated rapidly. In Figure 2(b), the \(T\) ranges among
+10, 50, 100, 250, 500, and 1000. One can see that the
+\(\operatorname { M V g }\) and MV have similar performance when the
+number of blocks is small. This may be because the gradient-based method
+may not lead to a convergence result when the iteration is small. The
+phenomenon also reflects that the \(r\) can not be too big compared with
+\(T\) , which echos the assumption that
+\(r / ( \sum _ { t = 1 } \bar { t ^ { - \alpha } } ) ^ { 2 } \stackrel { - } {  } 0\)
+in Theorem 2.1.
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/8231c0810cb807f5d47e93c4d4029d8a91c93398ed3725f81de3003b188866a2.jpg}}\\
+Figure 2. The log of MSEs for Model (9) with different combinations of r
+and T based on the MV (triangle), \(\mathsf { M V } \mathsf { g }\)
+(square), and uniform subsampling (circle) methods, where \(n _ { 0 }\)
+in all cases are fixed at 1000 for a fair comparison. The dashed line in
+(a) is the log MSE when all data in each block have been used. The data
+is generated as mentioned in Case 1.
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/becda7cfca06ce269e9f377df85db9b3ce7e557e3c11b20396bdb4f04eb60682.jpg}}\\
+Figure 3. The relative efficiencies against the MV methods (fixed
+\(r = 6 ,\) ) for Model (9) with the number of updates. (a) The relative
+efficiencies of \(\mathsf { M V } \mathsf { g }\) (square), and uniform
+subsampling (circle) with r fixed at 6. (b) The relative efficiencies
+for different subsample sizes are based on the uniform subsampling
+method. The log dash line and dot-dash line stand for the cases
+\(r = 8\) and 10, respectively. The data is generated as mentioned in
+Case 1.
+
+Note that for the measurement constraints problem, the main cost is the
+data labeling. In the language of experimental design, relative design
+A-efficiency is a measure that compares the cost of any two design
+strategies. For example, the efficiency of design \(\xi _ { 1 }\) is
+\(\kappa\) compared with design \(\xi _ { 2 }\) , the design
+\(\xi _ { 1 }\) would need \(1 0 0 ( \kappa - 1 ) \%\) more subjects
+than the design \(\xi _ { 2 }\) to achieve the same accuracy of
+estimators in the sense of asymptotic mean squared error. Thus, we also
+report the relative design A-efficiency calculated by the ratio of MSE
+for the two sampling strategies, namely uniform and
+\(\operatorname { M V g }\) methods, over MSE for the MV method. The
+results for Case 1 are reported in Figure 3(a). For reference, we also
+drew a horizontal line at one. To numerically verify the effect of \(r\)
+, we also compared MV methods with the uniform subsampling method with
+\(r \ = \ 8\) and 10. The corresponding results are reported in Figure
+3(b).
+
+From Figure 3, we can see that the \(\operatorname { M V g }\) method is
+sometimes superior to the MV method in the first few rounds. This echos
+the results in Theorems 3.2 and 3.4. As time passed, the MV method is
+better than \(\operatorname { M V g }\) , which implies the MV method is
+more suitable for continuous online updating under measurement
+constraints. Simple calculation yields that the relative efficiencies
+are around \(1 1 5 \%\) and \(1 0 5 \%\) for the uniform sampling and
+\(\operatorname { M V g }\) methods, respectively. Moreover, from Figure
+3(b), one may expect to label additional \(6 0 \%\) samples in each
+iteration for the uniform subsampling method to achieve a similar
+performance.
+
+To further evaluate the tradeoff between statistical efficiency and
+computational cost, we report the computing time plots for the four
+cases. All the computations are carried out on an iMac with a 3.6GHz
+Intel Core i9 processor. To mimic the cost of data annotating, we use
+Sys.sleep() function in \(\mathtt { R }\) and assume the time spent on
+labeling each instance is only 0.01 sec.~To mimic the situation that
+data arrives block by block, we use fread() function in data.table
+package (Dowle and Srinivasan 2021) to load the data in each block. The
+running time is recorded by the Sys.time() function and repeat each case
+50 times. The averaged computing times are reported in Figure 4.
+
+From Figure 4, we can see that the uniform subsampling method uses less
+time than the MV and \(\operatorname { M V g }\) methods. This is
+because the uniform method does not need to compute the optimal
+subsampling probabilities. As expected, the computation time is very
+sensitive to the number of updates for all methods since the labeling
+cost takes most of the time even though we only assume that each subject
+only requires 0.01 sec to label. These facts echo the conclusion in
+Section 4.1 that the main cost is the data labeling for the measurement
+constraints problem. Since annotating large datasets is a tedious and
+time-intensive task, the MV subsampling method has its advantages in
+dealing with massive data under measurement constraints.
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/57499fec46e0b3168f537ee94fc931762bc63c03ad36b3e26a754fabd462b573.jpg}}\\
+Figure 4. The Computational time for different numbers of updates based
+on the MV (triangle), MVg (square), and uniform subsampling (circle)
+methods.
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/0411891ce894a824f770ac46a9bc12dbc0a89ebceafb7e6f3fcce7ba47f07fce.jpg}}\\
+Figure 5. The log of MSEs and expected log-likelihood gain on the
+testing set with different numbers of updates based on the MV
+(triangle), MVg (square), and uniform subsampling (circle) methods.
+
+\section{4.2. Forest Cover Type
+Dataset}\label{forest-cover-type-dataset}
+
+The Forest cover type dataset from the UCI Machine Learning repository
+at https://archive.ics.uci.edu/dataset/31/covertype is being analyzed to
+predict the forest cover type using geometric information. The cover
+type is divided into seven categories in the research areas. Among the
+seven categories, spruce or fir, lodgepole pine are the primary major
+tree species with proportions of \(3 6 . 5 \%\) , \(4 8 . 8 \%\) ,
+respectively. The primary goal is to distinguish forest cover type from
+spruce or fir (type 1), lodgepole pine (type 2), and the rest. The model
+uses elevation, aspect in degrees azimuth, slope in degrees, and
+horizontal distance to the nearest surface water feature as covariates.
+The data contains 581,012 instances, and the proportions of the seven
+cover types are given. The data is divided into a training set of
+\(8 5 \%\) (501,000 instances) and a testing set of \(1 5 \%\) (80,012
+instances).
+
+We again set the number of blocks to be 500, and use the first
+\(n _ { 0 } ~ = ~ 1 0 0 0\) instances in the training set as historical
+data. The target subsample size of each block is set to 30. The maximum
+likelihood estimator calculated by the entire training set is treated as
+``true'' parameters. The empirical MSE is reported in Figure 5(a).
+
+From Figure 5(a), it is clear that our methods outperform the uniform
+subsampling method. To measure the prediction performance, we report the
+expected log-likelihood gain (EL) as adopted in Ando and Chau Li (2017).
+To be precise, the EL is calculated by
+\(\begin{array} { r } { \mathrm { E L } = \sum _ { i = 1 } ^ { n _ { \mathrm { t e s t } } } \sum _ { j = 1 } ^ { J } \mathbb { I } ( y _ { i } = j ) \log \pi _ { i j } ( \tilde { \boldsymbol { \beta } } _ { p , k } ^ { ( t ) } ) } \end{array}\)
+with \(n _ { \mathrm { t e s t } }\) being the size of he test data.
+Since it is the likelihood of the test data, a larger EL corresponds to
+a better method. As expected, the performance of the MV method in both
+estimation and prediction is better than the uniform subsampling method.
+
+\section{4.3. Census Income Dataset}\label{census-income-dataset}
+
+We also apply our method on a census income dataset, which is provided
+in the UCI Machine Learning repository at https://
+archive.ics.uci.edu/dataset/20/census+income.
+
+In this dataset, the responses are labeled as 1 and 2, where 1 stands
+for the person who makes less than or equal 50K a year and 2 for the
+rest. The following five covariates are considered: age
+\(( x _ { 1 } )\) , final weight \(( x _ { 2 } )\) , highest level of
+education \(( x _ { 3 } )\) , capital loss \(( x _ { 4 } )\) , and hours
+worked per week \(( x _ { 5 } )\) . Here, the final weight
+\(( x _ { 2 } )\) represents the weights related to people who have
+similar socio-economic characteristics, which is measured by the
+Population Division at the Census Bureau. The variable \(x _ { 4 }\) is
+the loss of income due to some bad investments. Readers may refer to
+Kohavi (1996) for more details. A total of 48,842 observations are in
+this dataset. The proportion of individuals whose income is less than or
+equal to 50K a year and exceeds 50K is \(7 6 . 0 7 \%\) and
+\(2 3 . 9 3 \%\) , respectively. In addition, this dataset is
+partitioned into a training set with 32,561 instances and a testing set
+with 16,281 instances by the UCI Machine Learning repository.
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/24f442b752a06fa5f6cba848c2a3e10730e96da7b6baa5be24ef1e2cf7c47ed6.jpg}}\\
+Figure 6. The log of MSEs and Expected log-likelihood gain on the
+testing set with the number of updates based on the MV (triangle), MVg
+(square), and uniform subsampling (circle) methods.
+
+We adopt the baseline-category logit model under the proportional odds
+assumption here, which is also known as logistic regression. The
+regression coefficients calculated using the full training set are
+regarded as ``true'' parameters in this example. The total number of
+blocks is set to 500, equivalently the size of each block is 64. In
+addition, the first \(n _ { 0 } ~ = ~ 5 6 1\) instances are used as
+historical data. The target subsample size is chosen as
+\(\boldsymbol { r } ~ = ~ \boldsymbol { 3 }\) . The empirical MSE and
+expected log-likelihood gain for the MV,
+\(\begin{array} { r } { \operatorname { M V g } . } \end{array}\) and
+uniform subsampling are shown in Figure 6.
+
+As expected, the MV and \(\operatorname { M V g }\) methods perform
+similarly and both of them dominate the uniform subsampling method. This
+pattern is similar to that in the simulation studies. We also consider
+the classification accuracy on the testing set with different numbers of
+updates when the classification probability threshold is selected as
+0.5. The results are presented in Figure
+\(6 ( \boldsymbol { \mathbf { b } } )\) . It is clear to see that our
+methods also have better performance than the uniform subsampling method
+in prediction since our methods provide more accurate estimators. The
+superiority of the MV method can also be found in the sense of
+prediction, which agrees with Theorem 3.3.
+
+\section{5. Conclusion}\label{conclusion}
+
+In this article, we present an optimal online subsampling algorithm for
+multinomial logistic models and simultaneously introduce sequential
+updating estimators for the regression coefficients. Unlike most
+existing works which focus on the case that the full data are given
+before subsampling, our work gives a sequential subsampling solution to
+accommodate the online big data analysis. The proposed method breaks the
+storage barrier and the computational barrier under high-speed data
+streams and is particularly useful for data under measurement
+constraints. Note that the proposed methods need
+\(\tilde { \boldsymbol { \beta } } ^ { ( t ) }\) together with a crude
+estimate of the Hessian matrix based on a pilot sample. It is natural to
+see the subsampling procedure can be performed at the sensor side with a
+small data transaction cost on synchronizing
+\(\tilde { \boldsymbol { \beta } } ^ { ( t ) }\) . Then perform the
+analysis on the data center side. Since solar-powered Internet of Things
+(IoT) devices are getting cheaper, our method can be a choice in
+reducing the data transaction. The consistency and asymptotic normality
+of the subsample-based estimator are derived. Based on the asymptotic
+variance of the resultant estimator, the optimal subsampling
+probabilities are obtained. Both theoretical and numerical results
+demonstrate the great potential of the proposed methods in extracting
+useful information from online data with categorical responses under
+measurement constraints.
+
+In this work, we focus on the scenario that the number of data blocks
+grows to infinity at a rate faster than the size of each block, which is
+common in high-velocity data streams. As for the scenarios that the data
+arrival rate is slower, in the sense \(T\) is finite or much slower than
+\(r ^ { 1 / 3 }\) , the distributed subsampling method proposed in Yu et
+al.~(2022) is recommended to replace the proposed sampling probability
+by the OSMUC subsampling probability. Due to data storage constraints,
+the proposed method tries to avoid access to the historical data.
+Another interesting direction is how to further use the labeled subdata
+in the analysis processing when accessing the historically labeled
+subdata is allowed.
+
+\section{Supplementary Materials}\label{supplementary-materials}
+
+All technical proofs and additional simulation results are included in
+the supplementary material.
+
+\section{Acknowledgments}\label{acknowledgments}
+
+The authors sincerely thank the editor, associate editor, and two
+referees for their valuable comments and insightful suggestions, which
+lead to further improvement of this work.
+
+\section{Disclosure Statement}\label{disclosure-statement}
+
+The authors report there are no competing interests to declare.
+
+\section{Funding}\label{funding}
+
+Ai's work is supported by NSFC grants 12071014 and 12131001, National
+Key R\&D Program of China 2020YFE0204200, and LMEQF. Yu's work is
+supported by NSFC grant 12471244 and Beijing Municipal Natural Science
+Foundation grant 1232019.
+
+\section{ORCID}\label{orcid}
+
+Mingyao Ai {\$\textbackslash textcircled\{1\}\$}
+http://orcid.org/0000-0002-0421-0051
+
+\section{References}\label{references}
+
+Ai, M., Yu, J., Zhang, H., and Wang, H. (2021), ``Optimal Subsampling
+Algorithms for Big Data Regressions,'' Statistica Sinica, 31, 749--772.
+{[}3{]}\\
+Ando, T., and Chau Li, K. (2017), ``A Weight-Relaxed Model Averaging
+Approach for High-Dimensional Generalized Linear Models,'' The Annals of
+Statistics, 45, 2654--2679. {[}9{]}\\
+Cormen, T. H., Leiserson, C. E., Rivest, R. L., and Stein, C. (2009),
+Introduction to Algorithms, Cambridge, MA: MIT Press. {[}5{]}\\
+Dekel, O., Gilad-Bachrach, R., Shamir, O., and Xiao, L. (2012),
+``Optimal Distributed Online Prediction Using Mini-Batches,'' Journal of
+Machine Learning Research, 13, 165--202. {[}1{]}\\
+Dowle, M., and Srinivasan, A. (2021), data.table: Extension of
+`data.frame`, R package version 1.14.2. {[}8{]}\\
+Han, L., Tan, K. M., Yang, T., and Zhang, T. (2020), ``Local Uncertainty
+Sampling for Large-Scale Multiclass Logistic Regression,'' The Annals of
+Statistics, 48, 1770--1788. {[}1,4{]}\\
+Horn, R. A., and Johnson, C. R. (2012), Matrix Analysis (2nd ed.),
+Cambridge: Cambridge University Press. {[}4{]}\\
+Horvitz, D. G., and Thompson, D. J. (1952), ``A Generalization of
+Sampling Without Replacement from a Finite Universe,'' Journal of the
+American statistical Association, 47, 663--685. {[}3{]}\\
+Kohavi, R. (1996), ``Scaling Up the Accuracy of Naive-Bayes Classifiers:
+A Decision-Tree Hybrid,'' in Proceedings of the Second International
+Conference on Knowledge Discovery and Data Mining, pp.~202--207.
+{[}9{]}\\
+Lee, A. H. (1987), ``Diagnostic Displays for Assessing Leverage and
+Influence in Generalized Linear Models,'' Australian Journal of
+Statistics, 29, 233--243. {[}5{]}\\
+Li, F., Xie, R., Wang, Z., Guo, L., Ye, J., Ma, P., and Song, W. (2019),
+``Online Distributed Iot Security Monitoring with Multidimensional
+Streaming Big Data,'' IEEE Internet of Things Journal, 7, 4387--4394.
+{[}1{]}\\
+Ma, P., Chen, Y., Zhang, X., Xing, X., Ma, J., and Mahoney, M. W.
+(2022), ``Asymptotic Analysis of Sampling Estimators for Randomized
+Numerical Linear Algebra Algorithms,'' Journal of Machine Learning
+Research, 23, 1--45. {[}1,5{]}\\
+Ma, P., Mahoney, M. W, and Yu, B. (2015), ``A Statistical Perspective on
+Algorithmic Leveraging,'' Journal of Machine Learning Research, 16,
+861-- 911. {[}1,6{]}\\
+McCullagh, P., and Nelder, J. A. (1989), Generalized Linear Models (2nd
+ed.), Boca Raton, FL: Chapman \& Hall/CRC. {[}4{]}\\
+Meng, C., Xie, R., Mandal, A., Zhang, X., Zhong, W., and Ma, P. (in
+press), ``Lowcon: A Design-based Subsampling Approach in a Misspecified
+Linear Model,'' Journal of Computational and Graphical Statistics.
+{[}1{]}\\
+Polyak, B. T., and Juditsky, A. B. (1992), ``Acceleration of Stochastic
+Approximation by Averaging,'' SIAM Journal on Control and Optimization,
+30, 838--855. {[}3{]}\\
+R Core Team. (2021), R: A Language and Environment for Statistical
+Computing, Vienna, Austria: R Foundation for Statistical Computing.
+{[}7{]}\\
+Robbins, H., and Monro, S. (1951), ``A Stochastic Approximation
+Method,'' The Annals of Mathematical Statistics, 22, 400--407. {[}1{]}\\
+Särndal, C.-E., Swensson, B., and Wretman, J. (2003), ``Model Assisted
+Survey Sampling (2nd ed.), New York: Springer. {[}3{]}\\
+Schifano, E. D., Wu, J., Wang, C., Yan, J., and Chen, M.-H. (2016),
+``Online Updating of Statistical Inference in the Big Data Setting,''
+Technometrics, 58, 393--403. {[}1,4{]}\\
+Wang, H., Yang, M., and Stufken, J. (2019), ``Information-based Optimal
+Subdata Selection for Big Data Linear Regression,'' Journal of the
+American Statistical Association, 114, 393--405. {[}1{]}\\
+Wang, H., Zhu, R., and Ma, P. (2018), ``Optimal Subsampling for Large
+Sample Logistic Regression,'' Journal of the American Statistical
+Association, 113, 829--844. {[}1,2,4{]}\\
+Wang, L., Elmstedt, J., Wong, W. K., and Xu, H. (2021), ``Orthogonal
+Subsampling for Big Data Linear Regression,'' The Annals of Applied
+Statistics, 15, 1273--1290. {[}1{]}\\
+Wu, X., Huo, Y., Ren, H., and Zou, C. (2024), ``Optimal Subsampling via
+Predictive Inference,'' Journal of the American Statistical Association,
+1-- 13. {[}1{]}\\
+Xie, R., Bai, S., and Ma, P. (2023), ``Optimal Sampling Designs for
+Multidimensional Streaming Time Series with Application to Power Grid
+Sensor Data,'' The Annals of Applied Statistics, 17, 3195--3215.
+{[}1{]}\\
+Xie, R., Wang, Z., Bai, S., Ma, P., and Zhong, W. (2019), ``Online
+Decentralized Leverage Score Sampling for Streaming Multidimensional
+Time Series,'' in The 22nd International Conference on Artificial
+Intelligence and Statistics, pp.~2301--2311, PMLR. {[}5{]}\\
+Yao, Y., and Wang, H. (2019), ``Optimal Subsampling for Softmax
+Regression,'' Statistical Papers, 60, 585--599. {[}2{]}\\
+Yu, J., Wang, H., Ai, M., and Zhang, H. (2022), ``Optimal Distributed
+Subsampling for Maximum Quasi-Likelihood Estimators with Massive Data,''
+Journal of the American Statistical Association, 117, 265--276.
+{[}1,4,10{]}\\
+Zhang, A., Lipton, Z. C., Li, M., and Smola, A. J. (2021a), ``Dive into
+Deep Learning,'' arXiv preprint arXiv:2106.11342. {[}1{]}\\
+Zhang, H., and Wang, H. (2021), ``Distributed Subdata Selection for Big
+Data via Sampling-based Approach,'' Computational Statistics and Data
+Analysis, 153, 107072. {[}1{]}\\
+Zhang, T., Ning, Y., and Ruppert, D. (2021b), ``Optimal Sampling for
+Generalized Linear Models Under Measurement Constraints,'' Journal of
+Computational and Graphical Statistics, 30, 106--114. {[}1,5{]}
+
+\end{document}

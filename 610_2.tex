@@ -1,0 +1,320 @@
+\section{4. Numerical Studies}\label{numerical-studies}
+
+This section is to evaluate the performances of the methods proposed in
+Section 3 via some simulated and real datasets. To account for the
+randomness in the subsampling phases, the implementation is repeated
+1000 times for each case in this section. The empirical mean squared
+error (MSE) of the resultant estimator is used to evaluate the accuracy
+of the algorithms in estimating the model parameter. To be precise, for
+the tth iteration \(( t = 1 , . . . , T )\) , we calculate
+\(\begin{array} { r l } { } & { { } 5 0 0 ^ { - 1 } \sum _ { k = 1 } ^ { 5 0 0 } \| \tilde { \boldsymbol { \beta } } _ { p , k } ^ { ( t ) } - \boldsymbol { \beta } _ { \mathrm { t r u e } } \| ^ { 2 } ; } \end{array}\)
+swcherme \(\tilde { \pmb { \beta } } _ { p , k } ^ { ( t ) }\)
+fhroprmotbhaeb
+\(\pmb { \dot { p } } = \{ p _ { t i } : t = 1 , . . . , T ; i = 1 , . . . , n \}\)
+\(k { \mathrm { t h } }\) subsample. All the computations are performed
+via \(\mathtt { R }\) (R Core Team 2021).
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/4122950f4ef661eb51a7bd31d1f9f86db1c4953ca1e270ca84742355269b3f6c.jpg}}\\
+Figure 1. The log of MSEs for Model (9) with the number of updates based
+on the MV (triangle), MVg (square), and uniform subsampling (circle)
+method
+
+\section{4.1. Simulations}\label{simulations}
+
+In the following, we take Model (1) with \(J = 3\) as an example to
+illustrate our methods. More precisely, we consider the following model:
+
+\[
+\begin{array} { r l } & { \log \left( \frac { \pi _ { i 1 } ( \pmb { \beta } ) } { \pi _ { i 3 } ( \pmb { \beta } ) } \right) = \pmb { x } _ { t i ( 0 ) } ^ { \mathrm { { T } } } \pmb { \beta } _ { 0 } + \pmb { x } _ { t i ( 1 ) } ^ { \mathrm { { T } } } \pmb { \beta } _ { 1 } , } \\ & { \log \left( \frac { \pi _ { i 2 } ( \pmb { \beta } ) } { \pi _ { i 3 } ( \pmb { \beta } ) } \right) = \pmb { x } _ { t i ( 0 ) } ^ { \mathrm { { T } } } \pmb { \beta } _ { 0 } + \pmb { x } _ { t i ( 2 ) } ^ { \mathrm { { T } } } \pmb { \beta } _ { 2 } . } \end{array}
+\]
+
+Here we set the true parameter vector
+\(\pmb { \beta } _ { 0 } = \pmb { \beta } _ { 1 } = \pmb { \beta } _ { 2 } =\)
+\(( 1 , 1 , 1 , 1 ) ^ { \mathrm { T } }\) . The number of data blocks is
+set to \(T = 1 0 0 0\) with \(n = 1 0 0 0\) observations in each block.
+The corresponding covariates
+\(\pmb { x } _ { t i } = ( \pmb { x } _ { t i ( 0 ) } ^ { \mathrm { T } } , \pmb { x } _ { t i ( 1 ) } ^ { \mathrm { T } } , \pmb { x } _ { t i ( 2 ) } ^ { \mathrm { T } } ) ^ { \mathrm { T } }\)
+, are independent and identically distributed and generated as follows.
+
+Case 1 The covariate \(x\) follows a multivariate t distribution with
+degree four, that is, \(t _ { 4 } ( \mathbf { 0 } , \Sigma _ { 1 } )\) ,
+where \(\Sigma _ { 1 }\) is a matrix with all diagonal elements equal to
+one and off-diagonal elements equal to 0.5.\\
+Case 2 The covariate \(x\) follows a multivariate normal distribution
+\(N ( \mathbf { 0 } , 2 \Sigma _ { 1 } )\) , where
+\({ \boldsymbol { \Sigma } } _ { 1 }\) is the same as in Case 1.\\
+Case 3 The covariate \(x\) is the same as Case 1 expect the correlation
+structure is changed to \(\Sigma _ { 2 }\) , that is,
+\(t _ { 4 } ( \mathbf { 0 } , \Sigma _ { 2 } )\) . Here
+\(\Sigma _ { 2 }\) is a matrix with the \(( i , j )\) th entry being
+\(0 . 5 ^ { | i - j | }\) .\\
+Case 4 The covariate \(x\) follows a mixture distribution
+\(0 . 5 N ( \mathbf { 0 } . 5 , 2 \Sigma _ { 1 } ) + 0 . 5 t _ { 4 } ( \mathbf { 0 } , \Sigma _ { 1 } )\)
+.
+
+We first test our method in a multivariate t distribution case since it
+is common to see the heavy-tailed distribution in the big data era. Here
+we select four as the degree of multivariate t distribution since we
+need to ensure that the third order moment exists as we imposed in
+Assumption 4. Case 2 considers a lighter-tailed distribution compared
+with Case 1. The constant in front of the correlation matrix is to
+ensure the variances of the four cases are the same. Case 3 considers a
+different correlation structure. Case 4 further considers the case that
+covariates come from mixture distribution and are asymmetric.
+
+Now we evaluate the performances of our methods based on different
+choices of subsampling probabilities. The uniform subsampling method is
+also considered for comparison. We regard the first block as historical
+data and set the hyperparameters
+\(\rho ~ = ~ 0 . 2 , \eta _ { 0 } ~ = ~ 1\) , and
+\(\alpha \ = \ 0 . 9 9\) throughout this section. To verify the
+convergence of the subsample-based estimator, the empirical log of MSEs
+with different numbers of updates are presented in Figure 1, where the
+number of updates \(t\) ranges from 1 to 1000 and the target subsample
+size is fixed at \(r = 6\) .
+
+From Figure 1, one can see that the MSEs for all subsampling methods
+decrease as \(t\) increases, which confirms the theoretical result in
+Theorem 2.1. In addition, subsampling methods based on the MV and
+\(\operatorname { M V g }\) always result in smaller empirical MSEs
+compared with uniform subsampling. Clearly, when the number of updates
+is small, the \(\operatorname { M V g }\) method may perform better than
+the MV method. However, the MV method results in smaller MSEs than those
+in the \(\operatorname { M V g }\) method as \(t\) grows up. This is
+because the \(\operatorname { M V g }\) method is a greedy approach and
+may not lead to the smallest MSE of the final estimator.
+
+To evaluate the influence of the target subsample size \(r _ { : }\) ,
+we implement Algorithm 1 by fixing \(T\) at 100, changing \(r\) among 6,
+18, 30, 60, and 120. Case 1 is selected as an example and the results
+are reported in Figures 2(a). The results for all the data in each block
+are also reported by the dashed line. We also illustrate the case that
+the total target subsample size, that is, \(r T _ { : }\) , is fixed at
+6000, which can explore the effect of the allocations between \(r\) and
+\(T\) . The results are reported in Figure 2(b).
+
+Clearly, the MSEs for all subsampling methods decrease as \(r\)
+increases since more data are used. One can find that there is a linear
+relationship between the log(MSE) and \(\log ( r )\) with the slope
+around \(- 0 . 5\) , which implies as \(r\) increasing the convergence
+rate is around \(r ^ { 1 / 2 }\) . This echoes the convergence results
+in the first part of Theorem 3.3. As \(r\) increased, the difference
+between our method and uniform sampling became smaller, since the
+uniform subsampling has more chance to select the informative points.
+One can see that when \(r = 1 2 0\) , the MSE is very close to the MSE
+that all the data in the block is used, although only \(12 \%\) data in
+each block is used. This reveals that our methods are particularly
+useful for the scenario where the responses are expensive to be measured
+when the data is updated rapidly. In Figure 2(b), the \(T\) ranges among
+10, 50, 100, 250, 500, and 1000. One can see that the
+\(\operatorname { M V g }\) and MV have similar performance when the
+number of blocks is small. This may be because the gradient-based method
+may not lead to a convergence result when the iteration is small. The
+phenomenon also reflects that the \(r\) can not be too big compared with
+\(T\) , which echos the assumption that
+\(r / ( \sum _ { t = 1 } \bar { t ^ { - \alpha } } ) ^ { 2 } \stackrel { - } {  } 0\)
+in Theorem 2.1.
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/8231c0810cb807f5d47e93c4d4029d8a91c93398ed3725f81de3003b188866a2.jpg}}\\
+Figure 2. The log of MSEs for Model (9) with different combinations of r
+and T based on the MV (triangle), \(\mathsf { M V } \mathsf { g }\)
+(square), and uniform subsampling (circle) methods, where \(n _ { 0 }\)
+in all cases are fixed at 1000 for a fair comparison. The dashed line in
+(a) is the log MSE when all data in each block have been used. The data
+is generated as mentioned in Case 1.
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/becda7cfca06ce269e9f377df85db9b3ce7e557e3c11b20396bdb4f04eb60682.jpg}}\\
+Figure 3. The relative efficiencies against the MV methods (fixed
+\(r = 6 ,\) ) for Model (9) with the number of updates. (a) The relative
+efficiencies of \(\mathsf { M V } \mathsf { g }\) (square), and uniform
+subsampling (circle) with r fixed at 6. (b) The relative efficiencies
+for different subsample sizes are based on the uniform subsampling
+method. The log dash line and dot-dash line stand for the cases
+\(r = 8\) and 10, respectively. The data is generated as mentioned in
+Case 1.
+
+Note that for the measurement constraints problem, the main cost is the
+data labeling. In the language of experimental design, relative design
+A-efficiency is a measure that compares the cost of any two design
+strategies. For example, the efficiency of design \(\xi _ { 1 }\) is
+\(\kappa\) compared with design \(\xi _ { 2 }\) , the design
+\(\xi _ { 1 }\) would need \(1 0 0 ( \kappa - 1 ) \%\) more subjects
+than the design \(\xi _ { 2 }\) to achieve the same accuracy of
+estimators in the sense of asymptotic mean squared error. Thus, we also
+report the relative design A-efficiency calculated by the ratio of MSE
+for the two sampling strategies, namely uniform and
+\(\operatorname { M V g }\) methods, over MSE for the MV method. The
+results for Case 1 are reported in Figure 3(a). For reference, we also
+drew a horizontal line at one. To numerically verify the effect of \(r\)
+, we also compared MV methods with the uniform subsampling method with
+\(r \ = \ 8\) and 10. The corresponding results are reported in Figure
+3(b).
+
+From Figure 3, we can see that the \(\operatorname { M V g }\) method is
+sometimes superior to the MV method in the first few rounds. This echos
+the results in Theorems 3.2 and 3.4. As time passed, the MV method is
+better than \(\operatorname { M V g }\) , which implies the MV method is
+more suitable for continuous online updating under measurement
+constraints. Simple calculation yields that the relative efficiencies
+are around \(1 1 5 \%\) and \(1 0 5 \%\) for the uniform sampling and
+\(\operatorname { M V g }\) methods, respectively. Moreover, from Figure
+3(b), one may expect to label additional \(6 0 \%\) samples in each
+iteration for the uniform subsampling method to achieve a similar
+performance.
+
+To further evaluate the tradeoff between statistical efficiency and
+computational cost, we report the computing time plots for the four
+cases. All the computations are carried out on an iMac with a 3.6GHz
+Intel Core i9 processor. To mimic the cost of data annotating, we use
+Sys.sleep() function in \(\mathtt { R }\) and assume the time spent on
+labeling each instance is only 0.01 sec.~To mimic the situation that
+data arrives block by block, we use fread() function in data.table
+package (Dowle and Srinivasan 2021) to load the data in each block. The
+running time is recorded by the Sys.time() function and repeat each case
+50 times. The averaged computing times are reported in Figure 4.
+
+From Figure 4, we can see that the uniform subsampling method uses less
+time than the MV and \(\operatorname { M V g }\) methods. This is
+because the uniform method does not need to compute the optimal
+subsampling probabilities. As expected, the computation time is very
+sensitive to the number of updates for all methods since the labeling
+cost takes most of the time even though we only assume that each subject
+only requires 0.01 sec to label. These facts echo the conclusion in
+Section 4.1 that the main cost is the data labeling for the measurement
+constraints problem. Since annotating large datasets is a tedious and
+time-intensive task, the MV subsampling method has its advantages in
+dealing with massive data under measurement constraints.
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/57499fec46e0b3168f537ee94fc931762bc63c03ad36b3e26a754fabd462b573.jpg}}\\
+Figure 4. The Computational time for different numbers of updates based
+on the MV (triangle), MVg (square), and uniform subsampling (circle)
+methods.
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/0411891ce894a824f770ac46a9bc12dbc0a89ebceafb7e6f3fcce7ba47f07fce.jpg}}\\
+Figure 5. The log of MSEs and expected log-likelihood gain on the
+testing set with different numbers of updates based on the MV
+(triangle), MVg (square), and uniform subsampling (circle) methods.
+
+\section{4.2. Forest Cover Type
+Dataset}\label{forest-cover-type-dataset}
+
+The Forest cover type dataset from the UCI Machine Learning repository
+at https://archive.ics.uci.edu/dataset/31/covertype is being analyzed to
+predict the forest cover type using geometric information. The cover
+type is divided into seven categories in the research areas. Among the
+seven categories, spruce or fir, lodgepole pine are the primary major
+tree species with proportions of \(3 6 . 5 \%\) , \(4 8 . 8 \%\) ,
+respectively. The primary goal is to distinguish forest cover type from
+spruce or fir (type 1), lodgepole pine (type 2), and the rest. The model
+uses elevation, aspect in degrees azimuth, slope in degrees, and
+horizontal distance to the nearest surface water feature as covariates.
+The data contains 581,012 instances, and the proportions of the seven
+cover types are given. The data is divided into a training set of
+\(8 5 \%\) (501,000 instances) and a testing set of \(1 5 \%\) (80,012
+instances).
+
+We again set the number of blocks to be 500, and use the first
+\(n _ { 0 } ~ = ~ 1 0 0 0\) instances in the training set as historical
+data. The target subsample size of each block is set to 30. The maximum
+likelihood estimator calculated by the entire training set is treated as
+``true'' parameters. The empirical MSE is reported in Figure 5(a).
+
+From Figure 5(a), it is clear that our methods outperform the uniform
+subsampling method. To measure the prediction performance, we report the
+expected log-likelihood gain (EL) as adopted in Ando and Chau Li (2017).
+To be precise, the EL is calculated by
+\(\begin{array} { r } { \mathrm { E L } = \sum _ { i = 1 } ^ { n _ { \mathrm { t e s t } } } \sum _ { j = 1 } ^ { J } \mathbb { I } ( y _ { i } = j ) \log \pi _ { i j } ( \tilde { \boldsymbol { \beta } } _ { p , k } ^ { ( t ) } ) } \end{array}\)
+with \(n _ { \mathrm { t e s t } }\) being the size of he test data.
+Since it is the likelihood of the test data, a larger EL corresponds to
+a better method. As expected, the performance of the MV method in both
+estimation and prediction is better than the uniform subsampling method.
+
+\section{4.3. Census Income Dataset}\label{census-income-dataset}
+
+We also apply our method on a census income dataset, which is provided
+in the UCI Machine Learning repository at https://
+archive.ics.uci.edu/dataset/20/census+income.
+
+In this dataset, the responses are labeled as 1 and 2, where 1 stands
+for the person who makes less than or equal 50K a year and 2 for the
+rest. The following five covariates are considered: age
+\(( x _ { 1 } )\) , final weight \(( x _ { 2 } )\) , highest level of
+education \(( x _ { 3 } )\) , capital loss \(( x _ { 4 } )\) , and hours
+worked per week \(( x _ { 5 } )\) . Here, the final weight
+\(( x _ { 2 } )\) represents the weights related to people who have
+similar socio-economic characteristics, which is measured by the
+Population Division at the Census Bureau. The variable \(x _ { 4 }\) is
+the loss of income due to some bad investments. Readers may refer to
+Kohavi (1996) for more details. A total of 48,842 observations are in
+this dataset. The proportion of individuals whose income is less than or
+equal to 50K a year and exceeds 50K is \(7 6 . 0 7 \%\) and
+\(2 3 . 9 3 \%\) , respectively. In addition, this dataset is
+partitioned into a training set with 32,561 instances and a testing set
+with 16,281 instances by the UCI Machine Learning repository.
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/24f442b752a06fa5f6cba848c2a3e10730e96da7b6baa5be24ef1e2cf7c47ed6.jpg}}\\
+Figure 6. The log of MSEs and Expected log-likelihood gain on the
+testing set with the number of updates based on the MV (triangle), MVg
+(square), and uniform subsampling (circle) methods.
+
+We adopt the baseline-category logit model under the proportional odds
+assumption here, which is also known as logistic regression. The
+regression coefficients calculated using the full training set are
+regarded as ``true'' parameters in this example. The total number of
+blocks is set to 500, equivalently the size of each block is 64. In
+addition, the first \(n _ { 0 } ~ = ~ 5 6 1\) instances are used as
+historical data. The target subsample size is chosen as
+\(\boldsymbol { r } ~ = ~ \boldsymbol { 3 }\) . The empirical MSE and
+expected log-likelihood gain for the MV,
+\(\begin{array} { r } { \operatorname { M V g } . } \end{array}\) and
+uniform subsampling are shown in Figure 6.
+
+As expected, the MV and \(\operatorname { M V g }\) methods perform
+similarly and both of them dominate the uniform subsampling method. This
+pattern is similar to that in the simulation studies. We also consider
+the classification accuracy on the testing set with different numbers of
+updates when the classification probability threshold is selected as
+0.5. The results are presented in Figure
+\(6 ( \boldsymbol { \mathbf { b } } )\) . It is clear to see that our
+methods also have better performance than the uniform subsampling method
+in prediction since our methods provide more accurate estimators. The
+superiority of the MV method can also be found in the sense of
+prediction, which agrees with Theorem 3.3.
+
+\section{5. Conclusion}\label{conclusion}
+
+In this article, we present an optimal online subsampling algorithm for
+multinomial logistic models and simultaneously introduce sequential
+updating estimators for the regression coefficients. Unlike most
+existing works which focus on the case that the full data are given
+before subsampling, our work gives a sequential subsampling solution to
+accommodate the online big data analysis. The proposed method breaks the
+storage barrier and the computational barrier under high-speed data
+streams and is particularly useful for data under measurement
+constraints. Note that the proposed methods need
+\(\tilde { \boldsymbol { \beta } } ^ { ( t ) }\) together with a crude
+estimate of the Hessian matrix based on a pilot sample. It is natural to
+see the subsampling procedure can be performed at the sensor side with a
+small data transaction cost on synchronizing
+\(\tilde { \boldsymbol { \beta } } ^ { ( t ) }\) . Then perform the
+analysis on the data center side. Since solar-powered Internet of Things
+(IoT) devices are getting cheaper, our method can be a choice in
+reducing the data transaction. The consistency and asymptotic normality
+of the subsample-based estimator are derived. Based on the asymptotic
+variance of the resultant estimator, the optimal subsampling
+probabilities are obtained. Both theoretical and numerical results
+demonstrate the great potential of the proposed methods in extracting
+useful information from online data with categorical responses under
+measurement constraints.
+
+In this work, we focus on the scenario that the number of data blocks
+grows to infinity at a rate faster than the size of each block, which is
+common in high-velocity data streams. As for the scenarios that the data
+arrival rate is slower, in the sense \(T\) is finite or much slower than
+\(r ^ { 1 / 3 }\) , the distributed subsampling method proposed in Yu et
+al.~(2022) is recommended to replace the proposed sampling probability
+by the OSMUC subsampling probability. Due to data storage constraints,
+the proposed method tries to avoid access to the historical data.
+Another interesting direction is how to further use the labeled subdata
+in the analysis processing when accessing the historically labeled
+subdata is allowed.

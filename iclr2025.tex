@@ -1,0 +1,2216 @@
+\begin{document}
+
+
+\section{Proper Dataset Valuation by Pointwise Mutual
+Information}\label{proper-dataset-valuation-by-pointwise-mutual-information}
+
+Shuran Zheng∗ shuranzheng@mail.tsinghua.edu.cn Tsinghua University
+
+Xuan Qi∗\\
+qi-x22@mails.tsinghua.edu.cn\\
+Tsinghua University\\
+Yongchan Kwon\\
+yk3012@columbia.edu\\
+Columbia University
+
+Rui Ray Chen∗ chenrui20@mails.tsinghua.edu.cn Tsinghua University
+
+James Zou jamesz@stanford.edu Stanford University
+
+\section{Abstract}\label{abstract}
+
+Data plays a central role in the development of modern artificial
+intelligence, with high-quality data emerging as a key driver of model
+performance. This has prompted the development of various data curation
+methods in recent years. However, measuring the effectiveness of these
+data curation techniques remains a major challenge. Traditional
+evaluation methods, which assess a trained model's performance on
+specific benchmarks, risk promoting practices that merely make the data
+more similar to the test data. This issue exemplifies Goodhart's law:
+when a measure becomes a target, it ceases to be a good measure. To
+address this, we propose an information-theoretic framework for
+evaluating data curation methods, where dataset quality is measured by
+its informativeness about the true model parameters using the Blackwell
+ordering. We compare informativeness by the Shannon mutual information
+of the evaluated data and the test data, and we propose a novel method
+for estimating the mutual information of datasets by training Bayesian
+models on embedded data and computing the mutual information from the
+model's parameter posteriors. Experiments on real-world data demonstrate
+that our mutual information-based evaluation assigns appropriately lower
+scores to data curation strategies that reduce dataset informativeness,
+while traditional test score-based evaluation methods may favor data
+curation strategies that overfit to the test set but compromise the
+training data's informativeness.
+
+\section{1 Introduction}\label{introduction}
+
+Data plays a central role in the development of modern artificial
+intelligence, where the large volume and high quality of the data used
+in training are critical to model performance {[}Brown et al., 2020,
+Peebles and Xie, 2023, Team et al., 2024, MetaAI, 2024{]}. As AI systems
+continue to grow larger and the computational costs of training
+escalate, the focus is shifting from simply expanding model and dataset
+sizes to enhancing the quality of the data itself. This shift has
+prompted the development of various data curation strategies, including
+data filtering {[}Gunasekar et al., 2023, Li et al., 2023, Fang et al.,
+2023, Pouget et al., 2024{]}, duplicate removal {[}Kandpal et al.,
+2022{]}, data augmentation {[}Muennighoff et al., 2024{]}, and synthetic
+data generation {[}Liu et al., 2024{]}.
+
+However, ensuring the effectiveness of these curation techniques remains
+a major challenge {[}Li et al., 2024, Weber et al., 2024{]}. The
+standard evaluation approach involves training a model on a curated
+dataset and measuring its performance against benchmark test sets {[}Li
+et al., 2024, Albalak et al., 2024, Team et al., 2024, MetaAI, 2024{]}.
+This methodology, though common, can inadvertently encourage undesirable
+curation practices that optimize performance on specific benchmarks, yet
+risk overfitting to the test data and undermining the model's ability to
+generalize to new data. For instance, as noted by {[}Pouget et al.,
+2024{]}, popular pre-training methods often filter datasets to emphasize
+English-language image-text pairs in order to maximize performance on
+western-oriented benchmarks like ImageNet and COCO. While this may
+improve performance on those benchmarks, it degrades performance on
+global datasets. This illustrates a critical issue: as highlighted by
+Goodhart's law, when a measure becomes a target, it ceases to be a good
+measure.
+
+An important question, therefore, is how to distinguish between data
+curation methods that simply boost a trained model's performance on
+specific benchmarks and those that genuinely enhance data quality and
+improve the model's ability to generalize to new data. In this work, we
+propose an alternative information-theoretic framework that may help
+make this distinction: rather than measuring the test score of a trained
+model on specific test sets, we evaluate the informativeness of a
+dataset for a given machine learning task. To achieve this, we adopt the
+well-known Blackwell ordering Blackwell et al.~{[}1951{]} to compare the
+informativeness of datasets. A data curation method is considered
+effective if it increases the dataset's informativeness about the true
+model parameters, while it is deemed strategic if it decreases the
+dataset's informativeness, according to the Blackwell ordering.
+
+To quantify informativeness, we propose using the Shannon mutual
+information (MI) of the curated dataset and the test dataset as a
+metric. This mutual information metric is effective in identifying data
+curation methods that reduce informativeness. Specifically, if a
+curation method decreases the dataset's informativeness according to the
+Blackwell ordering, it must lead to a decrease in the mutual
+information. However, estimating mutual information of datasets presents
+a challenge in practice. Existing techniques can reliably estimate the
+mutual information of two random variables in up to tens of dimensions
+but fail in higher dimensions {[}Gowri et al., 2024{]}.1 This is
+particularly problematic, as datasets are inherently high-dimensional
+due to the many data points they contain.
+
+Our main technical contribution is a novel method for estimating the
+mutual information of two datasets. We exploit a dataset's capacity to
+train a machine learning model and compute the mutual information
+through the posterior distributions of the model parameters. To get such
+posteriors, we reduce model size by utilize embeddings from pre-trained
+foundation models. Our method consists of two steps: (1) using
+pre-trained foundation models to embed data examples, and (2) training
+relatively small Bayesian models, such as Bayesian logistic regression,
+on the resulting embeddings to estimate the mutual information of the
+datasets.
+
+We demonstrate the effectiveness of our method through experiments on
+real-world datasets, including MNIST and CIFAR. Our experiments reveal
+that the test score-based evaluation method may favor data curation
+strategies that make the dataset more similar to the test data but
+reduce its informativeness about the true model parameters. In contrast,
+our mutual information-based evaluation assigns appropriately lower
+scores to such strategies. This is because our method accurately
+estimates the mutual information of datasets, as verified by our
+experiments.
+
+To summarize, our contribution is threefold:
+
+• We propose an information-theoretic framework for evaluating data
+curation methods, where dataset quality is measured by its
+informativeness about the true model parameters using the
+well-established Blackwell ordering.\\
+• A novel method is introduced for estimating the mutual information of
+datasets by training a Bayesian model on embedded data and computing the
+MI from the parameter posteriors.\\
+• Experiments on real-world data show that our mutual information-based
+evaluation, unlike the test score-based evaluation, assigns
+appropriately lower scores to informativeness-reducing data curation
+methods by accurately estimating the mutual information of datasets.
+
+\section{1.1 Related work}\label{related-work}
+
+Data curation. The success of large language models (LLMs) is
+fundamentally anchored in the quality of their training datasets, which
+underscoring the critical need for advancements in data curation to
+ensure optimal training efficiency, cost-effectiveness and robust
+generalization. Data filtering {[}Gunasekar et al., 2023, Li et al.,
+2023, Fang et al., 2023,
+
+Pouget et al., 2024, Xie et al., 2023{]} aims to select data points to
+include in the training dataset from a large pool of raw data, often
+guided by various heuristics. Duplicate removal {[}Kandpal et al.,
+2022{]} focuses on repeated occurrences and impact of sequences within
+training datasets. The findings underscore the importance of
+sequence-level deduplication in training efficiency and model privacy
+without sacrificing model performance. Data augmentation {[}Muennighoff
+et al., 2024, To¨rnberg, 2023{]} generates new training samples from the
+original dataset to enhance its diversity and volume while preserving
+its core characteristics while synthetic data generation {[}Liu et al.,
+2024{]} creates totally new data that closely resemble the distribution
+of real data. Data mixing {[}Xie et al., 2024, Liu et al., 2025{]}
+determines the weight of each domain's dataset to optimize performance
+across all domains. Data distillation {[}Sachdeva and McAuley, 2023{]}
+aims to create compact, highfidelity data summaries that capture the
+most essential knowledge from a given target dataset.
+
+Data point valuation. The assessment of data point value has been
+actively studied in the data valuation literature. A standard approach
+is to measure the change in the test accuracy after removing a single
+training data point of interest. Data Shapley by Ghorbani and Zou
+{[}2019{]} deploys the Shapley value from cooperative game theory to ML
+settings, and several variants that improve its computational efficiency
+or relax underlying conditions have been proposed {[}Jia et al., 2019a,
+Kwon and Zou, 2021, Wang and Jia, 2022, Wang et al., 2024a{]}. An
+alternative common approach utilizes the influence function introduced
+in robust statistics {[}Koh and Liang, 2017, Feldman and Zhang, 2020{]}.
+This method provides a mathematically rigorous interpretation of data
+values and has been implemented in various applications, such as image
+classification and sentiment analysis, or text-to-image generation
+{[}Park et al., 2023, Kwon et al., 2023{]}. Other algorithm-agnostic and
+task-agnostic methods have also been explored, such as {[}Just et al.,
+2023, Xu et al., 2021{]}. We refer the readers to Jiang et
+al.~{[}2023{]} for a comprehensive and detailed review.
+
+Dataset valuation. Beyond evaluating individual data points, various
+methods have been proposed for dataset evaluation. The standard approach
+involves training a model on a curated dataset and measuring its
+performance on benchmark test sets {[}Li et al., 2024, Albalak et al.,
+2024{]}. Garrido-Lucero et al.~{[}2024{]} leverages estimated Shapley
+values for efficient dataset valuation. Mohammadi Amiri et
+al.~{[}2023{]} focus on intrinsic, task-agnostic dataset valuation by
+estimating data diversity and relevance without requiring a validation
+set. However, none of these methods provide the information-theoretic
+guarantees as we do.
+
+Peer prediction approach. Our method is also connected to the peer
+prediction literature Miller et al.~{[}2005{]}, Prelec {[}2004{]}, Jurca
+and Faltings {[}2008{]}, Radanovic and Faltings {[}2013, 2014{]},
+Witkowski and Parkes {[}2012{]}, Kong and Schoenebeck {[}2018a{]},
+Schoenebeck and Yu {[}2020b{]}, which studies eliciting truthful
+information without ground truth. Among these, Kong and Schoenebeck
+{[}2018b{]}, Chen et al.~{[}2020{]}, Schoenebeck and Yu {[}2020a{]} are
+most relevant. Kong and Schoenebeck {[}2018b{]} proposed a mutual
+information-based peer prediction method using two agents' predictions
+about a latent label, later adapted for data valuation by Chen et
+al.~{[}2020{]}. However, their approach computes pointwise mutual
+information through a complex integral involving the product of two
+posteriors divided by the prior (see Appendix B for details).
+Schoenebeck and Yu {[}2020a{]} also estimates mutual information but is
+restricted to discrete variables or specific continuous distributions.
+
+Mutual information estimation. Mutual information (MI) is a key concept
+in data science that measures the statistical dependence between random
+variables. Non-parametric methods, such as binning, likelihood-ratio
+estimators with support vector machines, and kernel-density estimators,
+are commonly used {[}Fraser and Swinney, 1986, Darbellay and Vajda,
+1999, Kraskov et al., 2004{]} for estimating mutual information, but
+these approaches often do not scale well with sample size and data
+dimension {[}Gao et al., 2015{]}. Variational methods, such as MINE
+{[}Belghazi et al., 2018b{]} and InfoNCE {[}Oord et al., 2018{]}, have
+become popular alternatives. Recent work by Gowri et al.~{[}2024{]}
+shows that while standard MI estimators perform well in up to tens of
+dimensions, they are not reliable in higher dimensions when the
+available data is limited. To mitigate this, they suggest reducing
+dimensionality with pre-trained models before MI estimation, which
+improves scalability.
+
+\section{2 Model}\label{model}
+
+Consider a machine learning task with a model parameterized by
+\(\pmb { \theta } \in \Theta \subseteq \mathbb { R } ^ { k }\) . We
+assume the Bayesian perspective, where \(\pmb \theta\) is drawn from an
+underlying prior distribution \(p ( \pmb \theta )\) . Supfrom an
+underlying distribution pose we have a test dataset T = (x(T , . .
+\(T = ( \mathbf { x } _ { T } ^ { ( 1 ) } , \dots , \mathbf { x } _ { T } ^ { ( N _ { T } ) } )\)
+\(p ( \mathbf { x } _ { T } | \pmb { \theta } )\) , x(TNT )), consisting
+of NT i.i.d. data points drawn , and an original dat t
+\(D = ( \mathbf { x } _ { D } ^ { ( 1 ) } , \dots , \mathbf { x } _ { D } ^ { ( N _ { D } ) } )\)
+with \(N _ { D }\) i.i.d. data points from an underlying
+\(p ( \mathbf { x } _ { D } | \pmb { \theta } )\) . The two datasets may
+not follow the same distribution, so
+\(p ( \mathbf { x } _ { D } | \pmb { \theta } )\) need not equal
+\(p ( \mathbf { x } _ { T } | \pmb { \theta } )\) . Denote the support
+of \(D\) and \(T\) by \(\mathcal { D }\) and \(\tau\) , respectively.
+
+We aim to evaluate different data curation methods, which can be seen as
+functions applied to the original dataset, possibly incorporating
+additional information to improve the data. This additional information
+is represented by a random variable \(A\) , which may be correlated with
+both the model parameter \(\pmb \theta\) and the dataset \(D\) .
+
+Definition 2.1 (Data curation method). Let \(A\) be a random variable
+representing additional information for data curation, and let
+\(\mathcal { A }\) be the support of \(A\) . A data curation method with
+additional information \(A\) is a function
+\(f : \mathcal { A } \times \mathcal { D }  \mathcal { D }\) that
+outputs a modified dataset \(f ( A , D )\) given \(A\) and an original
+dataset \(D \in { \mathcal { D } }\) . The space of such functions is
+denoted by \(\mathcal { F }\) .
+
+Below are several examples of data curation methods:
+
+• Adding new data. A simple data curation method is adding new data,
+where \(A \in { \mathcal { D } }\) represents the new data and
+\(f ( A , D ) = D \cup A\) .\\
+• Deleting data. It is also common to select a subset of data and remove
+the others, as seen in coreset selection Mirzasoleiman et
+al.~{[}2020{]}, data filtering with quality signals {[}Gunasekar et al.,
+2023, Li et al., 2023, Fang et al., 2023, Pouget et al., 2024{]}, data
+deduplication {[}Kandpal et al., 2022{]}, and removing low-quality or
+out-of-domain data Northcutt et al.~{[}2021{]}, Ghorbani and Zou
+{[}2019{]}, Jia et al.~{[}2019b{]}. In data deletion, the additional
+information can be represented as a random vector \(A \ \in\)
+\(\{ 0 , 1 \} ^ { N _ { D } }\) indicating whether each data point is
+retained or removed.\\
+• Reweighting data. Another commonly used method is resampling data
+points with different weights Xie et al.~{[}2024{]}, Xu et
+al.~{[}2024{]}. In this case, the additional information can represented
+by a random vector \(A \in \mathbb { N } ^ { N _ { D } }\) indicating
+the number of copies of each data point in the final dataset.
+
+To distinguish between methods that merely adapt the dataset to be more
+similar to the test data and those that introduce meaningful
+improvements, we employ the Blackwell ordering of informativeness.
+
+Definition 2.2 (Blackwell order of informativeness Blackwell et
+al.~{[}1951{]}). If random variables \(X  Y  Z\) form a Markov chain,
+then \(Z\) is less informative than \(Y\) about \(X\) .
+
+In particular, suppose we have a data curation method \(f ( A , D )\)
+that reduces the informativeness of \(D\) about the true model parameter
+\(\pmb \theta\) in the Blackwell order, i.e., \$ D \$ \(f ( A , D )\)
+forms a Markov chain. Then by Blackwell's theorem, the best model
+trained on \(D\) can achieve an expected loss that is at least as low as
+the best model trained on \(f ( A , D )\) .
+
+Theorem 2.3 (Informal, Blackwell et al.~{[}1951{]}). Suppose
+\(\theta \to D \to f ( A , D )\) forms a Markov chain. Consider the
+decision problem of selecting a hypothesis/trained model \(h\) from a
+hypothesis/model class \(\mathcal { H }\) to minimize the expected loss
+using a dataset. Then, the minimum expected loss achievable using \(D\)
+is at least as low as that achievable using \(f ( A , D )\) .
+
+We defer the formal version of this theorem to Theorem A.5.
+
+We thus define such curation methods that reduce informativeness as
+strategic data curation methods. A data curation method is considered
+strategic if the resulting dataset is less informative about the true
+model parameter \(\pmb \theta\) according to the Blackwell ordering.
+
+Definition 2.4 (Strategic data curation). A data curation method
+\(f ( \cdot )\) is strategic if the curated dataset \(f ( A , D )\) is
+less informative about \(\pmb \theta\) than the original dataset \(D\) .
+Formally, \(\pmb \theta \to D \to f ( A , D )\) forms a Markov chain.
+
+Below are several examples of strategic curation methods:
+
+• Adding fake data. When adding new data \(A\) , if \(A\) consists of
+i.i.d. data points from
+\(p ( \mathbf { x } _ { D } | \pmb { \theta } )\) , then \(f ( A , D )\)
+is more informative because it does not form a Markov chain. However, if
+\(A\) contains randomly generated fake data, \(f ( A , D )\) becomes
+strategic, as \(\pmb \theta \to D \to f ( A , D )\) forms a Markov
+chain.\\
+• Deleting or reweighting data without additional signals. When deleting
+or reweighting data, if \(A \in \mathbb { N } ^ { N _ { D } }\) is
+guided by some additional quality or relevance signal, such as oracle
+information identifying incorrect/irrelevant labels, the
+filtered/reweighted dataset can be more informative. Conversely, if
+\(A\) is decided solely from the observed dataset \(D\) without
+utilizing new signals---i.e., when there exist functions
+\(h _ { D } ( A )\) that determine the distribution of \(A\) given a
+dataset \(D\) ---the resulting dataset \(f ( A , D )\) will be less
+informative. Because we have
+\(p ( A | D , \pmb \theta ) = h _ { D } ( A ) = p ( A | D )\) ,
+indicating that \(\theta  D  A\) forms a Markov chain, and thus
+\(\pmb \theta  D  f ( A , D )\) forms a Markov chain.\\
+• Deleting or reweighting data by non-essential features. In addition,
+when deleting or reweighting data, if
+\(A \in \mathbb { N } ^ { N _ { D } }\) is based on some non-essential
+feature that is non-predictive of the label, the resulting dataset will
+be less informative. To be more specific, suppose a data point
+\(\textbf { x } = \left( \mathbf { z } , y \right)\) in \(D\) consists
+of a label \(y\) and essential features \(\mathbf { z }\) . Suppose
+there is some non-essential feature \(z _ { N }\) that satisfies
+\(p ( y | \pmb \theta , \mathbf z , z _ { N } ) = p ( y | \pmb \theta , \mathbf z )\)
+and is non-predictive of \(y\) conditioned on \(\mathbf { z }\) , as
+illustrated in the graphical model in Figure 1. Then if the vector
+\(A \ \in \ \mathbb { N } ^ { N _ { D } }\) is decided by this
+non-essential feature of the data points, z(N1 , .
+\(z _ { N } ^ { ( 1 ) } , \dots , z _ { N } ^ { ( N _ { D } ) }\) , z(N
+D) (as well as D), then the resulting dataset will be less informative
+because z(N1 ,
+\(z _ { N } ^ { ( 1 ) } , \dots , z _ { N } ^ { ( N _ { D } ) }\) z(N D)
+are independent of \(\pmb \theta\) conditioned on \(D\) (as the path
+between \(\pmb \theta\) and \(z _ { N }\) is blocked by
+\(\mathbf { z }\) and d-separation implies conditional independence).
+
+\pandocbounded{\includegraphics[keepaspectratio]{images/1b5d8b9e009b7509f1e71c668f43a601a6a9da70dc4baca04e41d67ba7b65f3a.jpg}}\\
+Figure 1: Graphical model for non-essential features.
+
+For simplicity, we sometimes omit the dependency on \(A\) and use
+\(f ( D )\) to represent a data curation method.
+
+We assess a data curation method by assigning it a score, with the goal
+of distinguishing between methods that increase or reduce
+informativeness. A scoring function for data curation methods is defined
+as follows.
+
+Definition 2.5 (Scoring function for data curation methods). A scoring
+function for data curation methods \(S : \mathcal { F }  \mathbb { R }\)
+assigns a score \(S ( f )\) to a data curation method \(f ( \cdot )\) ,
+given access to the original data \(D\) and test data \(T\) .
+
+Our goal is to design a scoring function that does not encourage
+strategic data curation methods. Specifically, we seek a function that
+assigns lower scores to strategic methods than to the case of no
+modification.
+
+Definition 2.6 (Strategy-proof scoring functions). A scoring function
+\(S ( f )\) for data curation methods is strategy-proof if it ensures
+that strategic data curation methods always receive a score no higher
+than the identity function \(f ( D ) \equiv D\) , while \(S ( f )\)
+itself is nonconstant.
+
+\section{3 PMI Scoring Function}\label{pmi-scoring-function}
+
+We propose a strategy-proof scoring function that measures the Shannon
+mutual information (MI) of the curated datasets and test datasets. To
+estimate the mutual information, we leverage pre-trained models to embed
+data points and then build a Bayesian model, based on which we introduce
+a closed-form formula for approximating the pointwise mutual information
+(PMI) of datasets. In this section, we omit the dependency on \(A\) and
+use \(f ( D )\) to represent a data curation method for simplicity.
+
+\section{3.1 Method}\label{method}
+
+We first introduce the key steps of our approach.
+
+Mutual information as the metric. Due to the data processing inequality,
+the simplest metric that would yield a strategy-proof scoring function,
+if computable, is the Shannon mutual information of the model parameter
+\(\pmb \theta\) and the curated dataset \(f ( D ) = \widehat { D }\) ,
+denoted by \(I ( \pmb \theta , f ( D ) )\) .
+
+Lemma 3.1 (Data processing inequality). If
+\(\pmb \theta  D  \widehat { D }\) form a Markov chain, then
+\(I ( \pmb \theta , D ) \ge I ( \pmb \theta , \widehat D )\) , where
+\(I ( X , Y )\) is the Shannon mutual infbormation of \(X\) and \(Y\) .
+Therefore if we use \(I ( \pmb \theta , f ( D ) )\) to score
+\(f ( \cdot )\) , a strategic \(f ( \cdot )\) will not receive a score
+higher than the identity function \(f ( D ) \equiv D\) .
+
+However, since the underlying true model parameter is not observable, we
+propose using the Shannon mutual information of the curated dataset and
+the observable test dataset \(T\) as the scoring function, which serves
+as a strategy-proof scoring function as well.
+
+Proposition 3.2. The Shannon mutual information of the curated dataset
+\(f ( D ) = \widehat { D }\) and information \(T\) is defined as the
+expectation of the pointwise
+\(\begin{array} { r } { I ( \widehat { D } , T ) = \mathbb { E } _ { \widehat { D } , T } \left[ \log \frac { p ( \widehat { D } , T ) } { p ( \widehat { D } ) p ( T ) } \right] } \end{array}\)
+
+mutual information P M I(D, T ) = log p(p (DbDb)p,T(T)) , where the
+expectation is taken over the joint distribution
+\(p ( \widehat { D } , T )\) that is induced by the data generating
+process described in Section 2.
+
+The proof is deferred to Appendix C.1.
+
+Bayesian modeling on embedded data. Then the problem boils down to
+estimating the mutual information of two datasets. Estimating mutual
+information of high-dimensional variables is challenging in practice.
+Existing techniques such as {[}Kraskov et al., 2004, Belghazi et al.,
+2018b, Oord et al., 2018{]} can reliably estimate MI in up to tens of
+dimensions, but fail in higher dimensions {[}Gowri et al., 2024{]}.
+However, a dataset contains many data points, which inevitably boosts
+the dimension even with low-dimensional representation of data points.
+As a result, our problem of estimating mutual information between
+datasets introduces significant new challenges. To address this, we
+propose a novel method that leverages a dataset's ability to train a
+machine learning model.
+
+The proposed method proceeds as follows. First, recall that the mutual
+information is the expectation of the pointwise mutual information. We
+generate \(k\) dataset pairs
+\(( D _ { 1 } , T _ { 1 } ) , \dots , ( D _ { k } , T _ { k } )\) and
+use the average pointwise mutual information
+\(\begin{array} { r } { \frac { 1 } { k } \sum _ { i = 1 } ^ { k } P M I ( f ( D _ { i } ) , T _ { i } ) } \end{array}\)
+to estimate the mutual information \(I ( f ( D ) , T )\) .
+
+Next, we leverage widely-used large pretrained models to generate
+embeddings of the data, which are then used to train smaller Bayesian
+models with a specified prior \(p ( \pmb \theta )\) and specified
+likelihoods \(p ( \mathbf { x } _ { D } | \pmb { \theta } )\) ,
+\(p ( \mathbf { x } _ { T } | \pmb { \theta } )\) (such as Bayesian
+logistic regression, Bayesian linear regression, or a Bayesian
+multilayer perceptron). We assume that the true data generating process
+is well modeled by this Bayesian model on data embeddings.
+
+Assumption 3.3. We assume that the true data generating process is
+adequately captured by applying a tractable Bayesian model parametrized
+by \(\pmb \theta\) to embeddings generated by a pretrained model, with a
+specified prior \(p ( \pmb \theta )\) and specified likelihoods
+\(p ( \mathbf { x } _ { D } | \pmb { \theta } )\) ,
+\(p ( \mathbf { x } _ { T } | \pmb { \theta } )\) for the resulting
+embeddings.
+
+For simplicity, we still use \(D\) and \(T\) to represent the embedded
+data and then utilize this Bayesian model on embedded \(D , T\) to
+estimate the PMI of datasets.
+
+Closed-form approximation of pointwise mutual information. Even with a
+Bayesian
+\(\begin{array} { r } { P M I ( f ( D _ { i } ) , T _ { i } ) = \log \frac { p ( f ( D _ { i } ) , T _ { i } ) } { p ( f ( D _ { i } ) ) p ( T _ { i } ) } = \log \frac { p ( T _ { i } | f ( D _ { i } ) ) } { p ( T _ { i } ) } } \end{array}\)
+particularly because the marginal probability
+\(p ( f ( D _ { i } ) ) , p ( T _ { i } )\) is often intractable (which
+leads to intractable posterior \(p ( \pmb \theta | \cdot )\) as well)
+for most of the Bayesian models. Extensive research in Bayesian machine
+learning has focused on estimating the posterior distribution of model
+parameters \(p ( \pmb \theta | \cdot )\) . For instance, methods such as
+Laplace approximation, variational inference aim to approximate the
+posterior \(p ( \pmb \theta | \cdot )\) by tractable distributions. But
+even with a tractable approximated posterior
+\(p ( \pmb \theta | \cdot )\) , the posterior predictive
+\(\begin{array} { r } { p ( T _ { i } | f ( D _ { i } ) ) = \int _ { \theta } p ( T _ { i } | \theta ) p ( \theta | f ( D _ { i } ) ) d \theta } \end{array}\)
+is still intractable for most models including logistic regression. The
+computation of the posterior predictive
+\(p ( T _ { i } | f ( D _ { i } ) )\) requires further approximation
+such as Monte Carlo integration or likelihood function approximation
+(see Section 4.1 for detailed discussion and experiments). Building on
+the vast literature on approximating \(p ( \pmb \theta | \cdot )\) , our
+main technical contribution is a closed-form formula for the PMI when
+\(p ( \pmb \theta | \cdot )\) is approximated by a tractable
+distribution, bypassing the further approximation of the posterior
+predictive.
+
+Theorem 3.4 (PMI dataset score). Let
+\(\widehat { D } _ { i } \ = \ f ( D _ { i } )\) be the curated
+datasets, and let \(p ( \pmb \theta | X )\) be the posterior of
+\(\pmb \theta\) given a data bt \(X\) . Then the pointwise mutual
+information \(P M I ( \widehat { D } _ { i } , T _ { i } )\) can be
+computed as
+
+\[
+\begin{array} { r l r } {  { P M I ( \widehat { D } _ { i } , T _ { i } ) = U _ { \eta } ( \widehat { D } _ { i } , T _ { i } ) } } \\ & { } & { \quad : = \log \frac { p ( \theta = \eta | \widehat { D } _ { i } ) \cdot p ( \theta = \eta | T _ { i } ) } { p ( \theta = \eta ) \cdot p ( \theta = \eta | \widehat { D } _ { i } , T _ { i } ) } , } \end{array}
+\]
+
+where \(\eta\) is an arbitrary parameter value in \(\Theta\) .2
+
+The proof of Theorem 3.4 only relies on Bayes' rule and we defer the
+proof to Appendix C.2.
+
+Our PMI dataset score can be easily computed as long as the posteriors
+and the prior are approximated by tractable distributions. This makes it
+applicable to a wide range of commonly-used Bayesian neural networks,
+including Gaussian approximation Daxberger et al.~{[}2021{]}, Yang et
+al.~{[}2023{]}, Blundell et al.~{[}2015{]}, Wang et al.~{[}2024b{]},
+Gaussian mixture approximation Blundell et al.~{[}2015{]}, and Dirichlet
+approximation Hobbhahn et al.~{[}2022{]}.
+
+Algorithm and convergence rate. Combining all the steps, our PMI scoring
+function for data curation methods can be computed as in Algorithm 1.
+
+Based on the previous analysis, the algorithm outputs an unbiased
+estimator of the target metric \(I ( f ( D ) , T )\) , which converges
+to the true value of \(I ( f ( D ) , T )\) as \(k\) increases.
+
+Corollary 3.5. The output of Algorithm 1 provides an unbiased estimator
+of \(I ( f ( D ) , T )\) . Assuming that the posteriors are in an
+exponential family and the datasets have bounded sufficient statistics,
+we have
+\(\begin{array} { r } { \operatorname* { P r } \left( \left| \frac { 1 } { k } \sum _ { i = 1 } ^ { k } U _ { \eta } ( \widehat { D } _ { i } , T _ { i } ) - I ( \widehat { D } , T ) \right| \leq \varepsilon \right) \ \geq \ 1 - \delta } \end{array}\)
+when \(k =\) \(O ( \log ( 1 / \delta ) / \varepsilon ^ { 2 } )\) , and
+we have the expected squareb error of thbe estimator decreases as
+\(O ( 1 / k )\) .
+
+The proof is deferred to Appendix C.3. Compared to commonly used MI
+estimators, our concentration bound is independent of the variable
+dimension, unlike the bound
+
+\section{Algorithm 1 PMI scoring
+function}\label{algorithm-1-pmi-scoring-function}
+
+Require: Datasets
+\(( D _ { 1 } , T _ { 1 } ) , \dots , ( D _ { k } , T _ { k } )\) , an
+data curation method \(f ( \cdot )\) for evaluation, a pre-trained model
+used to embed the data points, a Bayesian model for the embedded data
+with tractable approximated posteriors \(p ( \pmb \theta | \cdot )\) , a
+vector \(\eta \in \Theta\) . Ensure: A score for the curation method
+\(f ( \cdot )\)\\
+1: Apply the curation method \(f ( \cdot )\) on
+\(D _ { 1 } , \ldots , D _ { k }\) and get the curated datasets
+\(\widehat { D } _ { 1 } , \ldots , \widehat { D } _ { k }\)\\
+2: Use the pre-trained model to embed the datasets
+\(\widehat { D } _ { 1 } , \ldots , \widehat { D } _ { k }\) and
+\(T _ { 1 } , \dots , T _ { k }\) .\\
+3: For each pair of embedded \(( \widehat { D } _ { i } , T _ { i } )\)
+, compute tbhe po nbtwise mutual information
+\(U _ { \eta } ( \widehat { D } _ { i } , T _ { i } )\) via the
+approximatedb posteriors of the Bayesian model parameters
+\(p ( \pmb \theta | \cdot )\) as inbEquation (1).\\
+4: Return
+\(\begin{array} { r } { \frac { 1 } { k } \sum _ { i = 1 } ^ { k } U _ { \eta } ( \widehat { D } _ { i } , T _ { i } ) } \end{array}\)
+.
+
+in Belghazi et al.~{[}2018a{]}, which scales as
+\(\begin{array} { r } { O \left( \frac { d \log ( \sqrt { d } / \varepsilon ) + d + \log ( 1 / \delta ) } { \varepsilon ^ { 2 } } \right) } \end{array}\)
+, where \(d\) is the variable dimension. Additionally, unlike the
+methods in {[}Belghazi et al., 2018a, Kraskov et al., 2004, Oord et al.,
+2018, Song and Ermon, 2019{]}, our approach guarantees not only
+consistency but also unbiasedness. We further show the advantages of our
+method in Section 4.1
+
+\section{4 Experiments}\label{experiments}
+
+We evaluate the accuracy of our MI estimator and its ability to assess
+dataset informativeness through experiments on real-world data. Our
+results demonstrate that the PMI scoring function remains effective even
+when employing the simple Bayesian logistic regression model with
+Gaussian approximation (outlined in Appendix C.4) for Bayesian modeling.
+The Gaussian posterior approximation can be efficiently computed by
+training a standard logistic regression model with L2 regularization or
+by employing the Laplace approximation method in Daxberger et
+al.~{[}2021{]}.
+
+\section{4.1 Accuracy of Mutual Information
+Estimation}\label{accuracy-of-mutual-information-estimation}
+
+We evaluate our method on resampled real-world data.
+
+Dataset generation. We resample datasets from MNIST and estimate their
+mutual information, where the exact value of mutual information is
+unknown but their relative rankings can be inferred. To assess the
+accuracy of our method, we measure the rank correlation between the
+estimated and true rankings. The setup is as follows. We randomly sample
+dataset pairs containing images of 0s and 1s from MNIST. First, we
+randomly select two correlated numbers,
+\(r _ { D } , r _ { T } \in \{ 0 . 2 , 0 . 8 \}\) , distributed as in
+the following table where \(\rho\) is a number between 0.25 and 0.5.
+
+\begin{longtable}[]{@{}|l|l|l|@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\hline
+P(rD,rT) & rD=0.2 & rD = 0.8 \\
+\hline
+rT = 0.2 & p & 2-p \\
+\hline
+rT= 0.8 & 2-p & p \\
+\hline
+\end{longtable}
+
+These numbers represent the proportion of data points with label 0 in
+datasets \(D\) and \(T\) , respectively. We then generate \(D\) and
+\(T\) by randomly sampling images from MNIST to match the specified
+label proportions \(r _ { D } , r _ { T }\) , resulting in two
+correlated datasets.
+
+Fact 1. The mutual information of the generated datasets \(I ( D , T )\)
+increases in \(\rho\) for \(0 . 2 5 \leq\) \(\rho \leq 0 . 5\) .
+
+The proof is deferred to Appendix E.1.
+
+Baseline method. Gowri et al.~{[}2024{]} demonstrated that commonly-used
+nonparametric methods reliably estimate MI in up to tens of dimensions,
+but fail in higher dimensions.3 Consequently, such methods are
+unsuitable for estimating dataset-level mutual information. We thus
+focus on parametric methods for approximating \(P M I ( D , T ) =\)
+\(\begin{array} { r } { \log \frac { p ( T | D ) } { p ! T ) } . } \end{array}\)
+, which requires estimating the posterior predictive
+\(\begin{array} { r } { p ( T | D ) = \int _ { \theta } p ( T | \pmb \theta ) p ( \pmb \theta | D ) d \pmb \theta } \end{array}\)
+. For classification problems, several approaches exist for posterior
+predictive approximation, including Monte Carlo integration, probit
+approximation {[}Gibbs, 1998{]}, and Laplace bridge {[}Hobbhahn et al.,
+2022{]}. However, probit approximation and Laplace bridge cannot be used
+as they only provide posterior predictives for individual data points,
+\(\begin{array} { r l } { \int _ { \boldsymbol { \theta } } p ( \mathbf { x } _ { T } ^ { ( i ) } | \pmb { \theta } ) p ( \pmb { \theta } | D ) d \pmb { \theta } } \end{array}\)
+whereas we need posterior predictives for an entire dataset,
+\(\begin{array} { r l } { \int _ { \pmb { \theta } } \prod _ { i } p ( \mathbf { x } _ { T } ^ { ( i ) } | \pmb { \theta } ) p ( \pmb { \theta } | D ) d \pmb { \theta } } \end{array}\)
+, where x(Ti) is the i-th data point in T . As a result, Monte Carlo
+integration stands as the only viable baseline for our problem.
+
+Setting. We use our method and the Monte Carlo baseline to estimate the
+mutual information of \(D , T\) and assess their accuracy by the rank
+correlation between the estimated rankings the true \(\rho\) rankings.
+We consider ten values of \(\rho\) , corresponding to mutual information
+values ranging from 0.1 to 1.0 in increments of 0.1. For each \(\rho\) ,
+we estimate the mutual information with both our PMI formula and Monte
+Carlo integration, averaged over the 1,000 dataset pairs. To compute our
+PMI formula, we train logistic regression models on \(D\) and \(T\) with
+L2 regularization parameterized by \(C\) , which corresponds to a
+Gaussian prior {\$N ( 0 , C \textbackslash cdot \{ \textbackslash bf I
+\} )\$} . For Monte Carlo integration, we adopt the same logistic
+regression model and sample 1000 points from the posterior {\$\{
+\textbackslash bf p \} ( \textbackslash pmb \{ \textbackslash theta \}
+\textbar{} D )\$} to estimate the posterior predictive \(p ( T | D )\) .
+
+Results. As shown in Table 1, our PMI estimator consistently achieves
+significantly higher Kendall \(\tau\) rank correlation than the
+baseline, regardless of the choice of regularization strength \(C\) .
+This demonstrates that our method provides far more accurate mutual
+information estimates, and its ranking estimates are robust to prior
+misspecification. Additionally, our method runs much faster than the
+baseline. This indicates that our approach not only provides more
+accurate results but is also computationally more efficient.
+
+\begin{longtable}[]{@{}|l|l|l|@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\hline
+Method & T & Runtime (min) \\
+\hline
+PMI (C =1) & 0.956 & 75 \\
+\hline
+PMI (C = 100) & 0.911 & 76 \\
+\hline
+PMI (C= 1000) & 0.911 & 75 \\
+\hline
+Baseline & 0.600 & 739 \\
+\hline
+\end{longtable}
+
+Table 1: Comparison of Kendall's \(\tau\) rank correlation and runtime
+across different methods. PMI ( \(C = c\) ) refers to our PMI-based
+mutual information estimation method, where \(C\) denotes the
+regularization parameter for L2 regularization in logistic regression,
+corresponding to a Gaussian prior {\$\{ \textbackslash cal N \} ( 0 , C
+\textbackslash cdot \{ \textbackslash bf I \} )\$} . The baseline method
+employs Monte Carlo integration with 1,000 samples per estimate and an
+optimally selected regularization strength ( \(C = 1 0 0\) ). For each
+\(\rho\) , both PMI and MC integration are averaged over 1,000 pairs of
+correlated datasets \(( D , T )\) , each with 100 images and reduced to
+100 dimensions via Principal Component Analysis. Runtime is measured as
+the total time (in minutes) required to complete all experiments across
+10 \(\rho\) values on the same machine.
+
+\section{4.2 Evaluating data curation
+methods}\label{evaluating-data-curation-methods}
+
+We next use popular datasets to test our PMI scoring function in
+evaluating data curation methods. We show that the PMI scoring function
+is effective in distinguishing between strategic and non-strategic
+curation methods, whereas evaluating curation methods using test scores
+could promote strategic methods that do not add new information but
+merely make the data more similar to the test data.
+
+Data curation methods and dataset generation. There are numerous data
+curation methods available for evaluation. We select three that can be
+clearly classified as strategic or non-strategic. To evaluate these
+methods, we apply these methods to dataset pairs randomly sampled from
+the training and test sets of Colored MNIST Arjovsky et al.~{[}2020{]}
+and Corrupted CIFAR Hendrycks and Dietterich {[}2019{]}.
+
+• Data filtering: We consider the removal of mislabeled data, assuming
+access to oracle information about the correctness of each label. We
+consider such data filtering as a non-strategic curation methods that is
+expected to receive a score higher score than no modification. To
+generate datasets for filtering, we randomly sample
+\(T _ { 1 } , \dots , T _ { k }\) from the test set, and sample datasets
+from the training set and flip the labels of some data points to
+generate \(D _ { 1 } , \ldots , D _ { k }\) . We compare the scores
+before and after the removal of these mislabeled data points.
+
+• Strategic data duplication or removal by non-essential features: We
+then consider the duplication/removal of a data subset without using
+quality or relevance signals but only makes the data more similar to the
+test data based on non-essential features, such as the brightness of an
+image (in Corrupted CIFAR) or the color of a figure (in Colored MNIST).
+This results in a strategic curation method, which should receive a
+score lower than that of \(f ( D ) \equiv D\) . We generate datasets for
+duplication or removal as follows. Let \(\mathbf { z } _ { E }\)
+represent the essential features from the original MNIST/CIFAR,
+\(z _ { N } \in \{ 0 , 1 \}\) be a binary non-essential features
+introduced in Colored MNIST/Corrupted CIFAR (e.g.~color and brightness),
+and \(y \in \{ 0 , 1 \}\) be a binary label. We sample pairs of \(D\)
+and \(T\) with the same essential feature distribution
+\(p _ { D } ( \mathbf { z } _ { E } , y ) = p _ { T } ( \mathbf { z } _ { E } , y )\)
+but different compositions of non-essential features
+\(p _ { D } ( z _ { N } = 0 | \mathbf { z } _ { E } , y ) \neq p _ { T } ( z _ { N } = 0 | \mathbf { z } _ { E } , y )\)
+. We then consider data duplication/removal on \(D\) based on the
+non-essential feature \(z _ { N }\) that aligns
+\(p _ { D } ( z _ { N } | \mathbf { z } _ { E } , y )\) with
+\(p _ { T } ( z _ { N } | \mathbf { z } _ { E } , y )\) . Conditioned on
+\(D\) , such duplication/removal is independent of the true
+\(\pmb \theta\) , making it a strategic curation method.
+
+For both cases, we generate the smallest datasets that achieve
+reasonable accuracy \(\sim\) \(8 0 \% - 9 0 \%\) to avoid overlap.
+
+Scoring functions. We compare our PMI scoring function (Algorithm 1) to
+the test accuracy baseline that trains a model on the curated dataset
+and evaluate its accuracy on the test set. Specifically, we define the
+test accuracy scoring function as: \(S _ { T S } ( f ) =\)
+\({ \frac { 1 } { k } } \sum _ { i = 1 } ^ { k } \operatorname { A c c } ( \theta ( f ( D _ { i } ) ) , T _ { i } )\)
+, where \(\operatorname { A c c } ( \theta ( D ) , T )\) represents the
+accuracy of the model trained on \(D\) when evaluated on the test set
+\(T\) . To compute our PMI score in Algorithm 1, we train different
+models for Colored MNIST and Corrupted CIFAR. For Colored MNIST, we
+directly use a logistic regression model. For Corrupted CIFAR, we use
+pre-trained ResNet18 to extract image embeddings and subsequently train
+a logistic regression. The logistic regression models are trained using
+L2 regularization with parameter \(C\) , which corresponds to a Gaussian
+prior {\$N ( 0 , C \textbackslash cdot \{ \textbackslash bf I \} )\$} .
+These models are subsequently employed to evaluate the test accuracy
+scoring function.
+
+Results. Table 2 and Table 3 present the changes in the PMI scoring
+function and test accuracy after applying the three data curation
+methods. Across both datasets, our PMI score effectively distinguishes
+between strategic and non-strategic curation methods: data filtering
+increases the PMI score, whereas data duplication or removal based on
+nonessential features leads to a decrease. In contrast, the test
+accuracy metric fails to detect strategic data duplication and removal,
+always assigning them higher scores. This suggests that relying solely
+on test accuracy may inadvertently promote strategic methods that do not
+introduce new information but merely make the training data more similar
+to the test data. Furthermore, our findings are robust to prior
+misspecification (varying choices
+
+\begin{longtable}[]{@{}|l|l|l|l|@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\hline
+C & Operation & PMI Score Change & Accuracy Change(\%) \\
+\hline
+10 & Denoising & 6.4621 ± 0.8463 & 0.91 ± 0.06 \\
+\hline
+50 & Denoising & 8.1367 ± 1.0031 & 0.78 ± 0.11 \\
+\hline
+100 & Denoising & 12.7610 ± 1.2069 & 0.14 ± 0.01 \\
+\hline
+200 & Denoising & 13.5874 ± 1.0423 & 0.31 ± 0.02 \\
+\hline
+10 & Duplication & -2.8150 ± 1.1563 & 3.84 ± 0.55 \\
+\hline
+50 & Duplication & -1.8428 ± 1.0567 & 3.30 ± 0.65 \\
+\hline
+100 & Duplication & -1.8762 ± 0.9954 & 2.75 ± 0.54 \\
+\hline
+200 & Duplication & -2.5927 ± 1.1437 & 1.43 ± 0.29 \\
+\hline
+10 & Removal & -5.2692 ± 0.7825 & 0.31 ± 0.02 \\
+\hline
+50 & Removal & -5.5265 ± 0.9823 & 0.28 ± 0.03 \\
+\hline
+100 & Removal & -6.5826 ± 1.0437 & 0.34 ± 0.04 \\
+\hline
+200 & Removal & -13.9614 ± 2.0497 & 0.54 ± 0.04 \\
+\hline
+\end{longtable}
+
+Table 2: Changes in PMI score function and test accuracy after applying
+three data curation methods to the Colored MNIST dataset. C denotes the
+regularization parameter for L2 regularization in the trained logistic
+regression models, corresponding to a Gaussian prior
+\(N ( 0 , C \cdot \mathbf { I } )\) . The training and the test sets
+consist of 200−400 samples. The Denoising method removes flipped data
+points, while Duplication aligns the distribution of nonessential
+features in the training set with the test set by duplicating a subset
+of samples. Removal achieves the same alignment by discarding data
+points. We compute the mean changes in PMI scores and test accuracy by
+averaging results over 1,000 trials, while the variances are further
+estimated from 10 repeated runs. Details of the experimental setup and
+results for a different data distribution are provided in Appendix
+E.2.1.
+
+of \(C\) ), and we observe the same pattern across different data
+distributions, as detailed in Appendix E.2.
+
+\section{5 Discussion and Future Work}\label{discussion-and-future-work}
+
+We propose an information-theoretic framework for evaluating data
+curation methods that measures the informativeness of a dataset. We
+discuss several potential directions for future work. Firstly, a key
+open problem is to develop principled method for selecting dataset pairs
+that most effectively estimate mutual information. We have observed that
+the PMI scoring function can fail when the datasets
+\(D _ { i } , T _ { i }\) are too small to train effective models, as
+well as when they are too large, resulting in significant overlap
+between datasets that violates the independence assumption. Secondly,
+the selection of the prior is also crucial. While we observe that the
+PMI scoring function is robust to prior misspecifications in terms of
+ranking mutual information, the absolute accuracy of its MI estimates is
+highly sensitive
+
+\begin{longtable}[]{@{}|l|l|l|l|@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\hline
+C & Operation & PMI Score Change & Accuracy Change (\%) \\
+\hline
+10000 & Denoising & 1.8112±0.1408 & 7.24±0.07 \\
+\hline
+30000 & Denoising & 1.6553±0.1288 & 7.25±0.17 \\
+\hline
+50000 & Denoising & 1.5311±0.1452 & 7.29±0.10 \\
+\hline
+100000 & Denoising & 1.2920±0.1578 & 7.37±0.14 \\
+\hline
+10000 & Duplication & -0.6288±0.0275 & 0.53±0.03 \\
+\hline
+30000 & Duplication & -0.8258±0.0311 & 0.53±0.03 \\
+\hline
+50000 & Duplication & -0.9025±0.0385 & 0.58±0.03 \\
+\hline
+100000 & Duplication & -0.9987±0.0501 & 0.59±0.03 \\
+\hline
+10000 & Removal & -3.8205±0.0892 & 0.69±0.07 \\
+\hline
+30000 & Removal & -4.4238±0.0847 & 0.77±0.10 \\
+\hline
+50000 & Removal & -4.6780±0.1171 & 0.82±0.13 \\
+\hline
+100000 & Removal & -5.0191±0.0969 & 0.79±0.16 \\
+\hline
+\end{longtable}
+
+Table 3: Changes in PMI score function and test accuracy after applying
+three data curation methods to the Corrpted CIFAR dataset. C denotes the
+regularization parameter for L2 regularization in the trained logistic
+regression models, corresponding to a Gaussian prior {\$\{
+\textbackslash cal N \} ( 0 , C \textbackslash cdot \{ \textbackslash bf
+I \} )\$} . The training and the test sets consist of \(1 2 0 - 1 8 0\)
+samples. The experiments were repeated 1,000 times to compute the mean
+changes in PMI scores and test accuracy, and this process was repeated
+10 times to estimate the variances. Details of the experimental setup
+and results for a different data distribution are provided in Appendix
+E.2.2.
+
+to the choice of prior. Thirdly, our experiments focus on the simple
+logistic regression for Bayesian modeling. It remains an open question
+whether mutual information estimation could be improved by more advanced
+Bayesian neural networks.
+
+\section{References}\label{references}
+
+Alon Albalak, Yanai Elazar, Sang Michael Xie, Shayne Longpre, Nathan
+Lambert, Xinyi Wang, Niklas Muennighoff, Bairu Hou, Liangming Pan,
+Haewon Jeong, et al.~A survey on data selection for language models.
+arXiv preprint arXiv:2402.16827, 2024.\\
+Martin Arjovsky, Le´on Bottou, Ishaan Gulrajani, and David Lopez-Paz.
+Invariant risk minimization, 2020. URL
+https://arxiv.org/abs/1907.02893.\\
+Mohamed Ishmael Belghazi, Aristide Baratin, Sai Rajeshwar, Sherjil
+Ozair, Yoshua Bengio, Aaron Courville, and Devon Hjelm. Mutual
+information neural estimation. In International conference on machine
+learning, pages 531--540. PMLR, 2018a.\\
+Mohamed Ishmael Belghazi, Aristide Baratin, Sai Rajeswar, Sherjil Ozair,
+Yoshua Bengio, Aaron Courville, and R Devon Hjelm. Mine: mutual
+information neural estimation. arXiv preprint arXiv:1801.04062, 2018b.\\
+David Blackwell et al.~Comparison of experiments. In Proceedings of the
+second Berkeley symposium on mathematical statistics and probability,
+volume 1, page 26, 1951.\\
+Charles Blundell, Julien Cornebise, Koray Kavukcuoglu, and Daan
+Wierstra. Weight uncertainty in neural network. In International
+conference on machine learning, pages 1613--1622. PMLR, 2015.\\
+Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan,
+Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry,
+Amanda Askell, et al.~Language models are few-shot learners. Advances in
+neural information processing systems, 33:1877--1901, 2020.\\
+Yiling Chen, Yiheng Shen, and Shuran Zheng. Truthful data acquisition
+via peer prediction. Advances in Neural Information Processing Systems,
+33:18194--18204, 2020.\\
+Georges A Darbellay and Igor Vajda. Estimation of the information by an
+adaptive partitioning of the observation space. IEEE Transactions on
+Information Theory, 45(4): 1315--1321, 1999.\\
+Erik Daxberger, Agustinus Kristiadi, Alexander Immer, Runa Eschenhagen,
+Matthias Bauer, and Philipp Hennig. Laplace redux-effortless bayesian
+deep learning. Advances in Neural Information Processing Systems,
+34:20089--20103, 2021.\\
+Alex Fang, Albin Madappally Jose, Amit Jain, Ludwig Schmidt, Alexander
+Toshev, and Vaishaal Shankar. Data filtering networks. arXiv preprint
+arXiv:2309.17425, 2023.\\
+Vitaly Feldman and Chiyuan Zhang. What neural networks memorize and why:
+Discovering the long tail via influence estimation. Advances in Neural
+Information Processing Systems, 33:2881--2891, 2020.\\
+Andrew M Fraser and Harry L Swinney. Independent coordinates for strange
+attractors from mutual information. Physical review A, 33(2):1134,
+1986.\\
+Shuyang Gao, Greg Ver Steeg, and Aram Galstyan. Efficient estimation of
+mutual information for strongly dependent variables. In Artificial
+intelligence and statistics, pages 277--286. PMLR, 2015.\\
+Felipe Garrido-Lucero, Benjamin Heymann, Maxime Vono, Patrick Loiseau,
+and Vianney Perchet. Du-shapley: A shapley value proxy for efficient
+dataset valuation, 2024. URL https://arxiv.org/abs/2306.02071.\\
+Amirata Ghorbani and James Zou. Data shapley: Equitable valuation of
+data for machine learning. In International conference on machine
+learning, pages 2242--2251. PMLR, 2019.\\
+Mark N Gibbs. Bayesian Gaussian processes for regression and
+classification. PhD thesis, Citeseer, 1998.\\
+Gokul Gowri, Xiao-Kang Lun, Allon M Klein, and Peng Yin. Approximating
+mutual information of high-dimensional variables using learned
+representations. arXiv preprint arXiv:2409.02732, 2024.\\
+Suriya Gunasekar, Yi Zhang, Jyoti Aneja, Caio Ce´sar Teodoro Mendes,
+Allie Del Giorno, Sivakanth Gopi, Mojan Javaheripi, Piero Kauffmann,
+Gustavo de Rosa, Olli Saarikivi, et al.~Textbooks are all you need.
+arXiv preprint arXiv:2306.11644, 2023.\\
+Dan Hendrycks and Thomas Dietterich. Benchmarking neural network
+robustness to common corruptions and perturbations, 2019. URL
+https://arxiv.org/abs/1903.12261.\\
+Marius Hobbhahn, Agustinus Kristiadi, and Philipp Hennig. Fast
+predictive uncertainty for classification with bayesian deep networks.
+In Uncertainty in Artificial Intelligence, pages 822--832. PMLR, 2022.\\
+Ruoxi Jia, David Dao, Boxin Wang, Frances Ann Hubis, Nezihe Merve Gurel,
+Bo Li, Ce Zhang, Costas J Spanos, and Dawn Song. Efficient task-specific
+data valuation for nearest neighbor algorithms. arXiv preprint
+arXiv:1908.08619, 2019a.\\
+Ruoxi Jia, David Dao, Boxin Wang, Frances Ann Hubis, Nick Hynes, Nezihe
+Merve Gu¨rel, Bo Li, Ce Zhang, Dawn Song, and Costas J Spanos. Towards
+efficient data valuation based on the shapley value. In The 22nd
+International Conference on Artificial Intelligence and Statistics,
+pages 1167--1176. PMLR, 2019b.\\
+Kevin Fu Jiang, Weixin Liang, James Zou, and Yongchan Kwon. Opendataval:
+a unified benchmark for data valuation. arXiv preprint arXiv:2306.10577,
+2023.\\
+Radu Jurca and Boi Faltings. Incentives for expressing opinions in
+online polls. In Proceedings of the 9th ACM Conference on Electronic
+Commerce, pages 119--128, 2008.\\
+Hoang Anh Just, Feiyang Kang, Jiachen T. Wang, Yi Zeng, Myeongseob Ko,
+Ming Jin, and Ruoxi Jia. Lava: Data valuation without pre-specified
+learning algorithms, 2023. URL https://arxiv.org/abs/2305.00054.\\
+Nikhil Kandpal, Eric Wallace, and Colin Raffel. Deduplicating training
+data mitigates privacy risks in language models. In International
+Conference on Machine Learning, pages 10697--10707. PMLR, 2022.\\
+Pang Wei Koh and Percy Liang. Understanding black-box predictions via
+influence functions. In International conference on machine learning,
+pages 1885--1894. PMLR, 2017.\\
+Yuqing Kong and Grant Schoenebeck. Equilibrium selection in information
+elicitation without verification via information monotonicity. In 9th
+Innovations in Theoretical Computer Science Conference, 2018a.\\
+Yuqing Kong and Grant Schoenebeck. Water from two rocks: Maximizing the
+mutual information. In Proceedings of the 2018 ACM Conference on
+Economics and Computation, EC '18, page 177--194, New York, NY, USA,
+2018b. Association for Computing Machinery. ISBN 9781450358293. doi:
+10.1145/3219166.3219194. URL https://doi.org/10.1145/3219166.3219194.\\
+Alexander Kraskov, Harald Sto¨gbauer, and Peter Grassberger. Estimating
+mutual information. Physical Review \(E\) ---Statistical, Nonlinear, and
+Soft Matter Physics, 69(6):066138, 2004.\\
+Yongchan Kwon and James Zou. Beta shapley: a unified and noise-reduced
+data valuation framework for machine learning. arXiv preprint
+arXiv:2110.14049, 2021.\\
+Yongchan Kwon, Eric Wu, Kevin Wu, and James Zou. Datainf: Efficiently
+estimating data influence in lora-tuned llms and diffusion models. arXiv
+preprint arXiv:2310.00902, 2023.\\
+Jeffrey Li, Alex Fang, Georgios Smyrnis, Maor Ivgi, Matt Jordan, Samir
+Gadre, Hritik Bansal, Etash Guha, Sedrick Keh, Kushal Arora, et
+al.~Datacomp-lm: In search of the next generation of training sets for
+language models. arXiv preprint arXiv:2406.11794, 2024.\\
+Yuanzhi Li, Se´bastien Bubeck, Ronen Eldan, Allie Del Giorno, Suriya
+Gunasekar, and Yin Tat Lee. Textbooks are all you need ii: phi-1.5
+technical report. arXiv preprint arXiv:2309.05463, 2023.\\
+Qian Liu, Xiaosen Zheng, Niklas Muennighoff, Guangtao Zeng, Longxu Dou,
+Tianyu Pang, Jing Jiang, and Min Lin. Regmix: Data mixture as regression
+for language model pretraining, 2025. URL
+https://arxiv.org/abs/2407.01492.\\
+Ruibo Liu, Jerry Wei, Fangyu Liu, Chenglei Si, Yanzhe Zhang, Jinmeng
+Rao, Steven Zheng, Daiyi Peng, Diyi Yang, Denny Zhou, et al.~Best
+practices and lessons learned on synthetic data for language models.
+arXiv preprint arXiv:2404.07503, 2024.\\
+MetaAI. Llama 3: Advancing open foundation models, 2024. URL
+https://ai.meta.com/blog/meta-llama-3/.\\
+N. Miller, P. Resnick, and R. Zeckhauser. Eliciting informative
+feedback: The peerprediction method. Management Science, pages
+1359--1373, 2005.\\
+Baharan Mirzasoleiman, Jeff Bilmes, and Jure Leskovec. Coresets for
+data-efficient training of machine learning models. In International
+Conference on Machine Learning, pages 6950--6960. PMLR, 2020.\\
+Mohammad Mohammadi Amiri, Frederic Berdoz, and Ramesh Raskar.
+Fundamentals of task-agnostic data valuation. Proceedings of the AAAI
+Conference on Artificial Intelligence, 37(8):9226--9234, Jun.~2023. doi:
+10.1609/aaai.v37i8.26106. URL
+https://ojs.aaai.org/index.php/AAAI/article/view/26106.\\
+Niklas Muennighoff, Alexander Rush, Boaz Barak, Teven Le Scao, Nouamane
+Tazi, Aleksandra Piktus, Sampo Pyysalo, Thomas Wolf, and Colin A Raffel.
+Scaling dataconstrained language models. Advances in Neural Information
+Processing Systems, 36, 2024.\\
+Kevin P Murphy. Machine learning: a probabilistic perspective. 2012.\\
+Frank Nielsen. On the jensen--shannon symmetrization of distances
+relying on abstract means. Entropy, 21(5):485, 2019.\\
+Curtis Northcutt, Lu Jiang, and Isaac Chuang. Confident learning:
+Estimating uncertainty in dataset labels. Journal of Artificial
+Intelligence Research, 70:1373--1411, 2021.\\
+Aaron van den Oord, Yazhe Li, and Oriol Vinyals. Representation learning
+with contrastive predictive coding. arXiv preprint arXiv:1807.03748,
+2018.\\
+Sung Min Park, Kristian Georgiev, Andrew Ilyas, Guillaume Leclerc, and
+Aleksander Madry. Trak: Attributing model behavior at scale. arXiv
+preprint arXiv:2303.14186, 2023.\\
+William Peebles and Saining Xie. Scalable diffusion models with
+transformers. In Proceedings of the IEEE/CVF International Conference on
+Computer Vision, pages 4195--4205, 2023.\\
+Phillip Pope, Chen Zhu, Ahmed Abdelkader, Micah Goldblum, and Tom
+Goldstein. The intrinsic dimension of images and its impact on learning.
+arXiv preprint arXiv:2104.08894, 2021.\\
+Ange´line Pouget, Lucas Beyer, Emanuele Bugliarello, Xiao Wang, Andreas
+Peter Steiner, Xiaohua Zhai, and Ibrahim Alabdulmohsin. No filter:
+Cultural and socioeconomic diversityin contrastive vision-language
+models. arXiv preprint arXiv:2405.13777, 2024.\\
+D. Prelec. A Bayesian Truth Serum for subjective data. Science,
+306(5695):462--466, 2004.\\
+Goran Radanovic and Boi Faltings. A robust bayesian truth serum for
+non-binary signals. In Proceedings of the 27th AAAI Conference on
+Artificial Intelligence (AAAI'' 13), number EPFL-CONF-197486, pages
+833--839, 2013.\\
+Goran Radanovic and Boi Faltings. Incentives for truthful information
+elicitation of continuous signals. In Proceedings of the 28th AAAI
+Conference on Artificial Intelligence (AAAI'' 14), number
+EPFL-CONF-215878, pages 770--776, 2014.\\
+Noveen Sachdeva and Julian McAuley. Data distillation: A survey, 2023.
+URL https://arxiv.org/abs/2301.04272.\\
+Grant Schoenebeck and Fang-Yi Yu. Learning and strongly truthful
+multi-task peer prediction: A variational approach, 2020a.\\
+Grant Schoenebeck and Fang-Yi Yu. Two strongly truthful mechanisms for
+three heterogeneous agents answering one question. In International
+Conference on Web and Internet Economics. Springer, 2020b.\\
+Jiaming Song and Stefano Ermon. Understanding the limitations of
+variational mutual information estimators. arXiv preprint
+arXiv:1910.06222, 2019.\\
+Gemma Team, Thomas Mesnard, Cassidy Hardin, Robert Dadashi, Surya
+Bhupatiraju, Shreya Pathak, Laurent Sifre, Morgane Rivie`re, Mihir
+Sanjay Kale, Juliette Love, et al.~Gemma: Open models based on gemini
+research and technology. arXiv preprint arXiv:2403.08295, 2024.\\
+Petter To¨rnberg. Chatgpt-4 outperforms experts and crowd workers in
+annotating political twitter messages with zero-shot learning, 2023. URL
+https://arxiv.org/abs/2304.06588.\\
+Jiachen T Wang, Prateek Mittal, Dawn Song, and Ruoxi Jia. Data shapley
+in one training run. arXiv preprint arXiv:2406.11011, 2024a.\\
+Tianhao Wang and Ruoxi Jia. Data banzhaf: A data valuation framework
+with maximal
+
+robustness to learning stochasticity. arXiv preprint arXiv:2205.15466,
+2022.
+
+Yibin Wang, Haizhou Shi, Ligong Han, Dimitris Metaxas, and Hao Wang.
+Blob: Bayesian low-rank adaptation by backpropagation for large language
+models. arXiv preprint arXiv:2406.11675, 2024b.\\
+Maurice Weber, Daniel Fu, Quentin Anthony, Yonatan Oren, Shane Adams,
+Anton Alexandrov, Xiaozhong Lyu, Huu Nguyen, Xiaozhe Yao, Virginia
+Adams, et al.~Redpajama: an open dataset for training large language
+models. arXiv preprint arXiv:2411.12372, 2024.\\
+Jens Witkowski and David C. Parkes. Peer prediction without a common
+prior. In Boi Faltings, Kevin Leyton-Brown, and Panos Ipeirotis,
+editors, Proceedings of the 13th ACM Conference on Electronic Commerce,
+EC 2012, Valencia, Spain, June 4-8, 2012, pages 964--981. ACM, 2012.
+doi: 10.1145/2229012.2229085. URL
+https://doi.org/10.1145/2229012.2229085.\\
+Sang Michael Xie, Shibani Santurkar, Tengyu Ma, and Percy Liang. Data
+selection for language models via importance resampling, 2023. URL
+https://arxiv.org/abs/2302.03169.\\
+Sang Michael Xie, Hieu Pham, Xuanyi Dong, Nan Du, Hanxiao Liu, Yifeng
+Lu, Percy S Liang, Quoc V Le, Tengyu Ma, and Adams Wei Yu. Doremi:
+Optimizing data mixtures speeds up language model pretraining. Advances
+in Neural Information Processing Systems, 36, 2024.\\
+Xinnuo Xu, Minyoung Kim, Royson Lee, Brais Martinez, and Timothy
+Hospedales. A bayesian approach to data point selection, 2024. URL
+https://arxiv.org/abs/2411.03768.\\
+Xinyi Xu, Zhaoxuan Wu, Chuan Sheng Foo, and Bryan Kian Hsiang Low.
+Validation free and replication robust volume-based data valuation. In
+M. Ranzato, A. Beygelzimer, Y. Dauphin, P.S. Liang, and J. Wortman
+Vaughan, editors, Advances in Neural Information Processing Systems,
+volume 34, pages 10837--10848. Curran Associates, Inc., 2021. URL
+https://proceedings.neurips.cc/paper\_files/paper/2021/file/59a3adea76fadcb\\
+Adam X Yang, Maxime Robeyns, Xi Wang, and Laurence Aitchison. Bayesian
+low-rank
+
+adaptation for large language models. arXiv preprint arXiv:2308.13111,
+2023.
+
+\section{A Blackwell ordering}\label{a-blackwell-ordering}
+
+We begin by providing background on the Blackwell order of information
+structures. We first introduce the formal definitions of decision-making
+problems and information structures.
+
+Definition A.1. A decision-making problem under uncertainty is defined
+by the following components:
+
+• State Space ( \(\Omega\) ): A set of possible states of the world,
+denoted \(\omega \in \Omega\) .\\
+• Action Space ( \(A\) ): A set of possible actions or decisions,
+denoted \(a \in A\) .\\
+• Utility Function ( \(u\) ): A function
+\(u : A \times \Omega  \mathbb { R }\) that quantifies the payoff of
+taking action \(a\) in state \(\omega\) .\\
+• Prior Belief \(( P )\) : A probability distribution over \(\Omega\) ,
+representing the decisionmaker's initial beliefs. And the corresponding
+random variable for the state is denoted by \(W\) .
+
+An information structure reveals some signal about the state of the
+world \(\omega\) .
+
+Definition A.2. An information structure \(S\) consists of a pair
+\(( \mathcal { V } , \pi )\) , where:
+
+• \(y\) is a set of possible signals or observations.\\
+• \(\pi : \Omega \to \Delta ( \mathcal { Y } )\) is a Markov kernel
+specifying the conditional probability
+\(\pi ( \boldsymbol { y } | \omega )\) of observing signal \(y\) given
+state \(\omega\) . The corresponding random variable representing the
+signal is denoted by \(Y\) .
+
+The decision-maker observes a signal \(y\) from the information
+structure and updates their beliefs about the state \(\omega\) using
+Bayes' rule. Based on the updated beliefs, they choose an action \(a\)
+to maximize their expected utility.
+
+The Blackwell order provides a way to compare two information structures
+in terms of their informativeness, which is defined as follows.
+
+Definition A.3 (Blackwell et al.~{[}1951{]}). Let
+\(S _ { 1 } = ( \mathcal { V } _ { 1 } , \pi _ { 1 } )\) and
+\(S _ { 2 } = ( \mathcal { V } _ { 2 } , \pi _ { 2 } )\) be two
+information structures over a common state space \(\Omega\) , with the
+corresponding signals represented by random variables \(Y _ { 1 }\) and
+\(Y _ { 2 }\) . We say that \(S _ { 1 }\) is more informative than
+\(S _ { 2 }\) in the Blackwell order, if there exists a Markov kernel
+\(\kappa : \mathcal { V } _ { 1 } \to \Delta ( \mathcal { V } _ { 2 } )\)
+such that:
+
+\[
+\pi _ { 2 } ( y _ { 2 } | \omega ) = \sum _ { y _ { 1 } \in Y _ { 1 } } \kappa ( y _ { 2 } | y _ { 1 } ) \pi _ { 1 } ( y _ { 1 } | \omega ) \quad \forall y _ { 2 } \in \mathcal { V } _ { 2 } , \omega \in \Omega ,
+\]
+
+or equivalently \(W  Y _ { 1 }  Y _ { 2 }\) forms a Markov chain, where
+\(W\) is the random variable representing the state.
+
+In particular, if an information structure \(S _ { 1 }\) is more
+informative than \(S _ { 2 }\) in the Blackwell order, then, by
+Blackwell's theorem on decision-making superiority, the decision-maker
+can achieve at least as high an expected utility using \(S _ { 1 }\) as
+they can using \(S _ { 2 }\) for any decisionmaking problem.
+
+Theorem A.4 (Blackwell's theorem on decision-making superiority
+Blackwell et al.~{[}1951{]}). Let
+\(S _ { 1 } = ( \mathcal { V } _ { 1 } , \pi _ { 1 } )\) and
+\(S _ { 2 } = ( \mathcal { V } _ { 2 } , \pi _ { 2 } )\) be two
+information structures over a common state space \(\Omega\) with the
+corresponding signals represented by random variables \(Y _ { 1 }\) and
+\(Y _ { 2 }\) . The following statements are equivalent:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Blackwell Informativeness: \(S _ { 1 }\) is more informative than
+  \(S _ { 2 }\) , or equivalently, \$W \$ \(Y _ { 1 }  Y _ { 2 }\) forms
+  a Markov chain.
+\item
+  Decision-Making Superiority: For any decision-making problem
+  \(( \Omega , A , u , P )\) , the maximum expected utility achievable
+  using \(S _ { 1 }\) is at least as high as that achievable using
+  \(S _ { 2 }\) . Formally:
+\end{enumerate}
+
+\[
+\operatorname* { m a x } _ { a _ { 1 } : \mathcal { V } _ { 1 } \to A } \mathbb { E } [ u ( a _ { 1 } ( y _ { 1 } ) , \omega ) ] \ge \operatorname* { m a x } _ { a _ { 2 } : \mathcal { V } _ { 2 } \to A } \mathbb { E } [ u ( a _ { 2 } ( y _ { 2 } ) , \omega ) ] ,
+\]
+
+where the expectations are taken over \(\omega \sim P\) ,
+\(y _ { 1 } \sim \pi _ { 1 } ( \cdot | \omega )\) , and
+\(y _ { 2 } \sim \pi _ { 2 } ( \cdot | \omega )\) .
+
+We can then apply Blackwell's theorem on decision-making superiority to
+the problem of data valuation in machine learning. Consider the true
+underlying model parameter \(\pmb \theta\) as the state of the world and
+the dataset \(D\) as a signal about \(\pmb \theta\) . Suppose we aim to
+use \(D\) to select a hypothesis or trained model \(h\) from a
+hypothesis/model class \(\mathcal { H }\) , which serves as the action
+space. The utility function \(u ( h , \pmb \theta )\) represents the
+negative expected loss when the true model parameter is \(\pmb \theta\)
+and the hypothesis/model \(h\) is chosen:
+
+\[
+u ( h , \pmb \theta ) = - \mathbb { E } _ { \mathbf { x } , y \sim p ( \mathbf { x } , y \mid \pmb \theta ) } [ l ( h ( \mathbf { x } ) , y ) ] \triangleq - L ( h , \pmb \theta ) ,
+\]
+
+where \(l ( \cdot )\) is a loss function.
+
+Now, suppose we have a data curation strategy \(f ( D )\) that reduces
+the informativeness of the dataset \(D\) about \(\pmb \theta\) in the
+Blackwell order, i.e., \(\pmb \theta \to D \to f ( D )\) forms a Markov
+chain. By Blackwell's theorem on decision-making superiority, the
+decision-maker can achieve at least as low an expected loss using the
+original dataset \(D\) as they can using the curated dataset \(f ( D )\)
+.
+
+Theorem A.5. Let \(\pmb \theta\) be the true underlying model parameter,
+\(D _ { 1 }\) be a dataset consisting of data points
+\(( \mathbf { x } , y )\) drawn from
+\(p ( \mathbf { x } , y | \pmb { \theta } )\) , and \(D _ { 2 }\) be a
+less informative dataset such that \(\theta  D _ { 1 }  D _ { 2 }\)
+forms a Markov chain. Consider the decision problem of selecting a
+hypothesis/trained model \(h\) from a hypothesis/model class
+\(\mathcal { H }\) to minimize the expected loss
+{\$\textbackslash mathbb \{ E \} {[} l ( h ( \{ \textbackslash bf x \} )
+, y ) {]}\$} using a dataset. Then, the minimum expected loss achievable
+using \(D _ { 1 }\) is at least as low as that achievable using
+\(D _ { 2 }\) . Formally:
+
+\[
+\operatorname* { m i n } _ { h _ { 1 } : D \to \mathcal { H } } \mathbb { E } [ L ( h _ { 1 } ( D _ { 1 } ) , \pmb { \theta } ) ] \le \operatorname* { m i n } _ { h _ { 2 } : D \to \mathcal { H } } \mathbb { E } [ L ( h _ { 2 } ( D _ { 2 } ) , \pmb { \theta } ) ] ,
+\]
+
+where
+\(L ( h , \pmb \theta ) = \mathbb { E } _ { \mathbf { x } , y \sim p ( \mathbf x , y | \pmb \theta ) } [ l ( h ( \mathbf { x } ) , y ) ]\)
+represents the expected loss when the true parameter is \(\pmb \theta\)
+and the model \(h\) is chosen. The expectation is taken over
+\(\theta \sim p ( \theta )\) , \(D _ { 1 }\) , and \(D _ { 2 }\) .
+
+\section{B Integral PMI score}\label{b-integral-pmi-score}
+
+Kong and Schoenebeck {[}2018b{]} proposes a method to compute the PMI.
+
+Theorem B.1 (Integral PMI score {[}Kong and Schoenebeck, 2018b{]}). The
+pointwise mutual information
+\(\begin{array} { r } { P M I ( d , t ) \ = \ \log \int _ { \pmb { \theta } } p ( \pmb { \theta } | D \ = \ d ) p ( \pmb { \theta } | T \ = \ t ) / p ( \pmb { \theta } ) d \pmb { \theta } } \end{array}\)
+. Therefore the data valuation function
+\(\begin{array} { r } { U ( d , t ) = \log \int _ { \pmb { \theta } } p ( \pmb { \theta } | D = d ) p ( \pmb { \theta } | T = t ) / p ( \pmb { \theta } ) d \pmb { \theta } } \end{array}\)
+is truthful.
+
+Nonetheless, this integral formulation remains computationally
+challenging for many basic Bayesian machine learning scenarios. Chen et
+al.~{[}2020{]} introduced a theoretical framework for evaluating the
+integral score specifically within exponential family distributions;
+however, applying their approach is non-trivial. Computing their
+normalization function \(g ( \cdot )\) may necessitate solving a
+non-trivial integral.
+
+For completeness, we provide a stand-alone proof for Theorem B.1.
+
+Theorem B.2 (Kong and Schoenebeck {[}2018b{]}, Chen et al.~{[}2020{]}).
+Let \(D\) and \(T\) be two datasets that are independent conditional on
+\(\pmb \theta\) , i.e.,
+
+\[
+p ( D , T | \pmb \theta ) = p ( D | \pmb \theta ) p ( T | \pmb \theta ) ,
+\]
+
+then the valuation function
+
+\[
+U ( d , t ) = \log \int _ { \pmb { \theta } } p ( \pmb { \theta } | D = d ) p ( \pmb { \theta } | T = t ) / p ( \pmb { \theta } ) d \pmb { \theta } .
+\]
+
+is truthful.
+
+Proof. This is basically because when \(D\) and \(T\) are conditionally
+independent, we have
+
+\[
+\begin{array} { r l } { \bar { U } ( d ^ { \prime } , t ) = \log \int _ { \theta } \frac { p ( \theta | D - d ^ { \prime } ) p ( \theta | T - \ell ) } { p ( \theta ) } d \theta } & { } \\ & { = \log \int _ { \theta } \frac { p ( d ^ { \prime } | \theta ) p ( \ell | \theta ) p ( \theta ) } { p ( \theta ) p ( \ell | \ell ) } d \theta } \\ & { = \log \frac { \int _ { \theta } p ( d ^ { \prime } , t , \theta ) d \theta } { p ( \theta ) p ( \ell | \theta ) } } \\ & { = \log \frac { p ( d ^ { \prime } , t ) } { p ( d ^ { \prime } , t ) } } \\ & { = \log \frac { p ( d ^ { \prime } , t ) } { p ( d ^ { \prime } , t ) p ( \ell ) } } \\ & { = \log \frac { p ( l | D - d ^ { \prime } ) } { p ( t ) } } \\ & { = \log p ( l | D - a ^ { \prime } ) } \end{array}
+\]
+
+which is just the log scoring rule. If the data provider manipulates the
+dataset and report \(f ( d ) = d ^ { \prime } \neq d\) , then we have
+
+\[
+\begin{array} { l } { \displaystyle \mathbb { E } _ { T } [ U ( d , T ) | D = d ] - \mathbb { E } _ { T } [ U ( d ^ { \prime } , T ) | D = d ] } \\ { \displaystyle = \sum _ { t \in T } p ( t | D = d ) \log p ( t | D = d ) - \sum _ { t \in T } p ( t | D = d ) \log p ( t | D = d ^ { \prime } ) } \\ { \displaystyle = \sum _ { t \in T } p ( t | D = d ) \log \frac { p ( t | D = d ) } { p ( t | D = d ^ { \prime } ) } } \\ { \displaystyle = D _ { K L } \big ( p ( t | D = d ) , p ( t | D = d ^ { \prime } ) \big ) } \\ { \displaystyle \geq 0 . } \end{array}
+\]
+
+Chen et al.~{[}2020{]} proposed a theoretical framework for computing
+this integral score for exponential family distributions.
+
+Definition B.3 (Exponential family Murphy {[}2012{]}). A likehihood
+function \(p ( \mathbf { x } | \mathbf { \theta } )\) , for
+\(\mathbf { x } = ( x _ { 1 } , \ldots , x _ { n } ) \in { \mathcal { X } } ^ { n }\)
+and \(\pmb { \theta } \in \Theta \subseteq \mathbb { R } ^ { m }\) is
+said to be in the exponential family in canonical form if it is of the
+form
+
+\[
+p ( \mathbf { x } | \pmb { \theta } ) = \frac { 1 } { Z ( \pmb { \theta } ) } h ( \mathbf { x } ) \exp \big [ \pmb { \theta } ^ { T } \pmb { \phi } ( \mathbf { x } ) \big ] \qquad \mathrm { o r } \qquad p ( \mathbf { x } | \pmb { \theta } ) = h ( \mathbf { x } ) \exp \big [ \pmb { \theta } ^ { T } \pmb { \phi } ( \mathbf { x } ) - A ( \pmb { \theta } ) \big ]
+\]
+
+Here \(\phi ( \boldsymbol { x } ) \in \mathbb { R } ^ { m }\) is called
+a vector of sufficient statistics,
+\(\begin{array} { r } { Z ( \pmb \theta ) = \int _ { \mathcal { X } ^ { n } } h ( \mathbf x ) \exp \left[ \pmb \theta ^ { T } \pmb \phi ( \mathbf x ) \right] } \end{array}\)
+is called the partition function,
+\(A ( \pmb \theta ) = \ln Z ( \pmb \theta )\) is called the log
+partition function.
+
+If the posterior distributions \(p ( \pmb \theta | \mathbf x )\) are in
+the same probability distribution family as the prior probability
+distribution \(p ( \pmb \theta )\) , the prior and posterior are then
+called conjugate distributions, and the prior is called a conjugate
+prior.
+
+Definition B.4 (Conjugate prior for the exponential family Murphy
+{[}2012{]}). For a likelihood function in the exponential family
+\(p ( \mathbf x | \pmb \theta ) = h ( \mathbf x ) \exp \left[ \pmb \theta ^ { I } \pmb \phi ( \mathbf x ) - A ( \pmb \theta ) \right]\)
+. The conjugate prior for \(\pmb \theta\) with parameters
+\(\nu _ { 0 } , \overline { { \tau } } _ { 0 }\) is of the form
+
+\[
+\begin{array} { r } { p ( \pmb { \theta } ) = \mathcal { P } ( \pmb { \theta } | \nu _ { 0 } , \overline { { \tau } } _ { 0 } ) = g ( \nu _ { 0 } , \overline { { \tau } } _ { 0 } ) \exp \left[ \nu _ { 0 } \pmb { \theta } ^ { T } \overline { { \tau } } _ { 0 } - \nu _ { 0 } \pmb { A } ( \pmb { \theta } ) \right] . } \end{array}
+\]
+
+Let
+\(\begin{array} { r } { \overline { { s } } = \frac { 1 } { n } \sum _ { i = 1 } ^ { n } \phi ( x _ { i } ) } \end{array}\)
+. Then the posterior of \(\pmb \theta\) can be represented in the same
+form as the prior
+
+\[
+p ( \pmb \theta | \mathbf x ) \propto \mathrm { e x p } \left[ \pmb \theta ^ { T } ( \nu _ { 0 } \overline { { \tau } } _ { 0 } + n \overline { { \pmb s } } ) - ( \nu _ { 0 } + n ) \pmb A ( \pmb \theta ) \right] = \mathcal { P } \big ( \pmb \theta | \nu _ { 0 } + n , \frac { \nu _ { 0 } \overline { { \tau } } _ { 0 } + n \overline { { \pmb s } } } { \nu _ { 0 } + n } \big ) ,
+\]
+
+where P θ\textbar ν0 + n, ν0ντ 0+n s is the conjugate prior with
+parameters ν0 + n and ν0ντ 0+n .
+
+Then if the prior and the posteriors are in an exponential family, the
+integral PMI score can be expressed as follows using the normalization
+function \(g ( \cdot )\) .
+
+Lemma B.5. If the model distributions are in an exponential family, so
+that the prior and all the posterior of \(\pmb \theta\) can be written
+in the form
+
+\[
+\begin{array} { r } { p ( \pmb { \theta } ) = \mathcal { P } ( \pmb { \theta } | \nu _ { 0 } , \overline { { \tau } } _ { 0 } ) = g ( \nu _ { 0 } , \overline { { \tau } } _ { 0 } ) \exp \left[ \nu _ { 0 } \pmb { \theta } ^ { T } \overline { { \tau } } _ { 0 } - \nu _ { 0 } \pmb { A } ( \pmb { \theta } ) \right] , } \end{array}
+\]
+
+\(p ( \pmb \theta | D ) = \mathcal { P } ( \pmb \theta | \nu _ { D } , \overline { { \pmb \tau } } _ { D } )\)
+and
+\(p ( \pmb \theta | T ) = \mathcal { P } ( \pmb \theta | \nu _ { T } , \overline { { \pmb \tau } } _ { T } )\)
+, then the pointwise mutual information can be expressed as
+
+\[
+P M I ( D , T ) = \frac { g ( \nu _ { D } , \overline { { \tau } } _ { D } ) g ( \nu _ { T } , \overline { { \tau } } _ { T } ) } { g ( \nu _ { 0 } , \overline { { \tau } } _ { 0 } ) g ( \nu _ { D } + \nu _ { T } - \nu _ { 0 } , \frac { \nu _ { D } \overline { { \tau } } _ { D } + \nu _ { T } \overline { { \tau } } _ { T } - \nu _ { 0 } \overline { { \tau } } _ { 0 } } { \nu _ { D } + \nu _ { T } - \nu _ { 0 } } ) } .
+\]
+
+However, finding the function \(g ( \cdot )\) is not straightforward and
+may involve solving a complex integral.
+
+\section{C Missing proofs in Section
+3}\label{c-missing-proofs-in-section-3}
+
+\section{C.1 Proof of Proposition
+3.2}\label{c.1-proof-of-proposition-3.2}
+
+Let \(D\) and \(T\) be two datasets induced by the data generating
+process described in Section 2, and let \(f ( D )\) be any strategic
+data curation method so that \(\pmb \theta  D  f ( D )\) forms a Markov
+chain. We want to show that the Shannon mutual information
+\(I ( f ( D ) , T )\) , if computable, is a desirable scoring function,
+in other words, \(I ( f ( D ) , T ) \leq I ( D , T )\) . Due to Lemma
+3.1, it suffices to prove that \(T \to D \to f ( D )\) forms a Markov
+chain.
+
+Since \(\pmb \theta  D  f ( D )\) forms a Markov chain, which means that
+\(\pmb \theta\) and \(f ( D )\) are independent conditioned on \(D\) ,
+and \(D\) and \(T\) are independent conditioned on \(\pmb \theta\) by
+the data generating process, it follows that \(T\) and \(f ( D )\) are
+independent conditioned on \(D\) ,
+
+\[
+\begin{array} { r l } & { ~ p ( T , f ( D ) | D ) } \\ & { = \int _ { \theta } p ( T , f ( D ) , \theta | D ) d \theta } \\ & { = \int _ { \theta } p ( T , f ( D ) | \theta , D ) p ( \theta | D ) d \theta } \\ & { = \int _ { \theta } p ( T | f ( D ) , \theta , D ) p ( f ( D ) | \theta , D ) p ( \theta | D ) d \theta } \\ & { = \int _ { \theta } p ( T | f ( D ) , \theta , D ) p ( f ( D ) | \theta , D ) p ( \theta | D ) d \theta } \\ & { = \int _ { \theta } p ( T | \theta ) p ( f ( D ) | D ) p ( \theta | D ) d \theta } \\ & { ~ - p ( f ( D ) | D ) \int _ { \theta } p ( T | \theta ) p ( \theta | D ) d \theta } \\ & { = p ( f ( D ) | D ) p ( T | D ) . } \end{array}
+\]
+
+Therefore \(T \to D \to f ( D )\) forms a Markov chain as well, and by
+Lemma 3.1, the Shannon mutual information of the curated dataset and the
+test dataset \(I ( f ( D ) , T )\) will be a desirable scoring function
+if computable.
+
+\section{C.2 Proof of Theorem 3.4}\label{c.2-proof-of-theorem-3.4}
+
+To prove the theorem, we first prove the following lemma.
+
+Lemma C.1. Let \(D\) and \(T\) be two random variables that are
+independent conditional on random variable \(\pmb \theta\) , that is,
+\(p ( D , T | \pmb \theta ) = p ( D | \pmb \theta ) p ( T | \pmb \theta )\)
+. Then we have for any \(\eta \in \Theta\) ,
+\(d \in { \mathcal { D } }\) , and \(t \in \tau\) ,
+
+\[
+\frac { p ( T = t | D = d ) } { p ( T = t ) } = \frac { p ( \theta = \eta | D = d ) \cdot p ( \theta = \eta | T = t ) } { p ( \theta = \eta ) \cdot p ( \theta = \eta | D = d , T = t ) } .
+\]
+
+The proof of Lemma C.1 mainly relies on Bayes' rule and the conditional
+independence condition.
+
+Proof. Since \(D , T\) are independent conditional on \(\pmb \theta\) ,
+for any \(\eta \in \Theta\) we have
+
+\[
+\begin{array} { r l } & { p ( \pmb \theta = \eta | D = d , T = t ) } \\ & { \quad = \frac { p \left( D = d , T = t | \pmb \theta = \eta \right) \cdot p \left( \pmb \theta = \eta \right) } { p \left( D = d , T = t \right) } } \\ & { \quad = \frac { p \left( D = d | \pmb \theta = \eta \right) \cdot p \left( T = t | \pmb \theta = \eta \right) \cdot p \left( \pmb \theta = \eta \right) } { p \left( D = d , T = t \right) } } \\ & { \quad = \frac { p \left( \pmb \theta = \eta | D = d \right) \cdot p \left( \pmb \theta = \eta | T = t \right) \cdot p \left( D = d \right) \cdot p \left( T = t \right) } { p \left( \pmb \theta = \eta \right) \cdot p \left( D = d , T = t \right) } . } \end{array}
+\]
+
+Then we have
+
+\[
+\begin{array} { r l r } & { } & { \frac { p ( \pmb \theta = \eta | D = d ) \cdot p ( \pmb \theta = \eta | T = t ) } { p ( \pmb \theta = \eta ) \cdot p ( \pmb \theta = \eta | D = d , T = t ) } = \frac { p ( D = d , T = t ) } { p ( D = d ) \cdot p ( T = t ) } } \\ & { } & { = \frac { p ( T = t | D = d ) } { p ( T = t ) } . \quad } \end{array}
+\]
+
+With this equation, we can apply the logarithmic scoring rule to get a
+truthful valuation function, which gives the valuation function in
+Theorem 3.4. The proof is as follows.
+
+Proof. According to Lemma C.1,
+\(U ( d , t ) ~ = ~ \log p ( T ~ = ~ t | D ~ = ~ d ) / P ( T ~ = ~ t )\)
+. Then the expected score is maximized by reporting \(d\) because
+
+\[
+\begin{array} { r l } & { \mathbb { E } _ { T } [ U _ { \eta } ( d , T ) | D = d ] - \mathbb { E } _ { T } [ U _ { \eta } ( d ^ { \prime } , T ) | D = d ] } \\ & { = \displaystyle \int _ { t } p ( t | D = d ) \log p ( t | D = d ) d t - \displaystyle \int _ { t } p ( t | D = d ) \log p ( t | D = d ^ { \prime } ) d t } \\ & { = \displaystyle \int _ { t } p ( t | D = d ) \log \frac { p ( t | D = d ) } { p ( t | D = d ^ { \prime } ) } d t } \\ & { = D _ { K L } \big ( p ( t | D = d ) , p ( t | D = d ^ { \prime } ) \big ) } \\ & { \ge 0 . } \end{array}
+\]
+
+information And when truthful reporting, the expected score
+\(\begin{array} { r } { I ( D , T ) = \mathbb { E } _ { D , T } \left[ \log \frac { p ( D , T ) } { p ( D ) p ( T ) } \right] } \end{array}\)
+. \(\mathbb { E } [ U _ { \eta } ( D , T ) ]\) is just the Shannon
+mutual □
+
+\section{C.3 Proof of Corollary 3.5}\label{c.3-proof-of-corollary-3.5}
+
+When the posteriors are in an exponential family and the datasets have
+bounded sufficient statistics, the PMI will be bounded such that
+\(U _ { \eta } ( \widehat { D } _ { i } , T _ { i } ) \leq M\) . Then
+the concentration bound can be easily derived using the Chernoff boubnd.
+The expected square error is just the variance of the estimator since
+the estimator is unbiased, which decrease as \(O ( 1 / k )\) .
+
+\section{C.4 Logistic regression with Gaussian
+approximation}\label{c.4-logistic-regression-with-gaussian-approximation}
+
+Consider logistic regression with likelihood function
+\(p ( y | \mathbf x , \pmb \theta ) = \mathrm { B e r } ( y | \mathrm { S i g m } ( \pmb \theta ^ { T } \mathbf x ) )\)
+, and consider Bayesian logistic regression with Gaussian approximation
+(see Murphy {[}2012{]} Chapter 8) where a Gaussian prior
+\(p ( \pmb \theta ) = \mathcal { N } ( 0 , \Sigma _ { 0 } )\) is
+assumed. Then given a dataset \(( \mathbf { X } , \mathbf { y } )\) ,
+(where matrix \(\mathbf { X }\) is the input data with each column being
+a data feature and vector \(\mathbf { y }\) is the observed labels,) the
+approximate posterior is given by
+\(p ( \pmb \theta | \mathbf { X } , \mathbf { y } ) \approx \mathcal { N } ( \mu , \Sigma )\)
+with
+
+\[
+\mu = \arg \operatorname* { m i n } _ { \mathbf { w } } E ( \mathbf { w } ) , \quad \Sigma ^ { - 1 } = \nabla ^ { 2 } E ( \mathbf { w } ) | \mu ,
+\]
+
+where
+\(E ( \mathbf { w } ) = - ( \log p ( \mathbf { y } | \mathbf { X } , \mathbf { w } ) + \log p ( \mathbf { w } ) )\)
+. Then \(\mu\) can be solved by gradient descent and the Hessian matrix
+\(\Sigma ^ { - 1 }\) can be computed in closed form. In particular, if
+we pick \(\Sigma _ { 0 } = \mathbf { I }\) , then we have
+\(\begin{array} { r } { \Sigma ^ { - 1 } = \mathbf { X } ^ { T } \mathbf { S } \mathbf { X } + \mathbf { I } } \end{array}\)
+, where
+\(\mathbf { S } = \mathrm { d i a g } \big ( \mathrm { S i g m } ( { \boldsymbol { \mu } } ^ { T } \mathbf { x } _ { i } ) ( 1 - \mathrm { S i g m } ( { \boldsymbol { \mu } } ^ { T } \mathbf { x } _ { i } ) ) \big )\)
+. Therefore as long as the data collector knows the prior
+\(\mathcal { N } ( 0 , \Sigma _ { 0 } )\) , she will be able to compute
+the posterior given any dataset, and thus our PMI score can be computed
+by Corollary C.2. Again, we do not need to assume the distribution of
+the feature \(p ( \mathbf { x } | \mathbf { \boldsymbol { \theta } } )\)
+and our PMI score can be used when the test data and the evaluated data
+have different feature distributions.
+
+Gaussian models. We provide the closed-form solution for the widely-used
+Gaussian models below. Consider a Gaussian model with a normal prior
+\(p ( \pmb \theta ) = \mathcal { N } ( \mu _ { 0 } , \Sigma _ { 0 } )\)
+and normally distributed posteriors
+\(p ( \pmb \theta | D = d ) = \mathcal { N } ( \mu _ { a } , \Sigma _ { a } )\)
+,
+\(p ( \pmb { \theta } | T = t ) = \mathcal { N } ( \mu _ { b } , \Sigma _ { b } )\)
+, \(p ( \pmb \theta | D =\)
+\(d , T = t ) = \mathcal { N } ( \mu _ { a b } , \Sigma _ { a b } )\) .
+We demonstrate that to compute our PMI score, it is sufficient to
+evaluate just two posteriors:
+\(p ( \pmb \theta | D = d ) = \mathcal { N } ( \mu _ { a } , \Sigma _ { a } )\)
+and
+\(p ( \pmb { \theta } | T = t ) = \mathcal { N } ( \mu _ { b } , \Sigma _ { b } )\)
+. The parameters of the joint posterior
+\(\mu _ { a b } , \Sigma _ { a b }\) can be derived from
+\(\mu _ { a } , \Sigma _ { a } , \mu _ { b } , \Sigma _ { b }\) .
+Consequently, even if data providers are unable to share the entire
+dataset due to privacy concerns, the PMI score can still be computed as
+long as the data provider submits \(\mu _ { a }\) and \(\Sigma _ { a }\)
+.
+
+Corollary C.2. Suppose we have
+\(p ( \pmb \theta | D = d ) = \mathcal N ( \mu _ { a } , \Sigma _ { a } )\)
+,
+\(p ( \pmb { \theta } | T = t ) = \mathcal { N } ( \mu _ { b } , \Sigma _ { b } )\)
+, and the prior
+\(p ( \pmb \theta ) = \mathcal { N } ( \mu _ { 0 } , \Sigma _ { 0 } )\)
+, then our PMI score equals
+
+{\$\$ \{ \textbackslash boldsymbol \textbackslash gamma \} \_ \{
+\textbackslash eta \} ( d , t ) = \textbackslash frac \{ 1 \} \{ 2 \} (
+\textbackslash log \textbackslash operatorname* \{ d e t \} ( \{
+\textbackslash boldsymbol \textbackslash Sigma \} \_ \{ a \} )
+\textbackslash operatorname* \{ d e t \} ( \textbackslash widetilde \{
+\textbackslash boldsymbol \textbackslash Sigma \} ) ) +
+\textbackslash mu \_ \{ 0 \} \^{} \{ T \} \textbackslash boldsymbol
+\textbackslash Sigma \_ \{ 0 \} \^{} \{ - 1 \} \textbackslash mu \_ \{ 0
+\} + \textbackslash widetilde \textbackslash mu \^{} \{ T \}
+\textbackslash widetilde \textbackslash boldsymbol \textbackslash Sigma
+\^{} \{ - 1 \} \textbackslash widetilde \textbackslash mu -
+\textbackslash mu \_ \{ a \} \^{} \{ T \} \textbackslash boldsymbol
+\textbackslash Sigma \_ \{ a \} \^{} \{ - 1 \} \textbackslash mu \_ \{ a
+\} - \textbackslash mu \_ \{ b \} \^{} \{ T \} \textbackslash boldsymbol
+\textbackslash Sigma \_ \{ b \} \^{} \{ - 1 \} \textbackslash mu \_ \{ b
+\} ) , \$\$}
+
+where
+\(\widetilde \Sigma = ( \Sigma _ { a } ^ { - 1 } + \Sigma _ { b } ^ { - 1 } - \Sigma _ { 0 } ^ { - 1 } ) ^ { - 1 }\)
+and
+\(\widetilde { \mu } = \widetilde { \Sigma } \left( { \Sigma } _ { a } ^ { - 1 } \mu _ { a } + { \Sigma } _ { b } ^ { - 1 } \mu _ { b } - { \Sigma } _ { 0 } ^ { - 1 } \mu _ { 0 } \right)\)
+. In addition, we have
+\(p ( \pmb \theta | D = d , T = t ) = \mathcal N ( \widetilde \mu , \widetilde \Sigma )\)
+.
+
+Proof. We consider Gaussianemodels with posteriors
+\(p ( \pmb \theta | D = d ) = \mathcal N ( \mu _ { a } , \Sigma _ { a } )\)
+, \(p ( \pmb \theta | T =\)
+\(t ) = \mathcal { N } ( \mu _ { b } , \Sigma _ { b } )\) ,
+\(p ( \pmb \theta | D = d , T = t ) = \mathcal N ( \mu _ { a b } , \Sigma _ { a b } )\)
+, and the prior
+\(p ( \pmb \theta ) = \mathcal { N } ( \mu _ { 0 } , \Sigma _ { 0 } )\)
+. Then the PMI score with \(\eta = 0\) is equal to
+
+\[
+U _ { 0 } ( d , t ) = { \frac { 1 } { 2 } } \left( \log { \frac { \operatorname* { d e t } ( \Sigma _ { 0 } ) \operatorname* { d e t } ( \Sigma _ { a b } ) } { \operatorname* { d e t } ( \Sigma _ { a } ) \operatorname* { d e t } ( \Sigma _ { b } ) } } + \mu _ { 0 } ^ { T } \Sigma _ { 0 } ^ { - 1 } \mu _ { 0 } + \mu _ { a b } ^ { T } \Sigma _ { a b } ^ { - 1 } \mu _ { a b } - \mu _ { a } ^ { T } \Sigma _ { a } ^ { - 1 } \mu _ { a } - \mu _ { b } ^ { T } \Sigma _ { b } ^ { - 1 } \mu _ { b } \right) \mu _ { a } \left( \mu _ { a } ^ { * } , \mu _ { b } ^ { * } \right) .
+\]
+
+Then it suffices to prove that
+\(\Sigma _ { a b } = ( \Sigma _ { a } ^ { - 1 } { + } \Sigma _ { b } ^ { - 1 } { - } \Sigma _ { 0 } ^ { - 1 } ) ^ { - 1 }\)
+and
+\(\mu _ { a b } = \Sigma _ { a b } \left( \Sigma _ { a } ^ { - 1 } \mu _ { a } + \Sigma _ { b } ^ { - 1 } \mu _ { b } - \Sigma _ { 0 } ^ { - 1 } \mu _ { 0 } \right)\)
+Due to conditional independence and according to the proof of Lemma C.1,
+we have
+
+\[
+\begin{array} { r l } & { p ( \pmb \theta | d , t ) \propto \frac { p ( \pmb \theta | d ) p ( \pmb \theta | t ) } { p ( \pmb \theta ) } } \\ & { \qquad = \frac { \mathcal { N } ( \pmb \theta ; \mu _ { a } , \Sigma _ { a } ) \mathcal { N } ( \pmb \theta ; \mu _ { b } , \Sigma _ { b } ) } { \mathcal { N } ( \pmb \theta ; \mu _ { 0 } , \Sigma _ { 0 } ) } } \\ & { \qquad \propto \exp \Big ( - \frac { 1 } { 2 } g ( \pmb \theta ) \Big ) } \end{array}
+\]
+
+where
+
+\[
+g ( \pmb \theta ) : = ( \pmb \theta - \mu _ { a } ) ^ { T } \Sigma _ { a } ^ { - 1 } ( \pmb \theta - \mu _ { a } ) + ( \pmb \theta - \mu _ { b } ) ^ { T } \Sigma _ { b } ^ { - 1 } ( \pmb \theta - \mu _ { b } ) - ( \pmb \theta - \mu _ { 0 } ) ^ { T } \Sigma _ { 0 } ^ { - 1 } ( \pmb \theta - \mu _ { 0 } )
+\]
+
+Here, \(g ( \pmb \theta )\) can be further simplified as
+\(g ( \pmb \theta ) = ( \pmb \theta - \widetilde \mu ) ^ { T } \widetilde \Sigma ^ { - 1 } ( \pmb \theta - \widetilde \mu ) + Z _ { 2 }\)
+where
+
+\[
+\begin{array} { r l } & { \widetilde { \Sigma } = \bigl ( \Sigma _ { a } ^ { - 1 } + \Sigma _ { b } ^ { - 1 } - \Sigma _ { 0 } ^ { - 1 } \bigr ) ^ { - 1 } } \\ & { \widetilde { \mu } = \widetilde { \Sigma } \left( \Sigma _ { a } ^ { - 1 } \mu _ { a } + \Sigma _ { b } ^ { - 1 } \mu _ { b } - \Sigma _ { 0 } ^ { - 1 } \mu _ { 0 } \right) } \\ & { Z _ { 2 } = \mu _ { a } ^ { T } \Sigma _ { a } ^ { - 1 } \mu _ { a } + \mu _ { b } ^ { T } \Sigma _ { b } ^ { - 1 } \mu _ { b } - \mu _ { 0 } ^ { T } \Sigma _ { 0 } ^ { - 1 } \mu _ { 0 } - \widetilde { \mu } ^ { T } \widetilde { \Sigma } ^ { - 1 } \widetilde { \mu } . } \end{array}
+\]
+
+Then \(p ( \pmb \theta | d , t )\) must be the Gaussian distribution
+with mean \(\widetilde { \mu }\) and covariance matrix
+\(\widetilde { \Sigma }\) .
+
+\section{D Interpretation of PMI}\label{d-interpretation-of-pmi}
+
+Our expression in Theorem 3.4 uncovers the relationship between the PMI
+of two datasets and the predictions they induce about \(\pmb \theta\) .
+Using this expression, we demonstrate that the PMI of two datasets can
+be decomposed into the sum of two terms: (1) a term that measures the
+similarity between the outcomes obtained from two datasets, i.e.,
+\(p ( \pmb { \theta } | D )\) and \(p ( \pmb \theta | T )\) ; (2) a term
+that measures how much \(D , T\) boost the confidence of our estimation
+of \(\pmb \theta\) .
+
+We first present the interpretation for Gaussian models and then extend
+it to general distributions. When the prior \(p ( \pmb \theta )\) is
+uninformative compared to \(p ( \pmb \theta | d )\) and
+\(p ( \pmb \theta | t )\) , the PMI dataset score for Gaussian models
+can be represented as the sum of two terms: (1) a term quantifying the
+similarity between \(p ( \pmb { \theta } | D )\) and
+\(p ( \pmb \theta | T )\) , characterized by the dual skew \(G\)
+-Jensen-Shannon divergence {[}Nielsen, 2019{]} between
+\(p ( \pmb { \theta } | D )\) and \(p ( \pmb \theta | T )\) ; (2) a term
+assessing how much \(D , T\) boost the confidence of our estimation of
+\(\pmb \theta\) , which is equal to how much \(d\) and \(t\) reduce the
+(logarithm of the generalized) variance of our belief about
+\(\pmb \theta\) .
+
+Given two distributions \(p\) and \(q\) , the dual skew G-Jensen-Shannon
+divergence between \(p\) and \(q\) is their total KL divergence to their
+geometric mean.
+
+Definition D.1 (Dual skew G-Jensen-Shannon divergence {[}Nielsen,
+2019{]}). The dual skew G-Jensen-Shannon divergence of two distributions
+\(p , q\) for parameter \(\alpha \in [ 0 , 1 ]\) is defined as
+\(J S _ { * } ^ { G _ { \alpha } } ( p \| q ) = ( 1 - \alpha ) D _ { K L } ( G _ { \alpha } ( p , q ) \| p ) + \alpha \cdot D _ { K L } ( G _ { \alpha } ( p , q ) \| q )\)
+, where \(G _ { \alpha } ( p , q )\) is the weighted geometric mean of
+\(p\) and \(q\) with
+\(G _ { \alpha } ( p , q ) ( x ) \propto p ( x ) ^ { 1 - \alpha } q ( x ) ^ { \alpha }\)
+.
+
+Then the PMI dataset score can be expressed as follows.
+
+Theorem D.2. When the prior \(p ( \pmb \theta )\) is uninformative, our
+PMI dataset score for Gaussian models has
+
+\[
+U ( d , t ) = \frac { 1 } { 2 } \log \frac { | \Sigma _ { 0 } | } { | \widetilde { \Sigma } | } - 2 \cdot J S _ { * } ^ { G _ { \alpha } } ( \mathcal { N } ( \mu _ { a } , \Sigma _ { a } ) | | \mathcal { N } ( \mu _ { b } , \Sigma _ { b } ) ) - k \log 2
+\]
+
+with \(\alpha = 1 / 2\) , where
+\(\mathcal { N } ( \mu _ { a } , \Sigma _ { a } ) = p ( \pmb { \theta } | d )\)
+,
+\(\mathcal { N } ( \mu _ { b } , \Sigma _ { b } ) = p ( \pmb { \theta } | t )\)
+, and
+\(\mathcal { N } ( \widetilde { \mu } , \widetilde { \Sigma } ) = p ( \pmb { \theta } | d , t )\)
+.
+
+The negative dual skew G-Jensen-Shannon divergence indicates the
+similarity between \(p ( \pmb { \theta } | D )\) and
+\(p ( \pmb \theta | T )\) . Besides the constant term \(- k \log 2\) ,
+the term
+\(\begin{array} { r } { \frac { 1 } { 2 } \log | \Sigma _ { 0 } | / | \widetilde \Sigma | = \frac { 1 } { 2 } ( \log | \Sigma _ { 0 } | - } \end{array}\)
+\(\log | \widetilde { \Sigma } | )\) corresponds to the difference in
+(the logarithm of) the generalized veariances of \(p ( \pmb \theta )\)
+and \(p ( \pmb \theta | d , t )\) , as the determinant of the covariance
+matrix is the generalized variance of a Gaussian distribution. In other
+words, it could be interpreted as how much \(d\) and \(t\) reduce the
+uncertainty or increase the confidence of our estimation. Therefore
+\(\frac { 1 } { 2 } \log | \Sigma _ { 0 } | / | \widetilde { \Sigma } |\)
+can be interpreted as how much datasets \(d\) and \(t\) reduce
+uncertainty and increase confidence in our estimation.
+
+For general distributions, if we similarly define
+\(D _ { \mathrm { K L } } ( p ( \pmb \theta | d , t ) \lVert p ( \pmb \theta | d ) ) + D _ { \mathrm { K L } } ( p ( \pmb \theta | d , t ) \lVert p ( \pmb \theta | t ) )\)
+as the divergence and
+\(D _ { \mathrm { K L } } ( p ( \pmb { \theta } | d , t ) | | p ( \pmb { \theta } ) )\)
+as the confidence increase, the approximation holds at equality. See
+Appendix D.3 for the proof and the details. In addition, this KL
+divergence representation can be interpreted as the ``mutual
+information'' of \(d\) and \(t\) regarding \(\pmb \theta\) . Due to
+space constraints, we discuss this interpretation in Appendix D.1.
+
+\section{D.1 Interpretation by pointwise mutual parameter
+information}\label{d.1-interpretation-by-pointwise-mutual-parameter-information}
+
+Firstly, our score can be represented as \(d\) and \(t\) 's mutual
+information regarding \(\pmb \theta\) , where the amount of information
+regarding \(\pmb \theta\) in a dataset is measured by how much the
+dataset decreases the KL divergence defined below.
+
+Definition D.3 (Pointwise parameter information of datasets). Given two
+datasets \(d , t\) , and a prior \(p ( \pmb \theta )\) , define the
+pointwise parameter information of a dataset \(s\) as
+
+\[
+\begin{array} { r } { P I _ { d , t } ( s ) = D _ { \mathrm { K L } } ( p ( \pmb { \theta } | d , t ) | | p ( \pmb { \theta } ) ) - D _ { \mathrm { K L } } ( p ( \pmb { \theta } | d , t ) | | p ( \pmb { \theta } | s ) ) , } \end{array}
+\]
+
+which represents how much observing \(s\) reduces the KL divergence to
+\(p ( \pmb \theta | d , t )\) from our belief about \(\pmb \theta\) .
+Similarly, we define the conditional pointwise parameter information of
+a dataset \(s\) given another dataset \(r\) as
+
+\[
+\begin{array} { r } { P I _ { d , t } ( s | r ) = D _ { \mathrm { K L } } ( p ( \pmb \theta | d , t ) | | p ( \pmb \theta | r ) ) - D _ { \mathrm { K L } } ( p ( \pmb \theta | d , t ) | | p ( \pmb \theta | s , r ) ) , } \end{array}
+\]
+
+which represents how much observing \(s\) reduces the KL divergence to
+\(p ( \pmb \theta | d , t )\) if we have already observed \(r\) .
+
+Then our score can be represented as ``mutual information'' similar to
+the Shannon mutual information
+\(I ( X , Y ) = H ( X ) + H ( Y ) - H ( X , Y ) = H ( X ) - H ( X \vert Y ) = H ( Y ) - V\)
+\(H ( Y | X )\) with the entropy \(H ( \cdot )\) replaced by our
+pointwise parameter information.
+
+Theorem D.4. Our PMI score equals
+
+\[
+U _ { \eta } ( d , t ) = P I _ { d , t } ( d ) + P I _ { d , t } ( t ) - P I _ { d , t } ( d \cup t ) \stackrel { \Delta } { = } P M I _ { d , t } ( d , t ) ,
+\]
+
+which we define as the pointwise mutual parameter information of \(d\)
+and \(t\) . In addition, we have
+
+\[
+\begin{array} { r } { P M I _ { d , t } ( d , t ) = P I _ { d , t } ( d ) - P I _ { d , t } ( d | t ) = P I _ { d , t } ( t ) - P I _ { d , t } ( t | d ) . } \end{array}
+\]
+
+See the proof in Appendix D.2. Theorem D.4 also suggests that our PMI
+score can be computed by computing/estimating KL divergence between the
+posteriors.
+
+\section{D.2 Proof of Theorem D.4}\label{d.2-proof-of-theorem-d.4}
+
+We prove the theorem by proving the following lemma.
+
+Lemma D.5. When \(D\) and \(T\) are independent conditional on
+\(\pmb \theta\) , we have
+
+\[
+U _ { \eta } ( d , t ) = D _ { K L } ( p ( \theta | d , t ) | | p ( \theta ) ) - D _ { K L } ( p ( \theta | d , t ) | | p ( \theta | d ) ) - D _ { K L } ( p ( \theta | d , t ) | | p ( \theta | t ) ) .
+\]
+
+Proof. The right side of the equation equals
+
+\[
+\begin{array} { r l } & { \begin{array} { r l } & { D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta ) ) - D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta | d ) ) - D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta | t ) ) } \\ & { = \int p ( \theta | d , t ) \log \frac { p ( \theta | d , t ) } { p ( \theta ) } d \theta - \displaystyle \int p ( \theta | d , t ) \log \frac { p ( \theta | d , t ) } { p ( \theta | d ) } d \theta - \displaystyle \int p ( \theta | d , t ) \log \frac { p ( \theta | d , t ) } { p ( \theta | t ) } d \theta } \end{array} } \\ & { \begin{array} { r l } & { = \int p ( \theta | d , t ) \log \frac { p ( \theta | d ) p ( \theta | t ) } { p ( \theta | d , t ) p ( \theta ) } d \theta } \\ & { = \log \frac { p ( t | d ) } { p ( t ) } } \end{array} } \\ & { \begin{array} { r l } & { = U _ { \eta } ( d , t ) . } \end{array} } \\ & { \begin{array} { r l } & { = U _ { \eta } ( d , t ) . } \end{array} } \end{array}
+\]
+
+The third equation is due to Theorem 3.4, that is, we have
+p(θ\textbar d,)tp)(pθ(\textbar θt) = for all \(\pmb \theta\) . Then
+according to our definition of pointwise parameter information, we have
+
+\[
+\begin{array} { r l } & { U _ { \eta } ( d , t ) = D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta ) ) - D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta | d ) ) - D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta | t ) ) } \\ & { \quad \quad = \big ( D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta ) ) - D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta | d ) ) \big ) } \\ & { \qquad + \big ( D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta ) ) - D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta | t ) ) \big ) } \\ & { \qquad - \big ( D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta ) ) - D _ { \mathrm { K L } } ( p ( \theta | d , t ) | | p ( \theta | d , t ) ) \big ) } \\ & { \quad \quad = P I _ { d , t } ( d ) + P I _ { d , t } ( t ) - P I _ { d , t } ( d \cup t ) } \\ & { \quad \quad \triangleq P M I _ { d , t } ( d , t ) . } \end{array}
+\]
+
+And by our definition of conditional pointwise parameter information, we
+have
+
+\[
+\begin{array} { r l } & { U _ { \eta } ( d , t ) = \left( D _ { \mathrm { K L } } ( p ( \theta | d , t ) \| p ( \theta ) ) - D _ { \mathrm { K L } } ( p ( \theta | d , t ) \| p ( \theta | d ) ) \right) } \\ & { \qquad - \left( D _ { \mathrm { K L } } ( p ( \theta | d , t ) \| p ( \theta | t ) ) - D _ { \mathrm { K L } } ( p ( \theta | d , t ) \| p ( \theta | d , t ) ) \right) } \\ & { \qquad = P I _ { d , t } ( d ) - P I _ { d , t } ( d | t ) . } \end{array}
+\]
+
+Similarly, we have
+\(U _ { \eta } ( d , t ) = P I _ { d , t } ( t ) - P I _ { d , t } ( t | d )\)
+.
+
+\section{D.3 Proof of Theorem D.2}\label{d.3-proof-of-theorem-d.2}
+
+Recall that the dual skew G-Jensen-Shannon divergence is defined as
+follows.
+
+Definition D.6 (Dual skew G-Jensen-Shannon divergence {[}Nielsen,
+2019{]}). The dual skew G-Jensen-Shannon divergence of two distributions
+\(p , q\) for parameter \(\alpha \in [ 0 , 1 ]\) is defined as
+\(J S _ { * } ^ { G _ { \alpha } } ( p \| q ) = ( 1 - \alpha ) D _ { K L } ( G _ { \alpha } ( p , q ) \| p ) + \alpha \cdot D _ { K L } ( G _ { \alpha } ( p , q ) \| q ) .\)
+, where \(G _ { \alpha } ( p , q )\) is the weighted geometric mean of
+\(p\) and \(q\) with
+\(G _ { \alpha } ( p , q ) ( x ) \propto p ( x ) ^ { 1 - \alpha } q ( x ) ^ { \alpha }\)
+.
+
+Nielsen {[}2019{]} solved the dual skew G-Jensen-Shannon divergence
+\(\mathrm { J S } _ { \ast } ^ { G }\) between two multivariate
+Gaussian, which is equal to the following.
+
+Lemma D.7 (Nielsen {[}2019{]} Corollary 1). The dual skew \(G\)
+-Jensen-Shannon divergence \(J S _ { * } ^ { G _ { \alpha } }\) between
+two multivariate Gaussian
+\(\mathcal { N } ( \mu _ { 1 } , \Sigma _ { 1 } )\) and
+\(\mathcal { N } ( \mu _ { 2 } , \Sigma _ { 2 } )\) with
+\(\begin{array} { r } { \alpha = \frac { 1 } { 2 } } \end{array}\) is
+equal to
+
+\[
+J S _ { \ast } ^ { G \alpha } ( \mathcal { N } ( \mu _ { 1 } , \Sigma _ { 1 } ) \| \mathcal { N } ( \mu _ { 2 } , \Sigma _ { 2 } ) ) = \frac { 1 } { 4 } \left( \mu _ { 1 } ^ { T } \Sigma _ { 1 } ^ { - 1 } \mu _ { 1 } + \mu _ { 2 } ^ { T } \Sigma _ { 2 } ^ { - 1 } \mu _ { 2 } - 2 \mu ^ { T } \Sigma ^ { - 1 } \mu + \log \frac { | \Sigma _ { 1 } | \| \Sigma _ { 2 } | } { | \Sigma | ^ { 2 } } \right) .
+\]
+
+where
+\(\Sigma = 2 ( \Sigma _ { 1 } ^ { - 1 } + \Sigma _ { 2 } ^ { - 1 } ) ^ { - 1 }\)
+and
+\(\begin{array} { r } { \mu = \frac { 1 } { 2 } \Sigma ( \Sigma _ { 1 } ^ { - 1 } \mu _ { 1 } + \Sigma _ { 2 } ^ { - 1 } \mu _ { 2 } ) } \end{array}\)
+.
+
+Then suppose we have
+\(p ( \pmb \theta | D = d ) = \mathcal N ( \mu _ { a } , \Sigma _ { a } )\)
+,
+\(p ( \pmb \theta | T _ { . } = t ) = \mathcal { N } ( \mu _ { b } , \Sigma _ { b } )\)
+, the prior
+\(p ( \pmb \theta ) = \mathcal { N } ( \mu _ { 0 } , \Sigma _ { 0 } )\)
+, and
+\(p ( \pmb \theta | D = d , T = t ) = \mathcal N ( \widetilde \mu , \Sigma )\)
+with
+\(\begin{array} { r } { \dot { \Sigma } = ( \Sigma _ { a } ^ { - 1 } + \Sigma _ { b } ^ { - 1 } - \Sigma _ { 0 } ^ { - 1 } ) ^ { - 1 } \approx } \end{array}\)
+\(\big ( \Sigma _ { a } ^ { - 1 } + \Sigma _ { b } ^ { - 1 } \big ) ^ { - 1 }\)
+and
+\(\widetilde { \mu } = \widetilde \Sigma \left( \Sigma _ { a } ^ { - 1 } \mu _ { a } + \Sigma _ { b } ^ { - 1 } \mu _ { b } - \Sigma _ { 0 } ^ { - 1 } \mu _ { 0 } \right) \approx \widetilde \Sigma \left( \Sigma _ { a } ^ { - 1 } \mu _ { a } + \Sigma _ { b } ^ { - 1 } \mu _ { b } \right)\)
+. By definition, we have
+
+\[
+J S _ { + } ^ { G _ { \alpha } } ( N ( \mu _ { a } , \Sigma _ { a } ) \| \mathcal { N } ( \mu _ { b } , \Sigma _ { b } ) ) = \frac 1 4 \left( \mu _ { a } ^ { T } \Sigma _ { a } ^ { - 1 } \mu _ { a } + \mu _ { b } ^ { T } \Sigma _ { b } ^ { - 1 } \mu _ { b } - 2 \mu ^ { T } \Sigma ^ { - 1 } \mu + \log \frac { | \Sigma _ { a } | | \Sigma _ { b } | } { | \Sigma | ^ { 2 } } \right) .
+\]
+
+where
+\(\Sigma = 2 ( \Sigma _ { a } ^ { - 1 } + \Sigma _ { b } ^ { - 1 } ) ^ { - 1 } \approx 2 \widetilde \Sigma\)
+and
+\(\begin{array} { r } { \mu = \frac { 1 } { 2 } \Sigma ( \Sigma _ { a } ^ { - 1 } \mu _ { a } + \Sigma _ { b } ^ { - 1 } \mu _ { b } ) \approx \widetilde { \mu } } \end{array}\)
+. Then \(U _ { \eta } ( d , t )\) defined in Corollary C.2 has
+
+\[
+\begin{array} { r l } & { \boldsymbol { r } _ { \eta } ( d , \boldsymbol { t } ) + 2 \cdot J S _ { * } ^ { G _ { \alpha } } ( \mathcal { N } ( \mu _ { a } , \Sigma _ { a } ) \| \mathcal { N } ( \mu _ { b } , \Sigma _ { b } ) ) \approx \frac { 1 } { 2 } \log \frac { \operatorname* { d e t } ( \Sigma _ { 0 } ) \operatorname* { d e t } ( \widetilde { \Sigma } ) } { \operatorname* { d e t } ( \Sigma _ { a } ) \operatorname* { d e t } ( \Sigma ) } + \frac { 1 } { 2 } \log \frac { \operatorname* { d e t } ( \Sigma _ { a } ) \operatorname* { d e t } ( \log ( \rho ) ) } { \operatorname* { d e t } ( 2 \widetilde { \Sigma } ) ^ { \lambda } } } \\ & { \qquad = \frac { 1 } { 2 } \log \frac { \operatorname* { d e t } ( \Sigma _ { 0 } ) \operatorname* { d e t } ( \widetilde { \Sigma } ) } { \operatorname* { d e t } ( 2 \widetilde { \Sigma } ) ^ { 2 } } } \\ & { \qquad = \frac { 1 } { 2 } \log \frac { \operatorname* { d e t } ( \Sigma _ { 0 } ) \operatorname* { d e t } ( \widetilde { \Sigma } ) } { 4 ^ { k } \cdot \operatorname* { d e t } ( \widetilde { \Sigma } ) ^ { 2 } } } \\ & { \qquad = \frac { 1 } { 2 } \log \frac { \operatorname* { d e t } ( \Sigma _ { 0 } ) } { \operatorname* { d e t } ( \widetilde { \Sigma } ) } - k \log 2 . } \end{array}
+\]
+
+For general distributions, we can get a similar interpretation using
+Lemma D.5. Similar to the definition of the dual skew G-Jensen-Shannon
+divergence, we define
+\(\begin{array} { r l } { \frac { 1 } { 2 } D _ { \mathrm { K L } } ( p ( \pmb { \theta } | d , t ) | | p ( \pmb { \theta } | d ) ) + } \end{array}\)
+\(\scriptstyle { \frac { 1 } { 2 } } D _ { \mathrm { K L } } ( p ( \pmb { \theta } | d , t ) | | p ( \pmb { \theta } | t ) )\)
+as the divergence of \(p ( \pmb \theta | d )\) and
+\(p ( \pmb \theta | t )\) , where \(p ( \pmb \theta | d , t )\) is
+viewed as the geometric mean of \(p ( \pmb \theta | d )\) and
+\(p ( \pmb \theta | t )\) . In addition, we define
+\(D _ { \mathrm { K L } } ( p ( \pmb { \theta } | d , t ) | | p ( \pmb { \theta } ) )\)
+as the
+\(\begin{array} { r } { \frac { 1 } { 2 } \log \frac { \operatorname* { d e t } ( \Sigma _ { 0 } ) } { \operatorname* { d e t } ( \widetilde { \Sigma } ) } - k \log 2 } \end{array}\)
+tion. Then by Lemma D.5, the PMI dataset score
+\(U _ { \eta } ( d , t )\) equals the confidence increase
+\(D _ { \mathrm { K L } } ( p ( \pmb { \theta } | d , t ) | | p ( \pmb { \theta } ) )\)
+minus the divergence
+\(D _ { \mathrm { K L } } ( p ( \pmb \theta | d , t ) | | p ( \pmb \theta | d ) ) + D _ { \mathrm { K L } } ( p ( \pmb \theta | d , t ) | | p ( \pmb \theta | t ) )\)
+.
+
+\section{E Simulations}\label{e-simulations}
+
+\section{E.1 Detailed experiment setup in Section
+4.1}\label{e.1-detailed-experiment-setup-in-section-4.1}
+
+We randomly sample dataset pairs containing images of 0s and 1s from
+MNIST. First, we randomly select two correlated numbers,
+\(r _ { D } , r _ { T } \in \{ 0 . 2 , 0 . 8 \}\) , such that their
+mutual information can be computed.
+
+\begin{longtable}[]{@{}|l|l|l|@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\hline
+& rD = 0.2 & rD= 0.8 \\
+\hline
+rT= 0.2 & p & -p \\
+\hline
+rT=0.8 & 1-p & p \\
+\hline
+\end{longtable}
+
+These numbers represent the proportion of data points with the label 0
+in datasets \(D\) and \(T\) , respectively. Next, we generate a random
+vector \(L _ { D } \in \{ 0 , 1 \} ^ { N _ { D } }\) , where each
+element is 0 with probability \(r _ { D }\) , and a similar vector
+\(L _ { T } \in \{ 0 , 1 \} ^ { N _ { T } }\) , where each element is 0
+with probability \(r _ { T }\) . Each value in \(L _ { D }\) and
+\(L _ { T }\) corresponds to a label for an image. To simplify analysis
+while preserving the overall dataset composition, we make a minor
+modification: we replace the last bit of \(L _ { D }\) by
+{\$\textbackslash oplus \_ \{ j = 1 \} \^{} \{ N \_ \{ D \} - 1 \} L \_
+\{ D \} ( i ) \textbackslash oplus \{ \textbackslash bf 1 \} ( r \_ \{ D
+\} = 0 . 2 )\$} so that the XOR sum of \(L _ { D }\) reveals the value
+of \(r _ { D }\) . Similarly, we adjust the last bit of \(L _ { T }\) so
+that the XOR sum of \(L _ { T }\) reveals \(r _ { T }\) . Finally, we
+replace each label in \(L _ { D }\) and \(L _ { T }\) with a randomly
+selected image matching the label, resulting in two correlated datasets
+\(\mathcal { D }\) and \(T\) .
+
+Fact 2. The mutual information of the generated datasets
+\(I ( D , T ) = I ( r _ { D } , r _ { T } )\) increases in \(\rho\) for
+\(0 . 2 5 \le \rho \le 0 . 5\) .
+
+Proof. By Theorem 4 in {[}Gowri et al., 2024{]},
+\(I ( D , T ) = I ( L _ { D } , L _ { T } )\) assuming that
+\(H ( L _ { D } | D ) =\) 0 and \(H ( L _ { T } | T ) = 0\) . Again,
+since \(L _ { D }\) and \(L _ { T }\) fully reveals \(r _ { D }\) and
+\(r _ { T }\) , which means \(H ( r _ { D } | L _ { D } ) = 0\) and
+\(H ( r _ { T } | L _ { T } ) = 0\) , Theorem 4 in {[}Gowri et al.,
+2024{]} implies that \(I ( L _ { D } , L _ { T } ) =\)
+\(I ( r _ { D } , r _ { T } )\) . Therefore
+\(I ( D , T ) = I ( L _ { D } , L _ { T } ) = I ( r _ { D } , r _ { T } )\)
+. □
+
+To estimate the mutual information, we generate \(k\) dataset pairs
+\(( D _ { 1 } , T _ { 1 } ) , \dots , ( D _ { k } , T _ { k } )\) and
+compute the average PMI using our formula Theorem 3.4 or Monte Carlo
+integration. We repeat the process for \(m\) times using different
+parameters
+\(0 . 2 5 \leq \rho _ { 1 } , . . . , \rho _ { m } \leq 0 . 5\) and
+estimate the ranking of mutual information (using our method or Monte
+Carlo integration). The accuracy of the methods is assessed by the rank
+correlation between the estimated and true rankings.
+
+Setting. We selected ten values of \(\rho\) corresponding to mutual
+information values ranging from 0.1 to 1.0 (in increments of 0.1) for
+evaluation. For each \(\rho\) , we tested the performance of our PMI
+estimator under different regularization strengths \(C\) .
+
+To fit the dataset, we employed the Bayesian logistic regression with
+Gaussian approximation outlined in Appendix C.4. We use the
+LogisticRegression function from the sklearn library. The model utilizes
+the \(L _ { 2 }\) norm as the regularization term, with the
+regularization strength controlled by \(C\) . The logistic regression
+model is configured with a maximum number of iterations set to 5000 (max
+iter = 5000) and no intercept fitting (fit intercept = False), while all
+other parameters are set to their default values. The range of \(C\) is
+tuned via cross-validation.
+
+Then for each \(\rho\) , we computed the estimated mutual information
+using our PMI formula, averaged over 1000 repeated trials, and
+calculated the Kendall \(\tau\) rank correlation between the estimated
+mutual information rankings and the true rankings of \(\rho\) .
+
+As a baseline, we used Monte Carlo integration to estimate the mutual
+information for each \(\rho\) . Each Monte Carlo integration involved
+sampling 1000 points. Similarly, we computed the Kendall \(\tau\) rank
+correlation between the rankings derived from the baseline's estimated
+mutual information and the true \(\rho\) rankings.
+
+\section{E.2 Detailed experiment setup in Section
+4.2}\label{e.2-detailed-experiment-setup-in-section-4.2}
+
+\section{E.2.1 Colored MNIST}\label{e.2.1-colored-mnist}
+
+\section{Experimental Settings:}\label{experimental-settings}
+
+In this study, we evaluate a logistic regression model with varying
+regularization strengths \(C\) on a colorized MNIST dataset under three
+scenarios: (1) Data Denoising, (2) Data Duplication, and (3) Data
+Removal. The training and test sets consist of samples from four
+categories: blue-label-0, blue-label-1, green-label-0, and
+green-label-1. blue-label-0 refers to images with a blue background and
+a label of 0, blue-label-1 refers to images with a blue background and a
+label of 1, green-label-0 refers to images with a green background and a
+label of 0, and green-label-1 refers to images with a green background
+and a label of 1.
+
+The logistic regression model is implemented using the
+LogisticRegression function from the sklearn library. It employs the
+\(L _ { 2 }\) norm as the regularization term, with the strength of
+regularization controlled by \(C\) . The model is configured with a
+maximum number of iterations set to 5000 (max iter = 5000) and no
+intercept fitting (fit intercept = False), while all other parameters
+are set to their default values. The range of \(C\) is tuned via
+cross-validation.
+
+In all scenarios, the experiment is repeated 1,000 times for each value
+of \(C\) , and the mean changes in the PMI score and the test accuracy
+are computed. To compute our PMI scoring function, we employed the
+Bayesian logistic regression with Gaussian approximation outlined in
+Appendix C.4. This process is independently repeated 10 times, resulting
+in 10 groups of mean values (each group based on 1,000 repetitions).
+From these groups, the overall mean (averaged across all 10,000
+experiments) and standard deviation (from the 10 groups) are calculated.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Data Denoising: For this scenario, we introduce noise by flipping the
+  labels of\\
+  10 training samples prior to model training. After training, the
+  mislabeled samples are
+\end{enumerate}
+
+corrected, and the model is retrained. Results are presented in Table 2
+and Table 4.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  Data Duplication: In this scenario, additional blue-label-0 and
+  green-label-1 samples are duplicated in the training set to match the
+  ratio of four categories of the test set. The model is retrained, and
+  the changes in PMI Score, Loss, and Accuracy are recorded. Results are
+  presented in Table 2 and Table 4.
+\item
+  Data Removal: Here, blue-label-0 and green-label-1 samples are removed
+  from the training set to match the ratio of four categories of the
+  test set. The model is retrained, and the changes in PMI Score, Loss,
+  and Accuracy are recorded. Results are presented in Table 2 and Table
+  4.
+\end{enumerate}
+
+\section{E.2.2 Corrupted CIFAR}\label{e.2.2-corrupted-cifar}
+
+Experimental Settings. We set up the following three experiments to
+compare the performance of our PMI score function against the standard
+evaluation approach on the corrupted CIFAR dataset in evaluating three
+different data curation methods. We choose two classes as labels 0 and 1
+among all classes in the CIFAR-10 datasets and select two corruption
+types (brightness and contrast) as bias in the datasets. More details of
+corruption design can be found in Hendrycks and Dietterich {[}2019{]}.
+
+Using the label and bias of data, we sample with different ratios in
+four categories: brightness-label-0, contrast-label-0,
+brightness-label-1, contrast-label-1. brightness-label-0 refers to
+images with brightness corruption and a label of 0. contrast-label-0
+refers to images with contrast corruption and a label of 0.
+brightness-label-1 refers to images with brightness corruption and a
+label of 1. contrast-label-1 refers to images with contrast corruption
+and a label of 1. We sample training sets with ratio 1:1:1:1 and test
+sets with ratio 1:2:2:1 or 1:3:3:1 with respect to four categories.
+
+In each experiment, we extract image embeddings using ResNet18
+pre-trained on ImageNet (with the last layer removed) and flip
+\(1 0 \%\) labels of the sampled training dataset to introduce noise.
+Then we train logistic regression models on these embeddings with
+varying regularization strengths \(C\) ranging from 10000 to 100000. To
+further clarify, the logistic regression model is implemented using the
+LogisticRegression function from the sklearn library. It employs the
+\(L _ { 2 }\) norm as the regularization term, with the strength of
+regularization controlled by \(C\) . The model is configured with a
+maximum number of iterations set to 5000 (max iter = 5000) and no
+intercept fitting (fit intercept = False), while all other parameters
+are set to their default values. Here we add a dimension in embeddings
+where each entry is 1 and omit the bias term to integrate the bias into
+the weight vector. The range of \(C\) is tuned via cross-validation.
+
+For each value of \(C\) , the experiment is repeated 1,000 times, and we
+compute the mean changes in PMI Score and test accuracy across these
+1,000 runs. To compute our PMI we employed the Bayesian logistic
+regression with Gaussian approximation outlined in Appendix C.4. This
+process is independently repeated 10 times, producing 10 groups of
+
+\begin{longtable}[]{@{}|l|l|@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\hline
+C & Change in PMI Score Change in Accuracy (\%) \\
+\hline
+\multicolumn{2}{@{}l@{}}{%
+Data Denoising} \\
+\hline
+10 & 7.8126 ± 0.9157 0.92 ± 0.08 \\
+\hline
+20 & 7.8239 ± 1.0087 0.74 ± 0.05 \\
+\hline
+50 & 6.2547 ± 0.9763 1.29 ± 0.09 \\
+\hline
+100 & 14.5329 ± 1.3924 0.20 ± 0.02 \\
+\hline
+200 & 11.9261 ± 1.1762 0.09 ± 0.02 \\
+\hline
+\multicolumn{2}{@{}l@{}}{%
+Data Duplication -2.2345 ± 1.1247 4.50 ± 0.74} \\
+\hline
+10 20 50 & -1.5895 ± 1.0426 2.95 ± 0.71 \\
+\hline
+-1.3916 ± 1.0483 100 -0.4248 ± 0.2519 & 3.21 ± 0.68 1.61 ± 0.54 \\
+\hline
+200 -1.7580 ± 0.8914 & 0.97 ± 0.34 \\
+\hline
+\multicolumn{2}{@{}l@{}}{%
+Data Removal} \\
+\hline
+10 -7.2140 ± 0.9073 & 0.41 ± 0.03 \\
+\hline
+20 & -7.5783 ± 1.1306 0.19 ± 0.01 \\
+\hline
+50 & -6.5111 ± 1.1430 0.21 ± 0.02 \\
+\hline
+100 & -7.1336 ± 0.9251 0.20 ± 0.02 \\
+\hline
+200 & -14.1899 ± 1.7394 0.67 ± 0.03 \\
+\hline
+\end{longtable}
+
+Table 4: Changes in PMI score function and test accuracy after three
+data curation methods with different regularization strengths
+\(\mathbf { C }\) in the Colored MNIST dataset. The original training
+set, sampled from a larger dataset, consists of samples from four
+categories, with sizes of 50 or 150 per category, and the test set has
+sizes of 50, 150, 150, 50. To introduce noise, a certain percentage of
+the training labels are flipped. The Denoising method removes flipped
+data points, with a training set size of 50 samples per category and a
+test set size of 50 samples per category. The Duplication method adjusts
+the training set to match the test set's category ratios via
+duplication, resulting in sizes of \(5 0 , 1 0 0 , 1 0 0 , 5 0\) for the
+test categories. Finally, the Removal method reduces the training set
+size to match the test set category ratios, resulting in training sizes
+of 100, 50, 50, 100. The experiment was repeated \(1 , 0 0 0\) times to
+compute the mean changes in PMI scores and accuracy and repeated 10
+times to compute final means and variances.
+
+mean values (each group based on 1,000 repetitions). From these 10
+groups, we calculate the overall mean (averaging across all 10,000
+experiments) and the standard deviation (calculated from the 10 groups
+of mean values). The results are summarized in Tables 3 and 5.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Data Denoising. In this experiment, we check the change of PMI score
+  function and test accuracy after removing the mislabeled data. We
+  directly remove the data points whose labels are flipped.
+\item
+  Data Duplication. In this experiment, we check the change of PMI score
+  function and test accuracy after duplicating part of training dataset
+  to match the ratio of four categories of test dataset which is a
+  non-essential feature irrelevant to the model.
+\item
+  Data Removal. In this experiment, we check the change of PMI score
+  function and test accuracy after removing part of training dataset to
+  match the ratio of four categories of test dataset which is a
+  non-essential feature irrelevant to the model.
+\end{enumerate}
+
+\begin{longtable}[]{@{}|l|l|l|l|@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\hline
+C & Change in PMI Score & Change in Accuracy (\%) & \\
+\hline
+Data Denoising & \multicolumn{3}{l@{}}{%
+} \\
+\hline
+10000 & 2.1175±0.1916 & 7.38±0.11 & \\
+\hline
+20000 & 1.9854±0.1680 & 7.29±0.14 & \\
+\hline
+30000 & 1.9894±0.2097 & 7.36±0.15 & \\
+\hline
+50000 & 1.8297±0.1332 & 7.26±0.14 & \\
+\hline
+100000 & 1.5816±0.1717 & 7.31±0.09 & \\
+\hline
+\multicolumn{4}{@{}l@{}}{%
+Data Duplication} \\
+\hline
+10000 & -0.2901±0.0757 & 0.84±0.07 & \\
+\hline
+20000 & -0.3753±0.0793 & 0.86±0.06 & \\
+\hline
+30000 & -0.5194±0.1152 & 0.84±0.06 & \\
+\hline
+50000 & -0.5766±0.0758 & 0.86±0.06 & \\
+\hline
+100000 & -0.8050±0.0973 & 0.86±0.05 & \\
+\hline
+\multicolumn{4}{@{}l@{}}{%
+Data Removal} \\
+\hline
+10000 & -6.1685±0.0608 & 1.83±0.12 & \\
+\hline
+20000 & -6.8668±0.1173 & 2.00±0.14 & \\
+\hline
+30000 & -7.3100±0.1357 & 1.85±0.12 & \\
+\hline
+50000 & -7.8402±0.1086 & & 1.86±0.14 \\
+\hline
+100000 & -8.3621±0.1293 & & 1.92±0.09 \\
+\hline
+\end{longtable}
+
+Table 5: Changes in PMI score function and test accuracy after three
+data curation methods with different regularization strengths C in
+Corrpted CIFAR dataset. The original training set, sampled from a larger
+dataset, consists of images from four categories, each with size 30, and
+the test set has sizes 20, 60, 60, 20. To introduce noise, \(1 0 \%\) of
+the training labels are flipped. The Denoising method simply removes
+flipped data points, while Duplication and Removal adjust the training
+set to match the test set's category ratios via copy or delete
+operations, resulting in sizes of 30, 90, 90, 30 and 10, 30, 30, 10,
+respectively. The experiment, repeated 1,000 times to compute mean
+changes in PMI scores and accuracy and repeated 10 times to obtain final
+means and variances.
+
+\end{document}

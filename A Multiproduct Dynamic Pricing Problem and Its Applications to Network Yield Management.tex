@@ -48,127 +48,31 @@ In the interest of brevity and to maintain focus, we shall concentrate on airlin
 
 \section{2.LITERATUREREVIEW}\label{literaturereview}
 
-The study of yield management problems in the airlines dates back to the
-work of Rothstein (1971) for an overbooking model and to Littlewood
-(1972) for a model of space allocation of a stochastic
-two-fare,single-leg problem.Belobaba(1987b and 1989) proposed and tested
-a multiple-fare-class extension of Littlewood's rule,which he termed the
-expected marginal seat revenue (EMSR) heuristic.Extensions and
-refinements of the multiple-fare-class problem include recent papers by
-Brumelle and McGill (1993)，Curry (1989)，Robinson (1995)，and Wollmer
-(1992). The above papers develop optimal rules or heuristics under the
-assumption that the demand for different fare classes are random
-variables instead of stochastic processes.Some of the rules developed
-for random variables have been applied dynamically. See Weatherford et
-al.~(1993） for extensive simulations on the performance of some of
-these rules under various models of the customer arrival processes.Lee
-and Hersh (1993) use discrete time dynamic programming to develop
-optimal rules when demands are modeled as stochastic processes.They also
-allow for group bookings.Feng and Gallego (1995) develop optimal
-threshold rules when demands are modeled as continuous time stochastic
-process.Kimes (1989） gives a general overview of yield management
-practice in the hotel industry.Bitran and Gilbert (1992)，Liberman and
-Yechiali (1978) and Rothstein (1974) investigate analytical models of
-hotel problems.Ladany and Arbel (1991) investigate pricing policies for
-cabins in a cruise-line.Chatwin (1992） characterizes the form of the
-optimal，dynamic overbooking policy fora single market.
+The study of yield management problems in the airlines dates back to the work of Rothstein (1971) for an overbooking model and to Littlewood (1972) for a model of space allocation of a stochastic two-fare,single-leg problem.Belobaba(1987b and 1989) proposed and tested a multiple-fare-class extension of Littlewood's rule,which he termed the expected marginal seat revenue (EMSR) heuristic.Extensions and refinements of the multiple-fare-class problem include recent papers by Brumelle and McGill (1993)，Curry (1989)，Robinson (1995)，and Wollmer (1992). The above papers develop optimal rules or heuristics under the assumption that the demand for different fare classes are random variables instead of stochastic processes.Some of the rules developed for random variables have been applied dynamically. See Weatherford et al.~(1993） for extensive simulations on the performance of some of these rules under various models of the customer arrival processes.Lee and Hersh (1993) use discrete time dynamic programming to develop optimal rules when demands are modeled as stochastic processes.They also allow for group bookings.Feng and Gallego (1995) develop optimal threshold rules when demands are modeled as continuous time stochastic process.Kimes (1989） gives a general overview of yield management practice in the hotel industry.Bitran and Gilbert (1992)，Liberman and Yechiali (1978) and Rothstein (1974) investigate analytical models of hotel problems.Ladany and Arbel (1991) investigate pricing policies for cabins in a cruise-line.Chatwin (1992） characterizes the form of the optimal，dynamic overbooking policy fora single market.
 
-A recent review of research on yield management as well asacomprehensive
-taxonomyof perishable asset revenue management (PARM) problems is given
-by Weatherford and Bodily (1992).They identify14 descriptors that can be
-used to categorize a range of PARM problems. Our general formulation can
-model a broad subset of these descriptors,including dynamic pricing and
-allocation decisions,group demand,diversion，displacement,a timevarying
-willingness to pay,and no-shows (see Weatherford andBodily 1992 for a
-detailed discussion of this taxonomy).In Section 4.3,a variety of
-examples that illustrate these features are presented.
+A recent review of research on yield management as well asacomprehensive taxonomyof perishable asset revenue management (PARM) problems is given by Weatherford and Bodily (1992).They identify14 descriptors that can be used to categorize a range of PARM problems. Our general formulation can model a broad subset of these descriptors,including dynamic pricing and allocation decisions,group demand,diversion，displacement,a timevarying willingness to pay,and no-shows (see Weatherford andBodily 1992 for a detailed discussion of this taxonomy).In Section 4.3,a variety of examples that illustrate these features are presented.
 
-Glover et al.(1982) were,to our knowledge, the first to
-addressadeterministicnetworkflowmodelfortheallocation of seats between
-passenger itineraries and fare classes. Their formulation,however, does
-have a restriction to networks with no undirected cycles.In addition to
-their formulation,Glover et al.~give an interesting account of the
-effects of deregulation.They recognize two components to the airline
-problem,one tactical and one strategic, with the tactical dealing with
-monitoring reservations and the strategic consisting of the selection of
-pricesand routes.
+Glover et al.(1982) were,to our knowledge, the first to addressadeterministicnetworkflowmodelfortheallocation of seats between passenger itineraries and fare classes. Their formulation,however, does have a restriction to networks with no undirected cycles.In addition to their formulation,Glover et al.~give an interesting account of the effects of deregulation.They recognize two components to the airline problem,one tactical and one strategic, with the tactical dealing with monitoring reservations and the strategic consisting of the selection of pricesand routes.
 
-Wang(1983） provides an algorithm for the sequential allocations of
-seats on a plane to different uplift-discharge city pairs and fare
-classes within a flight segment when demands are random. Wang reports a
-\(4 \%\) increase in revenue for high load factor flights.In
-addition,Wang provides a good explanation of the price/market
-differentiation scheme used by most airlines.
+Wang(1983） provides an algorithm for the sequential allocations of seats on a plane to different uplift-discharge city pairs and fare classes within a flight segment when demands are random. Wang reports a \(4 \%\) increase in revenue for high load factor flights.In addition,Wang provides a good explanation of the price/market differentiation scheme used by most airlines.
 
-Dror et al.~(1988) present a rolling horizon network flow formulation
-for the seat inventory control problem assuming deterministic
-demands.Their formulation is extremely complex to account for passengers
-switching planes at intermediate stops,but allows for arc losses to
-account for cancellations and no shows.No specification of how to obtain
-the parameters of the formulation or how to solve the network flow
-problem is given.
+Dror et al.~(1988) present a rolling horizon network flow formulation for the seat inventory control problem assuming deterministic demands.Their formulation is extremely complex to account for passengers switching planes at intermediate stops,but allows for arc losses to account for cancellations and no shows.No specification of how to obtain the parameters of the formulation or how to solve the network flow problem is given.
 
-In two internal McDonell Douglas reports,Wollmer (1986a and b) proposes
-a mathematical programming for mulation incorporating random
-demands,where the objective is to maximize the total expected network
-revenue. The formulation is very large since there is a variable for
-each origin/destination,fare class,and seat on each flight leg. On the
-positive side, the formulation is very accurate.
+In two internal McDonell Douglas reports,Wollmer (1986a and b) proposes a mathematical programming for mulation incorporating random demands,where the objective is to maximize the total expected network revenue. The formulation is very large since there is a variable for each origin/destination,fare class,and seat on each flight leg. On the positive side, the formulation is very accurate.
 
-Inher Ph.D.thesis，Williamson (1992） proposes schemes that use
-well-known leg-based results for solving the network problem.In
-addition,she uses dual price information to develop a bid-price approach
-to the network problem.These schemes are extensively tested via
-simulation.
+Inher Ph.D.thesis，Williamson (1992） proposes schemes that use well-known leg-based results for solving the network problem.In addition,she uses dual price information to develop a bid-price approach to the network problem.These schemes are extensively tested via simulation.
 
-A traffic flow model of airline networks is proposed by Soumis and
-Nagurney (1993).They formulate and analyze astochastic,multiclass
-airline network model for determining the equilibrium between the
-realized demand for different travel routes and the supply of seats.The
-traffic flowspredicted by the model are tested against data from Air
-Canada.
+A traffic flow model of airline networks is proposed by Soumis and Nagurney (1993).They formulate and analyze astochastic,multiclass airline network model for determining the equilibrium between the realized demand for different travel routes and the supply of seats.The traffic flowspredicted by the model are tested against data from Air Canada.
 
-The most recent reference known to us is due to Talluri (1993)，who
-formulates a deterministic network model based on origin-destination
-pairs.His key idea is that passengers may be indifferent between
-different routes for an origin-destination pair provided they have
-similar departure and arrival times.Airlines can take advantage of this
-indifference by intelligently routing passengers through
-origin-destination pairs.The decision variables of Talluri's model
-correspond to the allocation of demand for origindestination pairs to
-routes for which customers are indifferent.When demand is assumed to be
-stochastic,Talluri provides a deterministic integer-programming
-formulation based on the idea of maximizing expected marginal revenue.In
-addition to his formulation,Talluri offers an interesting account of the
-state of the art of computer reservation systems used to support network
-models.
+The most recent reference known to us is due to Talluri (1993)，who formulates a deterministic network model based on origin-destination pairs.His key idea is that passengers may be indifferent between different routes for an origin-destination pair provided they have similar departure and arrival times.Airlines can take advantage of this indifference by intelligently routing passengers through origin-destination pairs.The decision variables of Talluri's model correspond to the allocation of demand for origindestination pairs to routes for which customers are indifferent.When demand is assumed to be stochastic,Talluri provides a deterministic integer-programming formulation based on the idea of maximizing expected marginal revenue.In addition to his formulation,Talluri offers an interesting account of the state of the art of computer reservation systems used to support network models.
 
-Our heuristics are based on deterministic network flow models that are
-similar in spirit to those of Dror et al., Glover et al.,and Talluri.
-However,the exact relationship of these models to the underlying
-adaptive stochastic control problem has not been previously
-addressed.Our results allow us to rigorously analyze this relationship.
+Our heuristics are based on deterministic network flow models that are similar in spirit to those of Dror et al., Glover et al.,and Talluri. However,the exact relationship of these models to the underlying adaptive stochastic control problem has not been previously addressed.Our results allow us to rigorously analyze this relationship.
 
-\section{3.OUTLINE AND OVERVIEW OF MAIN
-RESULTS}\label{outline-and-overview-of-main-results}
+\section{3.OUTLINE AND OVERVIEW OF MAIN RESULTS}\label{outline-and-overview-of-main-results}
 
-We begin by formally stating the formulation and assumptions of our
-general model in Section 4.We then prove that a deterministic version of
-the problem provides an upper bound on the revenue of the original
-stochastic problem. The deterministic solution suggests two possible
-heuristics,which we call the make-to-stock (MTS） and
-make-to-order(MTO)heuristic.We showin Section5that both heuristics are
-asymptotically optimal as the volume of expected sales tends to
-infinity.We extend these results to the case where overbooking and
-cancellations are allowed in Section 6.
+We begin by formally stating the formulation and assumptions of our general model in Section 4.We then prove that a deterministic version of the problem provides an upper bound on the revenue of the original stochastic problem. The deterministic solution suggests two possible heuristics,which we call the make-to-stock (MTS） and make-to-order(MTO)heuristic.We showin Section5that both heuristics are asymptotically optimal as the volume of expected sales tends to infinity.We extend these results to the case where overbooking and cancellations are allowed in Section 6.
 
-Next,in Section 7 we examine several applications of our results to
-specific airline yield management problems. These include network,
-product differentiation, and overbooking problems and problems with time
-varying demand.We also examine how the lack of price flexibility and
-misspricing affect revenues and the performance of the various
-heuristics.Our conclusions and thoughts for further research are
-presented in Section 8.
+Next,in Section 7 we examine several applications of our results to specific airline yield management problems. These include network, product differentiation, and overbooking problems and problems with time varying demand.We also examine how the lack of price flexibility and misspricing affect revenues and the performance of the various heuristics.Our conclusions and thoughts for further research are presented in Section 8.
 
 \section{4.ASSUMPTIONS AND
 FORMULATIONS}\label{assumptions-and-formulations}
@@ -305,9 +209,7 @@ not need to be a continuous function of time; it merely needs to be
 contained in the set \(\mathcal { P } ( s )\)
 
 Given an initial vector of resource inventories \(x\) ,adeadline
-\(t > 0\) ，and a regular demand process as described above, we want to
-find a pricing policy in \(\mathfrak { u }\) that maximizes total
-expected revenue.More formally,we denote the expected revenue of policy
+\(t > 0\) ，and a regular demand process as described above, we want to find a pricing policy in \(\mathfrak { u }\) that maximizes total expected revenue.More formally,we denote the expected revenue of policy
 \(\boldsymbol { u }\) by
 
 \[

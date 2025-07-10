@@ -318,711 +318,303 @@ where the constraints we are relaxing are linear and thus convex, \(\Lambda(s)\)
 
 so the duality gap is zero (Luenberger, Section 8.6, Theorem 1). This together with (15) establishes the result for \(x > 0\). If \(x^i = 0\) for some resource \(i\), it is not hard to see that any product \(j\) that uses resource \(i\) can be eliminated and the problem can be reduced to one in which \(x > 0\). \(\square\)
 
+\section{5.TWO ASYMPTOTICALLY OPTIMAL HEURISTICS}\label{two-asymptotically-optimal-heuristics}
 
-\section{5.TWO ASYMPTOTICALLY OPTIMAL
-HEURISTICS}\label{two-asymptotically-optimal-heuristics}
-
-We next examine heuristics suggested by the solution to the
-deterministic problem.Two implementations of the deterministic solution
-are considered,a make-to-stock and
-
-a make-to-order heuristic.We show both are asymptotically optimal as the
-expected volume of sales tends to infinity.
+We next examine heuristics suggested by the solution to the deterministic problem. Two implementations of the deterministic solution are considered, a make-to-stock and a make-to-order heuristic. We show both are asymptotically optimal as the expected volume of sales tends to infinity.
 
 \section{5.1.The Make-to-Stock Policy}\label{the-make-to-stock-policy}
 
-In the deterministic problem,we know with certainty the quantity of each
-product that will be sold under any given policy. Therefore it is
-possible to produce products in advanceand hold inventories of finished
-products rather than hold inventories of resources.This suggests the
-following heuristic:
+In the deterministic problem, we know with certainty the quantity of each product that will be sold under any given policy. Therefore it is possible to produce products in advance and hold inventories of finished products rather than hold inventories of resources. This suggests the following heuristic:
 
-Make-to-Stock (MTS) Policy. Let \(p _ { d } ( s )\) be the optimal
-deterministic pricepath and \(\lambda _ { d } ( s )\) be the
-corresponding optimal deterministicintensity.Define
-
+Make-to-Stock (MTS) Policy. Let \(p_d(s)\) be the optimal deterministic price path and \(\lambda_d(s)\) be the corresponding optimal deterministic intensity. Define
 \[
-z ^ { j } = \left\lfloor \int _ { 0 } ^ { t } \lambda _ { d } ^ { j } ( s ) d s \right\rfloor = \lfloor \alpha ^ { j } \rfloor .
+z^j = \left\lfloor \int_{0}^{t} \lambda_d^j(s)  ds \right\rfloor = \lfloor \alpha^j \rfloor .
 \]
+Preassemble \(z^j\) units of product \(j = 1, \ldots, n\) and place the products in separate inventories. Price products at \(p_d(s)\), \(0 \leqslant s \leqslant t\) and sell them until the product inventories are exhausted or the deadline \(t\) is reached, whichever comes first. Here \(\lfloor x \rfloor\) denotes the largest integer less than or equal to \(x\).
 
-Preassemble \(z ^ { j }\) units of product \(j = 1 , \ldots , n\) and
-place the products in separate inventories.Price products at
-\(p _ { d } ( s )\) ， \(0 \leqslant\) \(s \leqslant t\) and sell them
-until the product inventories are exhaustedor the deadlinet is
-reached,whichever comes first.
+Of course, there is no need to physically preassemble products in this heuristic; we need only logically reserve resources for specific products. Effectively, however, the MTS heuristic takes away both price flexibility and product mix flexibility. Despite this lack of flexibility, the policy performs quite well when the expected number of sales of each product is large. (Computational examples are given in Section 7.)
 
-Here \(\lfloor x \rfloor\) denotes the largest integer less than or
-equal to \(x\)
+Before proving this claim, we need a preliminary result. Consider just a single product being sold over \([0, t]\) using a deterministic (scalar) price path \(p_d(s)\) and deterministic (scalar) intensity \(\lambda_d(s)\). Suppose there is an infinite supply of the product and let \(R\), a random variable, denote the total revenue received by following this optimal deterministic price path. The distribution of \(R\) is characterized as follows.
 
-Of course,there is no need to physically preassemble products in this
-heuristic;we need only logically reserve resources for specific
-products.Effectively,however，the MTS heuristic takes away both price
-flexibility and product mix flexibility.Despite this lack of
-flexibility，the policy performs quite well when the expected number of
-sales of each product is large.(Computational examples are given in
-Section 7.)
-
-Before proving this claim, we need a preliminary result. Consider just a
-single product being sold over \([ 0 , t ]\) using a deterministic
-(scalar） price path \(p _ { d } ( s )\) and deterministic (scalar)
-intensity \(\lambda _ { d } ( s )\) . Suppose there is an infinite
-supply of the product and let \(R\) ，arandom variable,denote the total
-revenue received by following this optimal deterministic price path.The
-distribution of \(R\) is characterized as follows.
-
-Lemma 2. Let \(N\) beaPoisson random variablewith mean
-\(\begin{array} { r } { \int _ { 0 } ^ { t } \lambda ( s ) } \end{array}\)
-ds and \(\{ \hat { T } _ { k } ; k \ge 1 \}\) be an i.i.d. sequence of
-random variableswithdensityfunction
-
+Lemma 2. Let \(N\) be a Poisson random variable with mean \(\int_{0}^{t} \lambda(s)  ds\) and \(\{ \hat{T}_k ; k \ge 1 \}\) be an i.i.d. sequence of random variables with density function
 \[
-f ( s ) = \left\{ \begin{array} { l l } { \displaystyle \frac { \lambda ( s ) } { \int _ { 0 } ^ { t } \lambda ( s ) ~ d s } , \quad } & { 0 \leqslant s \leqslant t } \\ { 0 , \quad } & { o t h e r w i s e . } \end{array} \right.
+f(s) = \left\{ \begin{array}{ll}
+\displaystyle \frac{\lambda(s)}{\int_{0}^{t} \lambda(s)  ds}, \quad & 0 \leqslant s \leqslant t \\
+0, \quad & otherwise.
+\end{array} \right.
 \]
-
 Then
-
 \[
-R \overset { \vartriangle } { = } \sum _ { k = 1 } ^ { N } p _ { d } ( \hat { T } _ { k } ) ,
+R \overset{\Delta}{=} \sum_{k=1}^{N} p_d(\hat{T}_k) ,
+\]
+where \(\overset{\Delta}{=}\) denotes equality in distribution.
+
+Proof. Since arrivals form a Poisson process, conditional on \(N = m\), the arrival times of the \(m\) sales, \(T_1, \dots, T_m\), can be represented as the order statistics of the i.i.d. random variables \(\hat{T}_1, \dots, \hat{T}_m\). Therefore, the prices \(p_d(\hat{T}_1), \dots, p_d(\hat{T}_m)\) are i.i.d. and \(R = \sum_{k=1}^{m} p_d(T_k) = \Sigma_{k=1}^{m} p_d(\hat{T}_k)\). Since \(p_d(\hat{T}_1)\) is independent of \(N\), the result follows after unconditioning on \(N\). \(\square\)
+
+The following theorem establishes the asymptotic optimality of the MTS heuristic.
+
+Theorem 2. Let \(u^j = \mathsf{sup} \{ p_d^j(s) \colon \lambda_d(s) > 0, 0 \leqslant s \leqslant t \}\). Then
+\[
+\frac{J^{\mathrm{MTS}}(x, t)}{J^{*}(x, t)} \geqslant 1 - \frac{\sum_{j=1}^{n} u^j \left( \frac{1}{2} \sqrt{\alpha^j} + 1 \right)} {\sum_{j} \bar{p}^j \alpha^j} .
 \]
 
-where \(\underline { { \underline { { \mathbf { D } } } } }\) denotes
-equality in distribution.
+Some explanation of this theorem is in order before we present a proof. Here, \(u^j\) is an upper bound on the price obtained for item \(j\) and \(\alpha^j\) is the quantity of sales under the deterministic policy defined by (9). In the context of the stochastic problem, one can think of this last quantity as the mean number of requests for product \(j\) over the interval \([0, t]\) when using the deterministic prices \(p_d(s)\). Note that the maximum prices \(u^j\) must be finite, otherwise this bound is trivial. Theoretically, this is somewhat a restriction, but it poses no real practical limitation. Provided \(u^j\) is finite for all products \(j\), the error term tends to zero as the quantities \(\alpha^j\) increase. Thus, if the expected sales volumes are large, the error term above is small. We give a more precise interpretation of this bound after presenting the proof.
 
-Proof. Since arrivals form a Poisson process,conditional on \(N = m\)
-，the arrival times of the \(m\) sales, \(T _ { 1 } , \dots\) ，
-\(T _ { m } ,\) （204号 can be represented as the order statistics of
-the i.i.d.
-
-random variables \(\hat { T } _ { 1 } , \dots , \hat { T } _ { m }\) .
-Therefore, the prices
-\(p _ { d } ( \hat { T } _ { 1 } ) , . . . , p _ { d } ( \hat { T } _ { m } )\)
-are i.i.d. and
-\(\begin{array} { r } { R \ = \ \sum _ { k = 1 } ^ { m } \ p _ { d } ( T _ { k } ) \ = \ } \end{array}\)
-\(\Sigma _ { k = 1 } ^ { m } p _ { d } ( \hat { T } _ { k } )\) . Since
-\(p _ { d } ( \hat { T } _ { 1 } )\) is independent of \(N\) ,the result
-follows after unconditioning on \(N\) □
-
-The following theorem establishes the asymptotic optimalityof the
-MTSheuristic.
-
-Theorem 2. Let
-\(u ^ { j } = \mathsf { s u p } \{ p _ { d } ^ { j } ( s ) \colon \lambda _ { d } ( s ) > 0 , 0 \leqslant s \leqslant t \} .\)
-Then
-
+Proof. Define \(\alpha^j = \int_{0}^{t} \lambda^j(s)  ds\) as in the deterministic problem, and let \(N(j)\) denote a Poisson random variable with mean \(\alpha^j\). Let \(\{ T_k : k \geqslant 1 \}\) denote the sequence of arrival times for a Poisson process with intensity \(\lambda_d^j(s), 0 \leqslant s \leqslant t\), and let \(R^j\) denote the revenue from product \(j\) under the MTS heuristic. Then we have
 \[
-\frac { J ^ { \mathrm { M T S } } ( x , t ) } { J ^ { * } ( x , t ) } \geqslant 1 - \frac { \sum _ { j = 1 } ^ { n } u ^ { j } ( \frac { 1 } { 2 } \sqrt { \alpha ^ { j } } + 1 ) } { \sum _ { j } \bar { p } ^ { j } \alpha ^ { j } } .
+\begin{array}{l}
+\displaystyle E [R^j] = E \biggl[ \sum_{k=1}^{N(j)} p_d^j(T_k^j) - \sum_{k=z^j}^{N(j)} p_d^j(T_k^j) \biggr] \\
+\displaystyle \geqslant E \biggl[ \sum_{k=1}^{N(j)} p_d^j(T_k^j) \biggr] - u^j E [(N(j) - z^j)^{+}] ,
+\end{array}
 \]
-
-Some explanation of this theorem is in order before we present a proof.
-Here, \(u ^ { j }\) is an upper bound on the price obtained for item
-\(j\) and \(\alpha ^ { j }\) is the quantity of sales under the
-deterministic policy defined by (9).In the context of the stochastic
-problem,one can think of this last quantity as the mean number of
-requests for product \(j\) over the interval \([ 0 , t ]\) when using
-the deterministic prices \(p _ { d } ( s )\) . Note that the maximum
-prices \(u ^ { j }\) must be finite, otherwise this bound is
-trivial.Theoretically，this isa somewhat a restriction,but it poses no
-real practical limitation. Provided \(u ^ { j }\) is finite for all
-products \(j _ { ; }\) ，the error term tends to zero as the quantities
-\(\boldsymbol { \alpha } ^ { j }\) increase.Thus,if the expected sales
-volumes are large,the error term above is small. We give a more precise
-interpretation of this bound after presenting the proof.
-
-Proof. Define
-\(\begin{array} { r } { \alpha ^ { j } ~ = ~ \int _ { 0 } ^ { t } ~ \lambda ^ { j } ( s ) } \end{array}\)
-ds as in the deterministic problem,and let \(N ( j )\) denote a Poisson
-random variable with mean \(\alpha ^ { j }\) Let
-\(\{ T _ { \mathcal { k } } \colon k \geqslant 1 \}\) denote the
-sequence of arrival times for a Poisson process with intensity
-\(\lambda _ { d } ^ { j } ( s ) , 0 \leqslant\) \(s \leqslant t\) ,and
-let \(R ^ { j }\) denote the revenue from product \(j\) under the MTS
-heuristic.Then we have
-
+where \(x^{+} \doteq \operatorname*{max} (x, 0)\) and \(u^j\) is the upper bound on \(p_d^j(s)\) as defined above. From Lemma 2 and Wald's equation we have that the first term above is
 \[
-\begin{array} { l } { { \displaystyle E [ R ^ { j } ] = E \biggl [ \sum _ { k = 1 } ^ { N ( j ) } p _ { d } ^ { j } ( T _ { k } ^ { j } ) - \sum _ { k = z ^ { j } } ^ { N ( j ) } p _ { d } ^ { j } ( T _ { k } ^ { j } ) \biggr ] } } \\ { { \displaystyle \geqslant E \biggl [ \sum _ { k = 1 } ^ { N ( j ) } p _ { d } ^ { j } ( T _ { k } ^ { j } ) \biggr ] - u ^ { j } E [ ( N ( j ) - z ^ { j } ) ^ { + } ] , } } \end{array}
+E \Big[ \sum_{k=1}^{N(j)} p_d^j(T_k^j) \Big] = E [N(j)] E [p_d^j(\hat{T}_k^j)] = \alpha^j \bar{p}^j .
 \]
-
-where \(x ^ { + } \doteq \operatorname* { m a x } ( x , 0 )\) and
-\(u ^ { j }\) is the upper bound on \(p _ { d } ^ { j } ( s )\) as
-defined above.From Lemma 2 and Wald's equation we have that the first
-term above is
-
+For a random variable \(D\) with mean \(\mu\) and standard deviation \(\sigma\), and for any real number \(d\), we have the following inequality due to Gallego (1992):
 \[
-E \Big [ \sum _ { k = 1 } ^ { N ( j ) } p _ { d } ^ { j } ( T _ { k } ^ { j } ) \Big ] = E [ N ( j ) ] E [ p _ { d } ^ { j } ( \hat { T } _ { k } ^ { j } ) ] = \alpha ^ { j } \bar { p } ^ { j } .
+E [(D - d)^{+}] \leqslant \frac{ \sqrt{ \sigma^{2} + (d - \mu)^2 } - (d - \mu) }{2} .
 \]
-
-For a random variable \(D\) with mean \(\mu\) and standard deviation
-\(\sigma\) ，and for any real number \(d\) ,we have the following
-inequality due to Gallego (1992):
-
+Applying this inequality to the line of (17) and noting that \(\mu = \sigma^{2} = \alpha^j\) for the Poisson distribution we obtain
 \[
-E [ ( D - d ) ^ { + } ] \leqslant \frac { \sqrt { \pmb { \sigma } ^ { 2 } + ( d - \mu ) ^ { 2 } } - ( d - \mu ) } { 2 } .
+\begin{array}{c}
+\displaystyle E [(N(j) - z^j)^{+}] \leqslant \frac{ \sqrt{ \alpha^j + (z^j - \alpha^j)^2 } - (z^j - \alpha^j) }{2} \\
+\displaystyle \leqslant \frac{ \sqrt{ \alpha^j } }{2} + \frac{ |z^j - \alpha^j| - (z^j - \alpha^j) }{2} \\
+\displaystyle \leqslant \frac{ \sqrt{ \alpha^j } }{2} + 1 ,
+\end{array}
 \]
-
-Applying this inequality to the line of (17) and noting that
-\(\mu = \sigma ^ { 2 } = \alpha ^ { j }\) for the Poisson distribution
-we obtain
-
+where the last inequality follows from the fact that \(z^j = \lfloor \alpha^j \rfloor\). Thus
 \[
-\begin{array} { c } { { E [ ( N ( j ) - z ^ { j } ) ^ { + } ] \leqslant \displaystyle \frac { \sqrt { \alpha ^ { j } + ( z ^ { j } - \alpha ^ { j } ) ^ { 2 } } - ( z ^ { j } - \alpha ^ { j } ) } { 2 } } } \\ { { \displaystyle \leqslant \displaystyle \frac { \sqrt { \alpha ^ { j } } } { 2 } + \frac { | z ^ { j } - \alpha ^ { j } | - ( z ^ { j } - \alpha ^ { j } ) } { 2 } } } \\ { { \displaystyle \leqslant \displaystyle \frac { \sqrt { \alpha ^ { j } } } { 2 } + 1 , } } \end{array}
+E [R^j] \geqslant \alpha^j \bar{p}^j - u^j \biggl( \frac{ \sqrt{ \alpha^j } }{2} + 1 \biggr) .
 \]
+Summing these revenues over all products \(j\) and recalling that Theorem 1 gives us \(J^{*}(x, t) \leqslant J^{d}(x, t) = \Sigma_j \bar{p}^j \alpha_j\) establishes the desired result.
 
-where the last inequality follows from the fact that \(z ^ { j } =\)
-\(\lfloor \alpha ^ { j } \rfloor\) Thus
-
+Remark. One can strengthen the theorem somewhat by noting that it remains true for \(u^j\) defined as the smallest \(u\) satisfying
 \[
-E [ R ^ { j } ] \geqslant \alpha ^ { j } \bar { p } ^ { j } - u ^ { j } \biggl ( \frac { \sqrt { \alpha ^ { j } } } { 2 } + 1 \biggr ) .
+u \geqslant \int_{0}^{y} p_d^j(s) \frac{ f^j(s) }{ \int_{0}^{y} f^j(\xi) d\xi } ds , \quad \forall 0 \leqslant y \leqslant t ,
 \]
-
-Summing these revenues over all products \(j\) and recalling that
-Theorem 1 gives us
-\(J ^ { * } ( x , \ t ) \ \leqslant \ J ^ { d } ( x , \ t ) \ = \ \Sigma _ { j } \ \bar { p } ^ { j } \alpha _ { j }\)
-establishes the desired result.
-
-Remark. One can strengthen the theorem somewhat by noting that it
-remains true for \(u ^ { j }\) defined as the smallest \(u\) satisfying
-
+where \(f^j(\cdot)\) is the density defined in Lemma 2 for product \(j\). Note that an upper bound on \(p_d^j(s)\) as defined in Theorem 2 certainly satisfies this inequality, though in general smaller values may work. To see this definition of \(u^j\) is valid, condition on the time \(Y\) at which the allocation \(z^j\) is exhausted. Then by an argument identical to that in Lemma 2 we have
 \[
-u \geqslant \int _ { 0 } ^ { y } p _ { d } ^ { j } ( s ) \frac { f ^ { j } ( s ) } { \int _ { 0 } ^ { y } f ^ { j } ( \xi ) d \xi } d s , \quad \forall 0 \leqslant y \leqslant t ,
+\begin{array}{rl}
+& E \Bigg[ \underset{k = z^j}{\overset{N(j)}{\sum}} p_d^j(T_k^j) \Bigg| Y = y \Bigg] \\
+& \quad = \Bigg[ \int_{0}^{y} p_d^j(s) \frac{ f^j(s) }{ \int_{0}^{y} f^j(\xi) d\xi } ds \Bigg] E [N(j) - z^j | Y = y ] ,
+\end{array}
 \]
+where the first term is defined to be zero when \(Y \geqslant t\) (equivalently, when \(N(j) \leqslant z^j\)). Applying \(u^j\) as an upper bound on the first term for \(Y < t\) and unconditioning we obtain a bound of \(u^j E [(N(j) - z^j)^{+}]\) as before.
 
-where \(f ^ { j } ( \cdot )\) is the density defined in Lemma 2 for
-product \(j\) .Note that an upper bound on \(p _ { d } ^ { j } ( s )\)
-as defined in Theorem 2 certainly satisfies this inequality,though in
-general smaller values may work. To see this definition of \(u ^ { j }\)
-is valid, condition on the time \(Y\) at which the allocation
-\(z ^ { j }\) is exhausted. Then by an argument identical to that in
-Lemma 2 we have
-
+To understand the significance of Theorem 2 more easily, consider a sequence of problems indexed by integers \(k = 1, 2, \dots\) defined by an initial vector of resources \(x_k = k x\) and a demand function \(\lambda_k(p, s) = k \lambda(p, s)\) for some fixed \(x\), \(\lambda(p, s)\) and \(t\). This generates a sequence of problems with proportionately larger sales volumes and initial stocks. It is not hard to see that this sequence of problems has the same optimal deterministic price path \(p_d(s)\) for all \(k\); hence
 \[
-\begin{array} { r l } & { E \Bigg [ \underset { k = z ^ { j } } { \overset { N ( j ) } { \sum } } p _ { d } ^ { j } ( T _ { k } ^ { j } ) | Y = y \Bigg ] } \\ & { \quad = \Bigg [ \int _ { 0 } ^ { y } p _ { d } ^ { j } ( s ) \frac { f ^ { j } ( s ) } { \int _ { 0 } ^ { y } f ^ { j } ( \xi ) d \xi } d s \Bigg ] E [ N ( j ) - z ^ { j } | Y = y ] , } \end{array}
+\begin{array}{l}
+\displaystyle \frac{J_k^{\mathrm{MTS}}(x_k, t)}{J_k^{*}(x_k, t)} \geqslant 1 - \frac{ \sum_{j=1}^{n} u^j \left( \frac{\sqrt{k}}{2} \sqrt{\alpha^j} + 1 \right) } { k \sum_{j=1}^{n} \bar{p}^j \alpha^j } \\
+= 1 - O(k^{-1/2}) ,
+\end{array}
 \]
-
-where the first term is defined to be zero when \(Y \geqslant t\)
-(equivalently, when \(N ( j ) \leqslant z ^ { j } )\) .Applying
-\(u ^ { j }\) as an upper bound on the first term for \(Y < t\) and
-unconditioning we obtain a bound of
-\(u ^ { j } E [ ( N ( j ) - z ^ { j } ) ^ { + } ]\) as before.
-
-To understand the significance of Theorem 2 more easily,consider a
-sequence of problems indexed by integers \(k = 1 , 2 , \dots\) defined
-by an initial vector of resources \(x _ { k } =\) \(k x\) and a demand
-function \(\lambda _ { k } ( p , s ) = k \lambda ( p , s )\) for some
-fixed x, \(\lambda ( p , s )\) and \(t\) .This generates a sequence of
-problems with proportionately larger sales volumes and initial stocks.
-It is not hard to see that this sequence of problems has the same
-optimal deterministic price path \(p _ { d } ( s )\) for all \(k\)
-；hence
-
-\[
-\begin{array} { l } { \displaystyle \frac { J _ { k } ^ { \mathrm { M T S } } ( x _ { k } , t ) } { J _ { k } ^ { * } ( x _ { k } , t ) } \geqslant 1 - \frac { \sum _ { j = 1 } ^ { n } u ^ { j } \left( \frac { \sqrt { k } } { 2 } \sqrt { \alpha ^ { j } } + 1 \right) } { k \sum _ { j = 1 } ^ { n } \bar { p } ^ { j } \alpha ^ { j } } } \\ { = 1 - O ( k ^ { - 1 / 2 } ) , } \end{array}
-\]
-
-where \(\alpha ^ { j }\) is defined as before for the case \(k = 1\)
-This clearly shows the MTS heuristic is asymptotically optimal as the
-scale of the problem increases \(( k \to \infty )\) ！
+where \(\alpha^j\) is defined as before for the case \(k = 1\). This clearly shows the MTS heuristic is asymptotically optimal as the scale of the problem increases \((k \to \infty)\). !
 
 \section{5.2. The Make-to-Order Policy}\label{the-make-to-order-policy}
 
-An alternative to the MTS policy is to price products according to the
-deterministic prices \(p _ { d } ( s )\) ，
-\(0 \leqslant s \leqslant t\) and then simply satisfy requests in a
-first-come-first-serve order. This idea leads to our next policy.
+An alternative to the MTS policy is to price products according to the deterministic prices \(p_d(s)\), \(0 \leqslant s \leqslant t\) and then simply satisfy requests in a first-come-first-serve order. This idea leads to our next policy.
 
-Make-to-Order (MTO) Policy. Follow the deterministic optimal price path
-\(p _ { d } ( s )\) over \([ 0 , t ]\) and assemble and sell
-productsintheorder inwhich theyare requested.Rejectrequests for a
-product \(j\) when the inventory of one or more of its resources \(i\)
-drops below \(a _ { i j }\)
+Make-to-Order (MTO) Policy. Follow the deterministic optimal price path \(p_d(s)\) over \([0, t]\) and assemble and sell products in the order in which they are requested. Reject requests for a product \(j\) when the inventory of one or more of its resources \(i\) drops below \(a_{ij}\).
 
-Before stating our main result on this policy,several definitions are
-needed.Let \(S _ { i } = \{ j \colon a _ { i j } > 0 \}\) denote the set
-of products \(j\) that use components of type \(i\) 、As before,let
-\(\begin{array} { r } { \alpha ^ { j } = \int _ { 0 } ^ { t } \lambda _ { d } ^ { j } ( s ) } \end{array}\)
-ds denote the mean number of requests for product \(j\) over
-\([ 0 , t ]\) ,and define
-\(\alpha ( S _ { i } ) = \Sigma _ { j \in S _ { i } } \alpha _ { j }\) .
-Note that \(\alpha ( S _ { i } )\) is the total expected number of
-request for products that use components of type \(i\) Let
-\(v ^ { i } = \operatorname* { m a x } \{ u ^ { j } \colon j \in S _ { i } \} .\)
-where \(u ^ { j } , j = 1 , \ldots , n\) are the uniform upper bounds on
-theprice paths defined in Theorem 2,and define
-\(\overline { { \boldsymbol { v } } } ^ { i } = \boldsymbol { v } ^ { i }\)
-\(\operatorname* { m a x } \{ a _ { i j } \colon j \in S _ { i } \}\) .
-Finally, let
-\(\hat { p } ^ { i } = \Sigma _ { j \in { s _ { i } } } \bar { p } ^ { j } \alpha ^ { j } / \alpha ( S _ { i } )\)
-and note that with this definition, the deterministic revenue can be
-written {\$\{ \textbackslash cal J \} \^{} \{ d \} ( x , t ) =
-\textbackslash Sigma \_ \{ i \} \textbackslash hat \{ p \} \^{} \{ i \}
-\textbackslash alpha ( S \_ \{ i \} )\$}
+Before stating our main result on this policy, several definitions are needed. Let \(S_i = \{ j \colon a_{ij} > 0 \}\) denote the set of products \(j\) that use components of type \(i\). As before, let \(\alpha^j = \int_{0}^{t} \lambda_d^j(s)  ds\) denote the mean number of requests for product \(j\) over \([0, t]\), and define \(\alpha(S_i) = \Sigma_{j \in S_i} \alpha_j\). Note that \(\alpha(S_i)\) is the total expected number of request for products that use components of type \(i\). Let \(v^i = \operatorname*{max} \{ u^j \colon j \in S_i \}\), where \(u^j, j = 1, \ldots, n\) are the uniform upper bounds on the price paths defined in Theorem 2, and define \(\bar{v}^i = v^i \operatorname*{max} \{ a_{ij} \colon j \in S_i \}\). Finally, let \(\hat{p}^i = \Sigma_{j \in s_i} \bar{p}^j \alpha^j / \alpha(S_i)\) and note that with this definition, the deterministic revenue can be written \(J^{d}(x, t) = \Sigma_i \hat{p}^i \alpha(S_i)\).
 
 \section{Theorem 3.}\label{theorem-3.}
-
 \[
-\frac { J ^ { \mathrm { M T O } } ( x , t ) } { J ^ { * } ( x , t ) } \geqslant 1 - \frac { \sum _ { i = 1 } ^ { m } \overline { { { v } } } ^ { i } \sqrt { \alpha ( S _ { i } ) } } { 2 \sum _ { i = 1 } ^ { m } \hat { p } ^ { i } \alpha ( S _ { i } ) } .
+\frac{J^{\mathrm{MTO}}(x, t)}{J^{*}(x, t)} \geqslant 1 - \frac{ \sum_{i=1}^{m} \bar{v}^i \sqrt{\alpha(S_i)} }{ 2 \sum_{i=1}^{m} \hat{p}^i \alpha(S_i) } .
 \]
 
-Proof.In the MTO heuristic,requests for product \(j\) are filled up
-until the first time the inventory for a resource \(i\) drops below
-\(a _ { i j }\) 、Consider a modified system in which we allow
-inventories of resources to be negative (i.e., backlogging is allowed)
-but we charge a penalty \(\boldsymbol { v } ^ { i }\) for every unit of
-resource \(i\) that is backlogged at the end of the horizon.We claim the
-net revenue (revenue minus backlog penalties) collected in this modified
-system is,pathwise，a lower bound on the revenue of the MTO heuristic.
+Proof. In the MTO heuristic, requests for product \(j\) are filled up until the first time the inventory for a resource \(i\) drops below \(a_{ij}\). Consider a modified system in which we allow inventories of resources to be negative (i.e., backlogging is allowed) but we charge a penalty \(v^i\) for every unit of resource \(i\) that is backlogged at the end of the horizon. We claim the net revenue (revenue minus backlog penalties) collected in this modified system is, pathwise, a lower bound on the revenue of the MTO heuristic.
 
-To see this,consider a request for product \(j\) at time \(s\) that is
-rejected under the MTO heuristic because the inventory of some
-component, call it \(i\) , is strictly less than \(a _ { i j }\) In the
-MTO heuristic,no revenue is collected and the inventories are left
-intact.In the modified system, the request is satisfied and revenue
-\(p ^ { j } ( s )\) is collected; however, the backlog of resource \(i\)
-is increased by at least one unit. Thus,the net revenue received from
-the arrival in the modified system is no more than
-\(p ^ { j } ( s ) \ - \ \upsilon ^ { i }\) ，which by definition of
-\(\boldsymbol { v } ^ { i }\) ，satisfies
-\(p ^ { j } ( s ) ~ - ~ v ^ { i } \leqslant p ^ { j } ( s ) ~ - ~ u ^ { j } \leqslant 0 ,\)
-Hence,revenue net of penalties does not increase.Further,there are fewer
-resources left for future requests. Thus, the net revenue of the
-modified system is no more than the revenue of the MTO heuristic for
-every sample pathasclaimed.
+To see this, consider a request for product \(j\) at time \(s\) that is rejected under the MTO heuristic because the inventory of some component, call it \(i\), is strictly less than \(a_{ij}\). In the MTO heuristic, no revenue is collected and the inventories are left intact. In the modified system, the request is satisfied and revenue \(p^j(s)\) is collected; however, the backlog of resource \(i\) is increased by at least one unit. Thus, the net revenue received from the arrival in the modified system is no more than \(p^j(s) - v^i\), which by definition of \(v^i\), satisfies \(p^j(s) - v^i \leqslant p^j(s) - u^j \leqslant 0\). Hence, revenue net of penalties does not increase. Further, there are fewer resources left for future requests. Thus, the net revenue of the modified system is no more than the revenue of the MTO heuristic for every sample path as claimed.
 
-As before, let \(\{ T _ { k } ^ { j } \colon k \geqslant 1 \}\) denote
-the sequence of arrival times of these requests.Then by comparison to
-the modified system we have
-
+As before, let \(\{ T_k^j \colon k \geqslant 1 \}\) denote the sequence of arrival times of these requests. Then by comparison to the modified system we have
 \[
-\begin{array} { c } { { \displaystyle { J ^ { \mathrm { M T O } } ( x , t ) \geqslant \sum _ { j = 1 } ^ { n } E \Bigg [ \sum _ { k = 1 } ^ { N ( j ) } p _ { d } ^ { j } ( T _ { k } ^ { j } ) \Bigg ] } } } \\ { { \displaystyle { \qquad - \sum _ { i = 1 } ^ { m } v ^ { i } E \Bigg [ \left( \sum _ { j = 1 } ^ { n } a _ { i j } N ( j ) - x ^ { i } \right) ^ { + } \Bigg ] . } } } \end{array}
+\begin{array}{c}
+\displaystyle J^{\mathrm{MTO}}(x, t) \geqslant \sum_{j=1}^{n} E \Bigg[ \sum_{k=1}^{N(j)} p_d^j(T_k^j) \Bigg] \\
+\displaystyle \qquad - \sum_{i=1}^{m} v^i E \Bigg[ \left( \sum_{j=1}^{n} a_{ij} N(j) - x^i \right)^{+} \Bigg] .
+\end{array}
 \]
-
-The first term above is simply \(J ^ { d } ( x , t )\) ,as was shown in
-the proof of Theorem 2.To bound the second sum, notice that if
-\(d \leqslant \mu\) in (18), then
-\(E ( D - d ) ^ { + } \leqslant \sigma / 2\) Consequently,
-
+The first term above is simply \(J^{d}(x, t)\), as was shown in the proof of Theorem 2. To bound the second sum, notice that if \(d \leqslant \mu\) in (18), then \(E(D - d)^{+} \leqslant \sigma / 2\). Consequently,
 \[
-E \Bigg [ \Bigg ( \sum _ { j = 1 } ^ { n } a _ { i j } N ( j ) - x ^ { i } \Bigg ) ^ { + } \Bigg ] \leqslant \frac { \sigma _ { i } } { 2 } ,
+E \Bigg[ \Bigg( \sum_{j=1}^{n} a_{ij} N(j) - x^i \Bigg)^{+} \Bigg] \leqslant \frac{\sigma_i}{2} ,
 \]
-
 where
-
 \[
-\sigma _ { i } ^ { 2 } \doteq \mathrm { V a r } \biggl [ \sum _ { j = 1 } ^ { n } a _ { i j } N ( j ) \biggr ] = \sum _ { j = 1 } ^ { n } a _ { i j } ^ { 2 } \alpha ^ { j } ,
+\sigma_i^{2} \doteq \mathrm{Var} \biggl[ \sum_{j=1}^{n} a_{ij} N(j) \biggr] = \sum_{j=1}^{n} a_{ij}^{2} \alpha^j ,
 \]
-
 and, by construction,
-
 \[
-\mu _ { i } \doteq E { \biggl [ } \sum _ { j = 1 } ^ { n } a _ { i j } N ( j ) { \biggr ] } = \sum _ { j = 1 } ^ { n } a _ { i j } \alpha ^ { j } \leqslant x ^ { i } .
+\mu_i \doteq E \biggl[ \sum_{j=1}^{n} a_{ij} N(j) \biggr] = \sum_{j=1}^{n} a_{ij} \alpha^j \leqslant x^i .
 \]
+Noting that \(\sum_{j=1}^{n} a_{ij}^{2} \alpha^j \leqslant \operatorname*{max} \{ a_{ij}^2 \colon j \in S_i \} \alpha(S_i)\), using the definition of \(\bar{v}^i\), and using Theorem 1, we establish the desired result. \(\square\)
 
-Noting that
-\(\begin{array} { r } { \sum _ { j = 1 } ^ { n } a _ { i j } ^ { 2 } \alpha ^ { j } \leqslant \operatorname* { m a x } \{ a _ { i j } ^ { 2 } \colon j \in S _ { i } \} \alpha ( S _ { i } ) } \end{array}\)
-，using the definition of
-\(\overline { { \boldsymbol { v } } } ^ { i }\) ，and using Theorem 1,we
-establish the desired result. □
+Again, by considering a sequence of problems defined by an initial vector of resources \(x_k = k x\) and a demand function \(\lambda_k(p, s) = k \lambda(p, s)\) for some fixed \(x\), \(\lambda(p, s)\) and \(t\), one can see that as \(k \to \infty\) the relative error of the MTO heuristic is \(1 - O(k^{-1/2})\). Notice, however, that in this case the error bounds depend on \(\alpha(S_i)\), the total expected requests for products that use component \(i\), and not directly on \(\alpha^j\), the number of requests for product \(j\). Thus, this bound is useful even in cases where there are arbitrarily small numbers of requests for each product, as long as the total volume of components sold is high.
 
-Again,by considering a sequence of problems defined by an initial vector
-of resources \(x _ { k } = k x\) and a demand function
-\(\lambda _ { k } ( p , s ) = k \lambda ( p , s )\) for some fixed
-\(x ,\) \(\lambda ( p , s )\) and \(t\) ,one can see that as
-\(k \to \infty\) the relative error of the MTO heuristic is
-\(1 - O ( k ^ { - 1 / 2 } )\) .Notice,however, that in this case the
-error bounds depend on \(\alpha ( S _ { i } )\) ， the total expected
-requests for products that use component \(i\) ，and not directly on
-\(\alpha ^ { j }\) ，the number of requests for product \(j\)
-，Thus,this bound is useful even in cases where there are arbitrarily
-small numbers of requests for each product,as long as the total volume
-of components sold is high.
+This behavior provides a distinct advantage over the MTS heuristic in cases where the number of products is much larger than the number of component types. For example, in airline networks there are typically a very large number of O-D combinations (products) offered with potentially few sales of any given combination occurring on a specific leg (component). A pure O-D allocation, such as in the MTS heuristic, can result in reserving only a handful of seats for each O-D market. Indeed, precisely for this reason, the airline industry has developed virtual nesting (see Smith et al.~1992 for a discussion) and other aggregation schemes to compensate for this ``small numbers'' problem.
 
-This behavior provides a distinct advantage over the MTS heuristic in
-cases where the number of products is much larger than the number of
-component types.For example,in airline networks there are typically a
-very large number of O-D combinations (products) offered with po
-tentially few sales of any given combination occurring on a specific leg
-(component).A pure O-D allocation,such as in the MTS heuristic,can
-result in reserving only a handful of seats for each O-D
-market.Indeed,precisely for this reason,the airline industry has
-developed virtual nesting (see Smith et al.~1992 for a discussion) and
-other aggregation schemes to compensate for this ``small numbers''
-problem.
+While the bounds in Theorems 2 and 3 are theoretically satisfying, they are nevertheless quite crude from a practical standpoint. However, in Section 7 we examine some results of numerical experiments that indicate the performance of the heuristics is good, even for instances where sales volumes are moderate.
 
-While the bounds in Theorems 2 and 3 are theoretically satisfying,they
-are nevertheless quite crude froma practical standpoint.However,in
-Section 7 we examine some results of numerical experiments that indicate
-the performance of the heuristics is good,even for instances where sales
-volumes are moderate.
 
-\section{6.A MODEL WITH OVERBOOKING AND
-NO-SHOWS}\label{a-model-with-overbooking-and-no-shows}
+\section{6.A MODEL WITH OVERBOOKING AND NO-SHOWS}\label{a-model-with-overbooking-and-no-shows}
 
-Because of the possibility of no-shows (customers who reserve a seat but
-do not show-up at the departure time), most airlines accept reservations
-in excess of capacity. This,however,can result in flights being
-overbooked and the possibility of refusing seats to ticketed passengers.
-When realized demand exceeds capacity,customers typically are serviced
-by an alternative source (e.g.,another flight or'a nearby hotel). In
-addition, they may be compensated for the inconvenience
-(lunch,cocktails,a free taxi ride)and to restore goodwill (a free flight
-coupon).
+Because of the possibility of no-shows (customers who reserve a seat but do not show-up at the departure time), most airlines accept reservations in excess of capacity. This, however, can result in flights being overbooked and the possibility of refusing seats to ticketed passengers. When realized demand exceeds capacity, customers typically are serviced by an alternative source (e.g., another flight or a nearby hotel). In addition, they may be compensated for the inconvenience (lunch, cocktails, a free taxi ride) and to restore goodwill (a free flight coupon).
 
-We next extend our model to allow for overbooking and no-shows.We assume
-that revenues are collected as reservations are made, that customers
-show up independently of each other just prior to the delivery of
-service,and that additional capacity can be secured at a given unit
-cost. Customers who do not show are refunded the price paid minus a
-fixed plus variable penalty. The problem is to determine the pricing,and
-overbooking policy that maximizes expected revenue.
+We next extend our model to allow for overbooking and no-shows. We assume that revenues are collected as reservations are made, that customers show up independently of each other just prior to the delivery of service, and that additional capacity can be secured at a given unit cost. Customers who do not show are refunded the price paid minus a fixed plus variable penalty. The problem is to determine the pricing and overbooking policy that maximizes expected revenue.
 
-We begin by deriving an expression for the expected revenue. Let
-\(\gamma ^ { j }\) denote the probability that a customer with a
-reservation for product \(j\) shows up; let \(c ^ { j } \geqslant 0\)
-（204号 denote the fixed fee;and \(\beta ^ { j } \in ( 0 , 1 )\) denote
-the variable percentage fee charged to a product \(j\) customer who does
-not show up.Thus,if a customer pays \(p\) dollars for product \(j\)
-，he/she obtains a refund of \(p ( 1 - \beta ^ { j } ) - c ^ { j }\)
-、We assume that the quantity refunded is nonnegative. If necessary,
-additional components of type \(i\) can be secured at a unit cost
-\(\rho _ { i }\) .Given a nonanticipating intensity control policy
-\(\lambda _ { s }\)
-\(\mathbf { \Sigma } = \mathbf { \Sigma } ( \lambda _ { s } ^ { 1 } , \ldots , \ \lambda _ { s } ^ { n } )\)
-based on the initial inventories \(\boldsymbol { x } ~ =\) （204号
-\(( x ^ { 1 } , \ldots , x ^ { n } )\) and the current history of
-reservations, the number of reservations for product
-\(j , N _ { s } ^ { j }\) is a stochastic Poisson process with random
-intensity \(\mathcal { J } _ { 0 } ^ { s } \ \lambda _ { u } ^ { j }\)
-du. Let \(\{ T _ { k } ^ { j }\) = \(k \geqslant 1 \}\) denote the jump
-points of the counting process \(N _ { s } ^ { j }\)
-\(0 \leqslant s \leqslant t\) .Then the revenue collected from sales is
-given by
-
+We begin by deriving an expression for the expected revenue. Let \(\gamma^{j}\) denote the probability that a customer with a reservation for product \(j\) shows up; let \(c^{j} \geqslant 0\) denote the fixed fee; and \(\beta^{j} \in (0, 1)\) denote the variable percentage fee charged to a product \(j\) customer who does not show up. Thus, if a customer pays \(p\) dollars for product \(j\), he/she obtains a refund of \(p (1 - \beta^{j}) - c^{j}\). We assume that the quantity refunded is nonnegative. If necessary, additional components of type \(i\) can be secured at a unit cost \(\rho_{i}\). Given a nonanticipating intensity control policy \(\lambda_s = (\lambda_s^{1}, \ldots, \lambda_s^{n})\) based on the initial inventories \(\boldsymbol{x} = (x^{1}, \ldots, x^{n})\) and the current history of reservations, the number of reservations for product \(j\), \(N_s^{j}\) is a stochastic Poisson process with random intensity \(\int_{0}^{s} \lambda_u^{j} du\). Let \(\{ T_k^{j} : k \geqslant 1 \}\) denote the jump points of the counting process \(N_s^{j}\), \(0 \leqslant s \leqslant t\). Then the revenue collected from sales is given by
 \[
-\int _ { 0 } ^ { t } \sum _ { j } p ^ { j } ( \lambda _ { s } ^ { j } , s ) \ d N _ { s } ^ { j } = \sum _ { j } \sum _ { k \geqslant 1 } p ^ { j } ( \lambda _ { T _ { k } ^ { j } } ^ { j } , T _ { k } ^ { j } ) \mathbf { 1 } ( T _ { k } ^ { j } \leqslant t ) ,
+\int_{0}^{t} \sum_{j} p^{j} (\lambda_s^{j}, s)  dN_s^{j} = \sum_{j} \sum_{k \geqslant 1} p^{j} (\lambda_{T_k^{j}}^{j}, T_k^{j}) \mathbf{1} (T_k^{j} \leqslant t) ,
 \]
+where \(\mathbf{1}(A)\) is the indicator function of the event \(A\).
 
-where \(\mathbf { 1 } ( A )\) is the indicator function of the event
-\(A\)
+To account for no-shows, let \(\{ Z_k^{j} ; k \ge 1 \}\) be a sequence of independent Bernoulli random variables taking value 1 with probability \(\gamma^{j}\) and taking value 0 with probability \(1 - \gamma^{j}\). We assume that these random variables are also independent of the counting processes \(N_s^{j}\).
 
-To account for no-shows, let \(\{ Z _ { k } ^ { j } ; k \ge 1 \}\) be a
-sequence of independent Bernoulli random variables taking value 1 with
-probability \(\gamma ^ { j }\) and taking value O with probability
-\(1 -\) \(\gamma ^ { j }\) .We assume that these random variables are
-also independent of the counting processes \(N _ { s } ^ { j }\)
-
-In our model, revenues are collected as reservations are made and later
-refunded to customers who do not show up.If we disregard the time value
-of money, the sales revenue net of refunds can be written as
-
+In our model, revenues are collected as reservations are made and later refunded to customers who do not show up. If we disregard the time value of money, the sales revenue net of refunds can be written as
 \[
-\sum _ { j } \sum _ { k \geqslant 1 } p ^ { j } \big ( \lambda _ { T _ { k } ^ { j } } ^ { j } , T _ { k } ^ { j } \big ) \mathbf { 1 } \big ( T _ { k } ^ { j } \leqslant t \big ) \mathbf { 1 } \big ( Z _ { k } ^ { j } = 1 \big ) .
+\sum_{j} \sum_{k \geqslant 1} p^{j} \big( \lambda_{T_k^{j}}^{j}, T_k^{j} \big) \mathbf{1} \big( T_k^{j} \leqslant t \big) \mathbf{1} \big( Z_k^{j} = 1 \big) .
 \]
-
-Thus,we can write the expected revenue net of refunds as
-
+Thus, we can write the expected revenue net of refunds as
 \[
-\begin{array} { r l } { { } } & { { E \sum _ { j } \gamma ^ { j } \sum _ { k \geqslant 1 } p ^ { j } ( \lambda _ { T _ { k } ^ { j } } ^ { j } , T _ { k } ^ { j } ) \mathbf { 1 } ( T _ { k } ^ { j } \leqslant t ) } } \\ { { } } & { { = E \left. _ { 0 } ^ { t } \sum _ { j } \gamma ^ { j } p ^ { j } ( \lambda _ { s } ^ { j } , s ) d N _ { s } ^ { j } . \right. } } \end{array}
+\begin{array}{rl}
+& E \sum_{j} \gamma^{j} \sum_{k \geqslant 1} p^{j} (\lambda_{T_k^{j}}^{j}, T_k^{j}) \mathbf{1} (T_k^{j} \leqslant t) \\
+& = E \int_{0}^{t} \sum_{j} \gamma^{j} p^{j} (\lambda_s^{j}, s) dN_s^{j} .
+\end{array}
 \]
-
-If variable fees are imposed, the expected revenue net of refunds can be
-obtained from the last expression by replacing \(\gamma ^ { j }\) by
-\(\gamma ^ { j } + \beta ^ { j } ( 1 - \gamma ^ { j } )\) . If fixed
-fees are also imposed, revenues are increased by
-
+If variable fees are imposed, the expected revenue net of refunds can be obtained from the last expression by replacing \(\gamma^{j}\) by \(\gamma^{j} + \beta^{j} (1 - \gamma^{j})\). If fixed fees are also imposed, revenues are increased by
 \[
-\sum _ { j } c ^ { j } \sum _ { k \geq 1 } ( T _ { k } ^ { j } \leqslant t ) \mathbf { 1 } ( Z _ { k } ^ { j } = 0 ) .
+\sum_{j} c^{j} \sum_{k \geqslant 1} \mathbf{1} (T_k^{j} \leqslant t) \mathbf{1} (Z_k^{j} = 0) .
 \]
-
-Taking expectations,this results in
-
+Taking expectations, this results in
 \[
-E \int _ { 0 } ^ { t } \sum _ { j } c ^ { j } ( 1 - \gamma ^ { j } ) \ d N _ { s } ^ { j } .
+E \int_{0}^{t} \sum_{j} c^{j} (1 - \gamma^{j})  dN_s^{j} .
 \]
-
-The number of components of type \(i\) necessary to satisfy the demands
-for reservations that show up is
-
+The number of components of type \(i\) necessary to satisfy the demands for reservations that show up is
 \[
-\sum _ { j } a _ { i j } \sum _ { k \geqslant 1 } ( T _ { k } ^ { j } \leqslant t ) \mathbf { 1 } ( Z _ { k } ^ { j } = 1 ) = \sum _ { j } a _ { i j } \int _ { 0 } ^ { t } d \bar { N } _ { s } ^ { j } ,
+\sum_{j} a_{ij} \sum_{k \geqslant 1} \mathbf{1} (T_k^{j} \leqslant t) \mathbf{1} (Z_k^{j} = 1) = \sum_{j} a_{ij} \int_{0}^{t} d \bar{N}_s^{j} ,
 \]
-
-where \(\hat { N } _ { s } ^ { j }\) is a stochastic Poisson process
-with random intensity
-\(\begin{array} { r } { \gamma ^ { j } \ \int _ { 0 } ^ { s } \lambda _ { u } ^ { j } } \end{array}\)
-du. If
-\(\Sigma _ { j } \ a _ { i j } \bar { N } _ { t } ^ { j } > x _ { i }\)
-we must purchase additional type \(i\) components at unit cost
-\(\rho _ { i }\) .Under this model, the expected net revenue under a
-nonanticipating Markovian policy \(\boldsymbol { u }\) is
-
+where \(\hat{N}_s^{j}\) is a stochastic Poisson process with random intensity \(\int_{0}^{s} \gamma^{j} \lambda_u^{j} du\). If \(\sum_{j} a_{ij} \bar{N}_t^{j} > x_i\) we must purchase additional type \(i\) components at unit cost \(\rho_i\). Under this model, the expected net revenue under a nonanticipating Markovian policy \(\boldsymbol{u}\) is
 \[
-\begin{array} { l } { \displaystyle { J ^ { u } ( x , t ) = E _ { u } \int _ { 0 } ^ { t } \sum _ { j } \big ( \gamma ^ { j } + \beta ^ { j } ( 1 - \gamma ^ { j } ) \big ) p ^ { j } ( \lambda _ { s } ^ { j } , s ) \lambda _ { s } ^ { j } d s } } \\ { \displaystyle { + E _ { u } \int _ { 0 } ^ { t } \sum _ { j } c ^ { j } ( 1 - \gamma ^ { j } ) \lambda _ { s } ^ { j } d s } } \\ { \displaystyle { - E _ { u } \sum _ { i } \rho _ { i } \Big ( \sum _ { j } a _ { i j } \bar { N } _ { t } ^ { j } - x _ { i } \Big ) ^ { + } . } } \end{array}
+\begin{array}{l}
+\displaystyle J^{u} (x, t) = E_u \int_{0}^{t} \sum_{j} \big( \gamma^{j} + \beta^{j} (1 - \gamma^{j}) \big) p^{j} (\lambda_s^{j}, s) \lambda_s^{j} ds \\
+\displaystyle \quad + E_u \int_{0}^{t} \sum_{j} c^{j} (1 - \gamma^{j}) \lambda_s^{j} ds \\
+\displaystyle \quad - E_u \sum_{i} \rho_i \Big( \sum_{j} a_{ij} \bar{N}_t^{j} - x_i \Big)^{+} .
+\end{array}
 \]
-
 As before, let
-
 \[
-J ^ { * } ( x , t ) = \operatorname* { s u p } _ { u \in \mathfrak { q } } J ^ { u } ( x , t ) .
+J^{*} (x, t) = \operatorname*{sup}_{u \in \mathcal{U}} J^{u} (x, t) .
 \]
-
 The deterministic problem can be written as
-
 \[
-\begin{array} { r l } & { J ^ { d } ( x , t ) } \\ & { \quad = \underset { \lambda ( s ) } { \operatorname* { m a x } } \Bigg \{ \int _ { 0 } ^ { t } \sum _ { j } { ( \gamma ^ { j } + \beta ^ { j } ( 1 - \gamma ^ { j } ) ) p ^ { j } ( \lambda ^ { j } ( s ) , s ) \lambda ^ { j } ( s ) d s } } \\ & { \qquad + \displaystyle \int _ { 0 } ^ { t } \sum _ { j } { c ^ { j } ( 1 - \gamma ^ { j } ) \lambda ^ { j } ( s ) d s } } \\ & { \qquad - \sum _ { i } \rho _ { i } \bigg ( \sum _ { j } { a _ { i j } \gamma ^ { j } } \bigg ) _ { 0 } ^ { t } \lambda ^ { j } ( s ) d s - x _ { i } \bigg ) ^ { + } \Bigg \} . } \end{array}
+\begin{array}{rl}
+& J^{d} (x, t) \\
+& \quad = \max_{\lambda(s)} \Bigg\{ \int_{0}^{t} \sum_{j} {(\gamma^{j} + \beta^{j} (1 - \gamma^{j})) p^{j} (\lambda^{j}(s), s) \lambda^{j}(s) ds} \\
+& \qquad + \displaystyle \int_{0}^{t} \sum_{j} {c^{j} (1 - \gamma^{j}) \lambda^{j}(s) ds} \\
+& \qquad - \sum_{i} \rho_i \bigg( \sum_{j} {a_{ij} \gamma^{j}} \int_{0}^{t} \lambda^{j}(s) ds - x_i \bigg)^{+} \Bigg\} .
+\end{array}
 \]
 
-Theorem 4.For the overbooking and no-showproblems de fined above,
-
+Theorem 4. For the overbooking and no-show problems defined above,
 \[
-J ^ { * } ( x , t ) \leqslant J ^ { d } ( x , t ) .
+J^{*} (x, t) \leqslant J^{d} (x, t) .
 \]
 
-Proof.Proceed by applying Jensen's inequality to the third term of
-\(\mathcal { I } ^ { u } ( x , t )\) in (20)and by viewing the integrand
-inside the expectation as purely a function of \(\lambda\) and
-maximizing pointwise.The result then follows as before. □
+Proof. Proceed by applying Jensen's inequality to the third term of \(J^{u} (x, t)\) in (20) and by viewing the integrand inside the expectation as purely a function of \(\lambda\) and maximizing pointwise. The result then follows as before. \(\square\)
 
-Again,the solution to the deterministic problem sug gests two heuristics
-for the stochastic problem.Let \(\lambda _ { d } ( s )\) be the vector
-of optimal deterministic intensities,and set
-\(\begin{array} { r } { \alpha ^ { j } = \int _ { 0 } ^ { t } \lambda _ { d } ^ { j } ( s ) d s } \end{array}\)
-,and \(z ^ { j } = \lfloor \alpha ^ { j } \rfloor .\) The make-to-stock
-(MTS) heuristic accepts up to \(z ^ { j }\) requests for product \(j\)
-The make-to-order(MTO) heuristic accepts all requests.Both heuristics
-can be shown to be asymptotically optimal, though in the interest of
-space we shall provide only the theorem and proof for the MTO
-heuristic.The next theorem shows that the revenue loss of the MTO
-heuristic is \(O ( \Sigma _ { i } \ \sqrt { \alpha ( S _ { i } ) } )\) .
-Since \(\boldsymbol { J } ^ { d } ( \boldsymbol { x } , \ t )\) is
-\(O ( \sum _ { i } \alpha ( S _ { i } ) )\) ，this result together with
-Theorem 4 implies asymptotic optimality of the MTO heuristic.
+Again, the solution to the deterministic problem suggests two heuristics for the stochastic problem. Let \(\lambda_d(s)\) be the vector of optimal deterministic intensities, and set \(\alpha^{j} = \int_{0}^{t} \lambda_d^{j}(s) ds\), and \(z^{j} = \lfloor \alpha^{j} \rfloor\). The make-to-stock (MTS) heuristic accepts up to \(z^{j}\) requests for product \(j\). The make-to-order (MTO) heuristic accepts all requests. Both heuristics can be shown to be asymptotically optimal, though in the interest of space we shall provide only the theorem and proof for the MTO heuristic. The next theorem shows that the revenue loss of the MTO heuristic is \(O (\sum_{i} \sqrt{\alpha(S_i)})\). Since \(J^{d} (\boldsymbol{x}, t)\) is \(O (\sum_{i} \alpha(S_i))\), this result together with Theorem 4 implies asymptotic optimality of the MTO heuristic.
 
 \section{Theorem 5.}\label{theorem-5.}
-
 \[
-J ^ { \mathrm { M T O } } ( x , t ) \geqslant J ^ { d } ( x , t ) - \frac { 1 } { 2 } \sum _ { i } \bar { w } ^ { i } \sqrt { \alpha ( S _ { i } ) } ,
+J^{\mathrm{MTO}} (x, t) \geqslant J^{d} (x, t) - \frac{1}{2} \sum_{i} \bar{w}^{i} \sqrt{\alpha(S_i)} ,
 \]
-
 where
-\(\bar { w } ^ { i } = \rho _ { i } \operatorname* { m a x } \{ a _ { i j } \sqrt { \gamma j } \colon j \in S _ { i } \}\)
+\[
+\bar{w}^{i} = \rho_i \operatorname*{max} \{ a_{ij} \sqrt{\gamma^j} \colon j \in S_i \}
+\]
 
 Proof. The expected value of the make-to-order heuristic is given by
-
 \[
-\begin{array} { l l l } { \displaystyle { J ^ { \mathrm { M T O } } ( x , t ) = \int _ { 0 } ^ { t } \sum _ { j } { ( \gamma ^ { j } + \beta ^ { j } ( 1 - \gamma ^ { j } ) ) p ^ { j } ( \lambda _ { d } ^ { j } ( s ) , s ) \lambda _ { d } ^ { j } ( s ) d s } } } \\ { \displaystyle { \quad \quad + \int _ { 0 } ^ { t } \sum _ { j } { c ^ { j } ( 1 - \gamma ^ { j } ) \lambda _ { d } ^ { j } ( s ) d s } } } \\ { \displaystyle { \quad \quad - E \sum _ { i } { \rho _ { i } \Big ( \sum _ { j } { a _ { i j } \hat { N } _ { t } ^ { j } - x _ { i } } \Big ) ^ { + } } , } } \end{array}
+\begin{array}{ll}
+\displaystyle J^{\mathrm{MTO}} (x, t) = \int_{0}^{t} \sum_{j} {(\gamma^{j} + \beta^{j} (1 - \gamma^{j})) p^{j} (\lambda_d^{j}(s), s) \lambda_d^{j}(s) ds} \\
+\displaystyle \quad + \int_{0}^{t} \sum_{j} {c^{j} (1 - \gamma^{j}) \lambda_d^{j}(s) ds} \\
+\displaystyle \quad - E \sum_{i} {\rho_i \Big( \sum_{j} {a_{ij} \hat{N}_t^{j} - x_i} \Big)^{+}} ,
+\end{array}
 \]
+where \(\hat{N}_s^{j}\) is a Poisson process with deterministic intensity \(\int_{0}^{s} \gamma^{j} \lambda_d^{j}(u) du\). Note that the first two terms of \(J^{\mathrm{MTO}} (x, t)\) are equal to those of \(J^{d} (\boldsymbol{x}, t)\).
 
-where \(\hat { N } _ { s } ^ { j }\) is a Poisson process with
-deterministic intensity （20
-\(\begin{array} { r } { \int _ { 0 } ^ { s } \gamma ^ { j } \lambda _ { d } ^ { j } ( u ) } \end{array}\)
-du. Note that the first two terms of
-\(J ^ { \mathrm { M T O } } ( x , t )\) are equal to those of
-\(\boldsymbol { J } ^ { d } ( \boldsymbol { x } , t )\)
-
-To establish the asymptotic optimality of the MTO heuristic we need a
-slight variant of (18).Let \(D\) be a random variable with mean \(\mu\)
-and variance \(\sigma ^ { 2 }\) ,writing
-\(\begin{array} { r } { ( D - d ) ^ { + } = } \end{array}\)
-\({ \scriptstyle { \frac { 1 } { 2 } } } ( | D - d | + ( D - { \dot { d } } ) )\)
-,taking expectations and using the Cauchy-Schwartz inequality,we obtain
-
+To establish the asymptotic optimality of the MTO heuristic we need a slight variant of (18). Let \(D\) be a random variable with mean \(\mu\) and variance \(\sigma^{2}\), writing \((D - d)^{+} = \frac{1}{2} ( |D - d| + (D - d) )\), taking expectations and using the Cauchy-Schwartz inequality, we obtain
 \[
-\begin{array} { l } { { \displaystyle E ( D - d ) ^ { + } \leqslant \frac { 1 } { 2 } \sqrt { \sigma ^ { 2 } + ( \mu - d ) ^ { 2 } } + \frac { 1 } { 2 } ( \mu - d ) \leqslant \frac { 1 } { 2 } \sigma } } \\ { { \displaystyle ~ + \frac { 1 } { 2 } ( | \mu - d | + ( \mu - d ) ) = \frac { 1 } { 2 } \sigma + ( \mu - d ) ^ { + } . } } \end{array}
+\begin{array}{l}
+\displaystyle E (D - d)^{+} \leqslant \frac{1}{2} \sqrt{\sigma^{2} + (\mu - d)^{2}} + \frac{1}{2} (\mu - d) \leqslant \frac{1}{2} \sigma \\
+\displaystyle \quad + \frac{1}{2} (|\mu - d| + (\mu - d)) = \frac{1}{2} \sigma + (\mu - d)^{+} .
+\end{array}
 \]
-
-Applying this to the last term of
-\(J ^ { \mathrm { M T O } } ( x , t )\) in (21) we obtain
-
+Applying this to the last term of \(J^{\mathrm{MTO}} (x, t)\) in (21) we obtain
 \[
-\begin{array} { l } { { \displaystyle E \sum _ { i } \rho _ { i } \Big ( \sum _ { j } a _ { i j } \hat { N } _ { t } ^ { j } - x _ { i } \Big ) ^ { + } \leqslant \frac { 1 } { 2 } \sum _ { i } \rho _ { i } \sqrt { \sum _ { j } a _ { i j } ^ { 2 } \gamma ^ { j } \alpha ^ { j } } } } \\ { { + \sum _ { i } \rho _ { i } \Big ( \sum _ { j } a _ { i j } \gamma ^ { j } \alpha ^ { j } - x _ { i } \Big ) ^ { + } , } } \end{array}
+\begin{array}{l}
+\displaystyle E \sum_{i} \rho_i \Big( \sum_{j} a_{ij} \hat{N}_t^{j} - x_i \Big)^{+} \leqslant \frac{1}{2} \sum_{i} \rho_i \sqrt{ \sum_{j} a_{ij}^{2} \gamma^{j} \alpha^{j} } \\
+\displaystyle \quad + \sum_{i} \rho_i \Big( \sum_{j} a_{ij} \gamma^{j} \alpha^{j} - x_i \Big)^{+} ,
+\end{array}
 \]
-
-which when substituted for the third term of (21）and using the
-definition of \(\hat { w } ^ { i }\) proves Theorem 5. □
+which when substituted for the third term of (21) and using the definition of \(\bar{w}^{i}\) proves Theorem 5. \(\square\)
 
 \section{7.NUMERICAL EXAMPLES}\label{numerical-examples}
 
-We next examine several example applications of our model and the
-results of some numerical experiments.Because the model presented in the
-previous sections is quite general, there are many problems that one can
-investigate using it.We have selected only a representative sample, each
-one chosen to illustrate a specific problem characteristic.In
-general,one could combine the characteristics of these examples to
-obtain increasingly realistic formulations.In addition to illustrating
-model formulations,the examples also provide insights into some
-fundamental characteristics of yield management problems.
+We next examine several example applications of our model and the results of some numerical experiments. Because the model presented in the previous sections is quite general, there are many problems that one can investigate using it. We have selected only a representative sample, each one chosen to illustrate a specific problem characteristic. In general, one could combine the characteristics of these examples to obtain increasingly realistic formulations. In addition to illustrating model formulations, the examples also provide insights into some fundamental characteristics of yield management problems.
 
-Example 1 examines a network problem that is time homogeneous,has no
-product differentiation and has no constraints on the O-D prices.Example
-2 looks at this same network with two well-differentiated fare class
-products for each O-D pair.In this example,we assume the differentiation
-is not based on time,so fare class products are sold
-simultaneously.Finally,Example 3 looks at this same network when
-overbooking and no-shows are allowed.A common finding in all these cases
-is that using correctly chosen fixed prices along with a simple
-allocations scheme like FCFS (the MTO heuristic) is quite close to
-optimal.
+Example 1 examines a network problem that is time homogeneous, has no product differentiation and has no constraints on the O-D prices. Example 2 looks at this same network with two well-differentiated fare class products for each O-D pair. In this example, we assume the differentiation is not based on time, so fare class products are sold simultaneously. Finally, Example 3 looks at this same network when overbooking and no-shows are allowed. A common finding in all these cases is that using correctly chosen fixed prices along with a simple allocations scheme like FCFS (the MTO heuristic) is quite close to optimal.
 
-These findings would seem to suggest that current yield management,with
-itsmultiple fares and booking limit allocation schemes,is unlikely to be
-more effective than sim ple FCFS allocation.However，we next look at
-several scenarios in which these practices are indeed effective.The
-first(Example 4) iswhen,asa matter of practical necessity, fares for
-each problem instance cannot be set freely, aswas assumed in
-Examples1-3.The second case (Example 5） is when the demand function
-changes over time, either due to changes in the perceived value of the
-products or through time-of-purchase product differentiation The final
-case (Example 6) is when products are misspriced.In all these cases,we
-show that a multiple-price, dynamic-allocation scheme can indeed be
-quite effective. The examples help explain more precisely much of the
-phenomenon that yield management systems are exploiting.
+These findings would seem to suggest that current yield management, with its multiple fares and booking limit allocation schemes, is unlikely to be more effective than simple FCFS allocation. However, we next look at several scenarios in which these practices are indeed effective. The first (Example 4) is when, as a matter of practical necessity, fares for each problem instance cannot be set freely, as was assumed in Examples 1-3. The second case (Example 5) is when the demand function changes over time, either due to changes in the perceived value of the products or through time-of-purchase product differentiation. The final case (Example 6) is when products are mispriced. In all these cases, we show that a multiple-price, dynamic-allocation scheme can indeed be quite effective. The examples help explain more precisely much of the phenomenon that yield management systems are exploiting.
 
-\section{7.1.Airline Network Pricing
-Examples}\label{airline-network-pricing-examples}
+\section{7.1.Airline Network Pricing Examples}\label{airline-network-pricing-examples}
 
-Consider the following network model. A carrier network is described by
-a directed graph \(G = ( V , E )\) ，where \(V\) is the set of \(n\)
-cities serviced by the carrier and an edge \(( i , j )\) \(\in E\)
-represents a scheduled flight on a leg from city \(i\) to city \(j\) We
-let \(c _ { i j }\) denote the capacity of edge \(( i , j )\) ,i.e., the
-number of seats available on this flight leg.All capacities are defined
-with respect to a given day t.At each time \(s\)
-\(0 \leqslant s \leqslant t\) ，the carrier can set the
-\(n ( n \mathrm { ~ - ~ } 1 )\) prices, \(p _ { s } ^ { i j }\) ,for all
-possible origin-destination pairs \(i\) and \(j , i \neq j\) .These
-prices induce demand intensities for the various origindestination (O-D)
-pairs through demand functions \(\lambda ^ { i j } ( p ^ { i j } )\)
-There is a fixed path (itinerary) \(\pi _ { i j } .\) ,indexing a subset
-of \(E\) that forms a directed path from \(i\) to \(j ,\) ,associated
-with each O-D pair \(i , j\) .We shall index O-D pairs by \(\pi .\) .The
-objective is to adjust origin-destination prices and allocate leg
-capacity among the O-D pairs over time in order to maximize the expected
-revenue received prior to the departure time t.
+Consider the following network model. A carrier network is described by a directed graph \(G = (V, E)\), where \(V\) is the set of \(n\) cities serviced by the carrier and an edge \((i, j) \in E\) represents a scheduled flight on a leg from city \(i\) to city \(j\). We let \(c_{ij}\) denote the capacity of edge \((i, j)\), i.e., the number of seats available on this flight leg. All capacities are defined with respect to a given day \(t\). At each time \(s\), \(0 \leqslant s \leqslant t\), the carrier can set the \(n(n - 1)\) prices, \(p_s^{ij}\), for all possible origin-destination pairs \(i\) and \(j\), \(i \neq j\). These prices induce demand intensities for the various origin-destination (O-D) pairs through demand functions \(\lambda^{ij} (p^{ij})\). There is a fixed path (itinerary) \(\pi_{ij}\), indexing a subset of \(E\) that forms a directed path from \(i\) to \(j\), associated with each O-D pair \(i, j\). We shall index O-D pairs by \(\pi\). The objective is to adjust origin-destination prices and allocate leg capacity among the O-D pairs over time in order to maximize the expected revenue received prior to the departure time \(t\).
 
-We note that several generalizations of this formulation are possible.In
-particular, there is no need to have a unique path connecting each pair
-of nodes.An arbitrary (or the complete） set of paths between nodes
-could be offered and priced either individually or jointly as discussed
-in Section 4.3.Indeed, the paths for all our examples were in fact
-selected by solving a problem that initially makes available all
-possible paths between nodes.For simplicity,however,we assume a unique
-path connects each pair of nodes.
+We note that several generalizations of this formulation are possible. In particular, there is no need to have a unique path connecting each pair of nodes. An arbitrary (or the complete) set of paths between nodes could be offered and priced either individually or jointly as discussed in Section 4.3. Indeed, the paths for all our examples were in fact selected by solving a problem that initially makes available all possible paths between nodes. For simplicity, however, we assume a unique path connects each pair of nodes.
 
-In our network examples, we use a revenue function that is separable and
-time homogeneous,
+In our network examples, we use a revenue function that is separable and time homogeneous,
 
-\pandocbounded{\includegraphics[keepaspectratio]{images/1494ebfe770846ab8efb95a5f8db0fae00770070581c7e59673110ad31c94feb.jpg}}\\
-Figure1.A six-node,two-hubairlinenetwork.
+\begin{figure}[h]
+\centering
+\caption{A six-node, two-hub airline network.}
+\label{fig:network}
+% Note: The original text included an image reference that couldn't be copied. Placeholder for figure.
+\end{figure}
 
 \[
-r ( \lambda ) = \sum _ { \pi } \lambda _ { \pi } p _ { \pi } ( \lambda _ { \pi } ) .
+r(\lambda) = \sum_{\pi} \lambda_{\pi} p_{\pi} (\lambda_{\pi}) .
 \]
 
-Alog-linear demand function of the form
+A log-linear demand function of the form
 
 \[
-\lambda ( p ) = \lambda _ { 0 } e ^ { - \epsilon _ { 0 } ( p / p _ { 0 } - 1 ) } ,
+\lambda(p) = \lambda_{0} e^{-\epsilon_{0} (p / p_{0} - 1)} ,
 \]
 
-was used for each itinerary \(\pi\) where \(p _ { 0 }\) is interpreted
-as a reference price, \(\lambda _ { 0 }\) is the demand rate at the
-reference price, and \(\epsilon _ { 0 }\) is the magnitude of the
-elasticity of demand at the reference price.This log-linear demand
-function has a unique inverse
+was used for each itinerary \(\pi\) where \(p_{0}\) is interpreted as a reference price, \(\lambda_{0}\) is the demand rate at the reference price, and \(\epsilon_{0}\) is the magnitude of the elasticity of demand at the reference price. This log-linear demand function has a unique inverse
 
 \[
-p ( \lambda ) = ( \epsilon _ { 0 } ^ { - 1 } \ln ( \lambda _ { 0 } / \lambda ) + 1 ) p _ { 0 } .
+p(\lambda) = (\epsilon_{0}^{-1} \ln (\lambda_{0} / \lambda) + 1) p_{0} .
 \]
 
-There is a column in the bill-of-materials matrix \(A\) foreach
-itinerary \(\pi\) and rows of \(A\) correspond to flight legs (edges).
-An element \(\scriptstyle a _ { \pi e }\) of \(A\) is one if the
-itinerary \(\pi\) uses edge \(e\) and is zero otherwise.With this
-identification, the problem reduces to an instance of the multiproduct
-problem. The deterministic version of this problem is a separable
-nonlinear program.We emphasize that the separability and time
-homogeneity assumptions are imposed to simplify the numerical
-calculations only; they are not required for the theoretical results of
-the previous sections to hold.
+There is a column in the bill-of-materials matrix \(A\) for each itinerary \(\pi\) and rows of \(A\) correspond to flight legs (edges). An element \(a_{\pi e}\) of \(A\) is one if the itinerary \(\pi\) uses edge \(e\) and is zero otherwise. With this identification, the problem reduces to an instance of the multiproduct problem. The deterministic version of this problem is a separable nonlinear program. We emphasize that the separability and time homogeneity assumptions are imposed to simplify the numerical calculations only; they are not required for the theoretical results of the previous sections to hold.
 
-7.1.1.Example 1:Undifferentiated Network. Our first example illustrates
-the basic pricing problem with no price constraints and no product
-differentiation.It is based on the six-node example of a hypothetical
-airline network shown in Figure 1. Nodes 2 and 3 are``hub'' nodes.Leg
-seat capacities are shown and were chosen to approximate the number of
-seats on a single aircraft.
+\section{7.1.1.Example 1: Undifferentiated Network}\label{undifferentiated-network}
 
-Parameter values for the demand functions of all O-D pairs are shown in
-Table I along with the path (itinerary) used by each pair.The
-valuesshown in TableIare essentially arbitrary and were chosen merely to
-illustrate the performance of the heuristics; however,it is not hard to
-see that the revenue of the heuristics is affected only by the
-deterministic O-D prices and seat allocations,which are shown in the
-last two columns in Table I. These prices and seat allocations are
-reasonable approximations of those found in actual airline applications.
+Our first example illustrates the basic pricing problem with no price constraints and no product differentiation. It is based on the six-node example of a hypothetical airline network shown in Figure 1. Nodes 2 and 3 are "hub" nodes. Leg seat capacities are shown and were chosen to approximate the number of seats on a single aircraft.
 
-The deterministic problem was formulated and solved using a nonlinear
-programming routine. The resulting prices and seat allocations are given
-in Table I. The solutionresulted inatotal revenue of \(\$ 661,200\)
-across all O-D pairs.
+Parameter values for the demand functions of all O-D pairs are shown in Table I along with the path (itinerary) used by each pair. The values shown in Table I are essentially arbitrary and were chosen merely to illustrate the performance of the heuristics; however, it is not hard to see that the revenue of the heuristics is affected only by the deterministic O-D prices and seat allocations, which are shown in the last two columns in Table I. These prices and seat allocations are reasonable approximations of those found in actual airline applications.
 
-We next simulated both the MTS and MTO heuristic derived from this
-deterministic solution.To illustrate their performance over a range of
-demand volumes, the common value of \(\lambda ^ { 0 } = 3 0 0\) in Table
-I as well as the leg capacities where scaled as shown in Table II. For
-example,a scale factor of 2 corresponds to leg capacities that are twice
-those shown in Figure 1 and a value of \(\lambda _ { 0 } = 6 0 0\)
-rather than 3OO for all demand functions in Table I.This scaling does
-not change the optimal prices shown in Table I. In practice,such an
-increase in volume may occur when aggregating the capacity of several
-flights.
+The deterministic problem was formulated and solved using a nonlinear programming routine. The resulting prices and seat allocations are given in Table I. The solution resulted in a total revenue of \$661,200 across all O-D pairs.
 
-Table I Demand Function Parameters, Itineraries,and Optimal
-Deterministic Solution for Example 1
+We next simulated both the MTS and MTO heuristic derived from this deterministic solution. To illustrate their performance over a range of demand volumes, the common value of \(\lambda_0 = 300\) in Table I as well as the leg capacities were scaled as shown in Table II. For example, a scale factor of 2 corresponds to leg capacities that are twice those shown in Figure 1 and a value of \(\lambda_0 = 600\) rather than 300 for all demand functions in Table I. This scaling does not change the optimal prices shown in Table I. In practice, such an increase in volume may occur when aggregating the capacity of several flights.
 
-\begin{longtable}[]{@{}llllllll@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\multirow{2}{*}{Market} & \multirow{2}{*}{D} & \multicolumn{3}{l}{%
-Demand Function} & \multirow{2}{*}{Path} & \multicolumn{2}{l@{}}{%
-Opt. Det. Sol.} \\
-& & 入 & E & Po & & \# Seats & Price \\
-0 1 & 2 & 300 & 1.0 & 220 & 1-2 & 135 & \$396.62 \\
-1 & 3 & 300 & 1.2 & 220 & 1-3 & 67 & \$495.86 \\
-1 & 4 & 300 & 2.0 & 400 & 1-2-4 & 165 & \$520.11 \\
-1 & 5 & 300 & 1.0 & 250 & 1-3-5 & 33 & \$752.04 \\
-1 & 6 & 300 & 0.8 & 200 & 1-6 & 100 & \$525.58 \\
-2 & 3 & 300 & 1.0 & 230 & 2-3 & 168 & \$364.28 \\
-2 & 4 & 300 & 0.9 & 200 & 2-4 & 143 & \$365.74 \\
-2 & 5 & 300 & 2.0 & 200 & 2-3-5 & 32 & \$423.79 \\
-2 & 6 & 300 & 1.0 & 200 & 2-4-6 & 92 & \$436.80 \\
-3 & 2 & 300 & 1.0 & 200 & 3-2 & 200 & \$281.76 \\
-3 & 4 & 300 & 2.0 & 230 & 3-4 & 131 & \$325.30 \\
-3 & 5 & 300 & 2.0 & 120 & 3-5 & 35 & \$249.51 \\
-3 & 6 & 300 & 2.0 & 150 & 3-4-6 & 14 & \$378.60 \\
-4 & 6 & 300 & 1.0 & 150 & 4-6 & 162 & \$243.30 \\
-5 & 2 & 300 & 1.0 & 200 & 5-2 & 100 & \$420.39 \\
-5 & 3 & 300 & 2.0 & 150 & 5-3 & 47 & \$289.90 \\
-5 & 4 & 300 & 1.0 & 160 & 5-3-4 & 21 & \$585.20 \\
-5 & 6 & 300 & 1.0 & 230 & 5-3-4-6 & 32 & \$748.50 \\
-\end{longtable}
-
-Table II Simulation Results for Example 1
-
-\begin{longtable}[]{@{}|l|l|l|l|l|l|@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
+\begin{longtable}{|l|l|l|l|l|l|}
 \hline
-\multicolumn{2}{@{}l}{%
-Problem Instance} & \multicolumn{2}{l}{%
-MTO} & \multicolumn{2}{l@{}}{%
-MTS} \\
+\multicolumn{2}{|l|}{Problem Instance} & \multicolumn{2}{l|}{MTO} & \multicolumn{2}{l|}{MTS} \\
 \hline
-Scale & Upper Bound (\()</td><td>Revenue (\)) & \% UB & Revenue (\$) &
-\% UB & \\
+Scale & Upper Bound (\$) & Revenue (\$) & \% UB & Revenue (\$) & \% UB \\
 \hline
 0.1 & 66,120 & 58,001 & 87.72\% & 54,510 & 82.44\% \\
 \hline
@@ -1036,229 +628,75 @@ Scale & Upper Bound (\()</td><td>Revenue (\)) & \% UB & Revenue (\$) &
 \hline
 \end{longtable}
 
-Both heuristics were simulated for each instance,and the resulting
-expected revenue was estimated. All point estimates for expected
-revenues have a relative error of \(\pm 1 \%\) with \(9 5 \%\)
-confidence.Table II shows both the dollar revenue and the revenue as a
-percentage of the deterministic upper bound.
+Both heuristics were simulated for each instance, and the resulting expected revenue was estimated. All point estimates for expected revenues have a relative error of \(\pm 1\%\) with \(95\%\) confidence. Table II shows both the dollar revenue and the revenue as a percentage of the deterministic upper bound.
 
-The simulation results reveal several interesting insights.
-First,observe that the revenue from the MTO heuristic dominates that of
-the MTS heuristic in all cases.Thus,it appears that if prices are set
-correctly,``protecting'' space for specific O-D pairs,as is done in the
-MTS heuristic,is not effective; the simple FCFS allocation of the MTO
-heuristic is better. Second, even relative to an optimal policy the
-performance of MTO is surprisingly good. Indeed,in the original problem
-(scale factor 1.O),the results show that at most \(3 . 6 8 \%\) (in
-expectation） additional revenue could possibly be captured by using a
-scheme more sophisticated than a fixed-price policy based on the
-deterministic model together with a FCFS allocation (MTO)-and the
-potential increase could be even less,since this figure is only an upper
-bound on the optimality gap.Nevertheless, for most commercial airlines a
-\(3- 4 \%\) potential increase in revenues is a significant amount of
-money and would likely justify more sophisticated pricing and/or
-allocation schemes.
+The simulation results reveal several interesting insights. First, observe that the revenue from the MTO heuristic dominates that of the MTS heuristic in all cases. Thus, it appears that if prices are set correctly, "protecting" space for specific O-D pairs, as is done in the MTS heuristic, is not effective; the simple FCFS allocation of the MTO heuristic is better. Second, even relative to an optimal policy the performance of MTO is surprisingly good. Indeed, in the original problem (scale factor 1.0), the results show that at most \(3.68\%\) (in expectation) additional revenue could possibly be captured by using a scheme more sophisticated than a fixed-price policy based on the deterministic model together with a FCFS allocation (MTO)—and the potential increase could be even less, since this figure is only an upper bound on the optimality gap. Nevertheless, for most commercial airlines a \(3-4\%\) potential increase in revenues is a significant amount of money and would likely justify more sophisticated pricing and/or allocation schemes.
 
-One way to capture some of the additional potential expected revenue is
-to find the fixed prices that maximize the expected revenue subject to a
-prespecified allocation scheme such as FCFS; see Gallego and van Ryzin
-for a discussion on optimal fixed prices for the stochastic problem.An
-alternative way to capture additional second way to capture some of the
-additional potential expected reve nue is to find more sophisticated
-allocation policies given a fixed pricing policy.
+One way to capture some of the additional potential expected revenue is to find the fixed prices that maximize the expected revenue subject to a prespecified allocation scheme such as FCFS; see Gallego and van Ryzin for a discussion on optimal fixed prices for the stochastic problem. An alternative way to capture some of the additional potential expected revenue is to find more sophisticated allocation policies given a fixed pricing policy.
 
-7.1.2.Example 2: Differentiated Network. Suppose a welldifferentiated
-super-saver and full-coach product exists for each O-D pair of the
-network from Example 1. For simplicity,we assume that these products are
-differentiated by travel restrictions,cancellation policies or other
-mechanisms not related to the time of purchase. (Timedependent
-restrictions are discussed in Section 7.1.4.) In this way，sales of the
-two products occur concurrently throughout the time horizon. Sequential
-sales,as is usually assumed in airline yield management models,or
-partial overlapping of sales could be modeled by making each product's
-demand function time dependent.
+\section{7.1.2.Example 2: Differentiated Network}\label{differentiated-network}
 
-We model product differentiation using virtual nodes at each city \(i\)
-to represent the demand from each market segment.These virtual nodes are
-then connected to the physical node \(i\) via infinite capacity
-links.Thus, the virtual nodes``compete''for the same physical capacities
-on the legs of the network.Figure 2 shows the network of Figure 1
-modified using virtual nodes to account for two classes of demand
-originating at each node. The revenue function is separable and demand
-functions are the same log-linear form as in Example 1. Data function
-parameters, itinerar ies and the optimal deterministic prices and sales
-are shown in Table III. The magnitude of the super-saver demand
-elasticities is either 3.O or 3.5,and this demand has a higher intensity
-\(\left( \lambda _ { 0 } \right)\) for each O-D pair; full-coach demand
-has an elasticity of magnitude O.5 and a lower intensity for each O-D
-pair.Again, these values were chosen merely to illustrate the model;
-further, they are not related to the values from Example 1.In
-addition,the paths for each O-D pairs are also not necessarily related
-to those in Example 1.
+Suppose a well-differentiated super-saver and full-coach product exists for each O-D pair of the network from Example 1. For simplicity, we assume that these products are differentiated by travel restrictions, cancellation policies or other mechanisms not related to the time of purchase. (Time-dependent restrictions are discussed in Section 7.1.4.) In this way, sales of the two products occur concurrently throughout the time horizon. Sequential sales, as is usually assumed in airline yield management models, or partial overlapping of sales could be modeled by making each product's demand function time dependent.
 
-The simulation results for a series of scaled versions of this problem
-are shown in Table IV.As in Example 1, the results show that the both
-the MTO and MTS heuristics are effective with large sales volumes (scale
-factor 10.0), but again MTO dominates MTS in all instances.Note the
-relative performance of the MTS heuristic is somewhat worse than in
-Example 1.This suggests that on problems with a higher level of detail
-(e.g.,many itineraries and fare
+We model product differentiation using virtual nodes at each city \(i\) to represent the demand from each market segment. These virtual nodes are then connected to the physical node \(i\) via infinite capacity links. Thus, the virtual nodes "compete" for the same physical capacities on the legs of the network. Figure 2 shows the network of Figure 1 modified using virtual nodes to account for two classes of demand originating at each node. The revenue function is separable and demand functions are the same log-linear form as in Example 1. Data function parameters, itineraries and the optimal deterministic prices and sales are shown in Table III. The magnitude of the super-saver demand elasticities is either 3.0 or 3.5, and this demand has a higher intensity \((\lambda_0)\) for each O-D pair; full-coach demand has an elasticity of magnitude 0.5 and a lower intensity for each O-D pair. Again, these values were chosen merely to illustrate the model; further, they are not related to the values from Example 1. In addition, the paths for each O-D pairs are also not necessarily related to those in Example 1.
 
-\pandocbounded{\includegraphics[keepaspectratio]{images/3e009a1b3cb8adff65483f0cfd3b3f6ab7f2279ed56919b4353d7dcc0bf105a3.jpg}}\\
-Figure 2.Example with two fare classes at each origin (dashed lines are
-infinite capacity edges).
+\begin{figure}[h]
+\centering
+\caption{Example with two fare classes at each origin (dashed lines are infinite capacity edges).}
+\label{fig:fare-classes}
+% Note: Placeholder for figure
+\end{figure}
 
-Table III DemandFunction Parameters,Itineraries,and Optimal
-Deterministic Solution for Example 2
-
-\begin{longtable}[]{@{}lllllllll@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\multicolumn{2}{@{}l}{%
-\multirow{2}{*}{1 Market}} & \multicolumn{3}{l}{%
-\multirow{2}{*}{Demand Function}} & \multirow{2}{*}{} &
-\multicolumn{3}{l@{}}{%
-} \\
-& & & & & & \multicolumn{2}{l}{%
-} & Opt. Det. Sol. \\
-0 & D & & 入 & & Po & Path & \# Seats & Price \\
-7 & 2 & 30 & 0.5 & 320 & 7-1-2 & 15 & &
-\(749.17</td></tr><tr><td>7</td><td>3</td><td>30</td><td>0.5</td><td>320</td><td></td><td>7-1-3</td><td>14</td><td>\)
-804.34 \\
-7 & 4 & 30 & 0.5 & 400 & 7-1-2-4 & & 14 &
-\(1001.79</td></tr><tr><td>7</td><td>5</td><td>30</td><td>0.5</td><td>300</td><td></td><td>7-1-6</td><td>14</td><td>\)
-866.25 \\
-7 & 6 & 30 & 0.5 & 350 & & 7-1-3-5 & 11 &
-\(879.32</td></tr><tr><td>8</td><td>2</td><td>200</td><td>3.0</td><td>160</td><td></td><td>8-1-2</td><td>197</td><td>\)
-160.89 \\
-8 & 3 & 200 & 3.0 & 160 & & 8-1-3 & 69 &
-\(216.85</td></tr><tr><td>8</td><td>4</td><td>200</td><td>3.0</td><td>200</td><td></td><td>8-1-2-4</td><td>74</td><td>\)
-266.44 \\
-8 & 5 & 200 & 3.0 & 150 & & 8-1-6 & 85 & \$ 224.58 \\
-8 & 6 & 200 & 3.0 & 175 & & 8-1-3-5 & 6 &
-\(328.55</td></tr><tr><td>9</td><td>3</td><td>30</td><td>0.5</td><td>330</td><td></td><td>9-2-3</td><td>15</td><td>\)
-775.23 \\
-9 & 4 & 30 & 0.5 & 300 & & 9-2-4 & 16 & \$ 692.18 \\
-9 & 5 & 30 & 0.5 & 300 & & 9-2-3-5 & 12 &
-\(830.13</td></tr><tr><td>9</td><td>6</td><td>30</td><td>0.5</td><td>300</td><td></td><td>9-2-4-6</td><td>14</td><td>\)
-740.35 \\
-10 & 3 & 150 & 3.5 & 165 & & 10-2-3 & 164 &
-\(160.92</td></tr><tr><td>10</td><td>4</td><td>150</td><td>3.5</td><td>150</td><td></td><td>10-2-4</td><td>213</td><td>\)
-135.04 \\
-10 & 5 & 150 & 3.5 & 150 & 10-2-3-5 & & 9 & \$271.67 \\
-10 & 6 & 150 & 3.5 & 150 & 10-2-4-6 & & 69 &
-\(183.21</td></tr><tr><td>11</td><td>2</td><td>30</td><td>0.5</td><td>300</td><td></td><td>11-3-2</td><td>16</td><td>\)
-674.87 \\
-11 & 4 & 30 & 0.5 & 300 & & 11-3-4 & 16 & \$ 681.95 \\
-11 & 5 & 30 & 0.5 & 250 & & 11-3-5 & 14 & \$615.04 \\
-11 & 6 & 30 & 0.5 & 150 & 11-3-4-6 & & 12 & \$429.95 \\
-12 & 2 & 100 & 3.0 & 150 & & 12-3-2 & 165 & \$124.87 \\
-12 & 4 & 100 & 3.0 & 150 & & 12-3-4 & 144 &
-\(131.64</td></tr><tr><td>12</td><td>5</td><td>100</td><td>3.0</td><td>125</td><td></td><td>12-3-5</td><td>47</td><td>\)
-156.71 \\
-12 & 6 & 100 & 3.0 & 75 & & 12-3-4-6 & 4 &
-\(154.80</td></tr><tr><td>13</td><td>6</td><td>40</td><td>0.5</td><td>150</td><td></td><td>13-4-6</td><td>21</td><td>\)
-348.17 \\
-14 & 6 & 90 & 3.5 & 90 & & 14-4-6 & 168 & \$73.88 \\
-15 & 2 & 30 & 0.5 & 300 & 15-5-3-2 & & 12 &
-\(838.75</td></tr><tr><td>15</td><td>3</td><td>30</td><td>0.5</td><td>250</td><td></td><td>15-5-3</td><td>13</td><td>\)
-663.88 \\
-15 & 4 & 30 & 0.5 & 260 & 15-5-3-4 & & 11 & \$ 765.79 \\
-15 & 6 & 30 & 0.5 & 230 & 15-5-3-4 & & 10 & \$ 753.93 \\
-16 & 2 & 100 & 3.0 & 150 & 16-5-3-2 & & 6 &
-\(288.75</td></tr><tr><td>16</td><td>3</td><td>100</td><td>3.0</td><td>175</td><td></td><td>16-5-3</td><td>45</td><td>\)
-222.21 \\
-16 & 4 & 100 & 3.0 & 130 & & 16-5-3-4 & 3 & \$ 288.85 \\
-16 & 6 & 100 & 3.0 & 115 & 16-5-3-4-6 & & 0 & \$ 298.45 \\
-\end{longtable}
-
-Table V Overbooking Charges for Example 3
-
-\begin{longtable}[]{@{}|l|l|@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
+\begin{longtable}{|l|l|l|l|l|l|l|l|}
 \hline
-Leg (Edge) & Charge \\
+Market & O & D & $\lambda_0$ & $\epsilon_0$ & $p_0$ & Path & \# Seats & Price \\
 \hline
-(1,2) & \$576.6 \\
-\hline
-(1,3） & \$812.5 \\
-\hline
-1 & \$775.6 \\
-\hline
-(2,3） & \$634.3 \\
-\hline
-(2,4 & \$643.5 \\
-\hline
-(3,2) & \$581.2 \\
-\hline
-(3,4 & \$710.3 \\
-\hline
-(3,5 & \$689.5 \\
-\hline
-4， & \$593.3 \\
-\hline
-5,2 & \$717.5 \\
-\hline
-（5,3） & \$714.9 \\
+7 & 1 & 2 & 30 & 0.5 & 320 & 7-1-2 & 15 & \$749.17 \\
+7 & 1 & 3 & 30 & 0.5 & 320 & 7-1-3 & 14 & \$804.34 \\
+7 & 1 & 4 & 30 & 0.5 & 400 & 7-1-2-4 & 14 & \$1001.79 \\
+7 & 1 & 5 & 30 & 0.5 & 300 & 7-1-6 & 14 & \$866.25 \\
+7 & 1 & 6 & 30 & 0.5 & 350 & 7-1-3-5 & 11 & \$879.32 \\
+8 & 1 & 2 & 200 & 3.0 & 160 & 8-1-2 & 197 & \$160.89 \\
+8 & 1 & 3 & 200 & 3.0 & 160 & 8-1-3 & 69 & \$216.85 \\
+8 & 1 & 4 & 200 & 3.0 & 200 & 8-1-2-4 & 74 & \$266.44 \\
+8 & 1 & 5 & 200 & 3.0 & 150 & 8-1-6 & 85 & \$224.58 \\
+8 & 1 & 6 & 200 & 3.0 & 175 & 8-1-3-5 & 6 & \$328.55 \\
+9 & 2 & 3 & 30 & 0.5 & 330 & 9-2-3 & 15 & \$775.23 \\
+9 & 2 & 4 & 30 & 0.5 & 300 & 9-2-4 & 16 & \$692.18 \\
+9 & 2 & 5 & 30 & 0.5 & 300 & 9-2-3-5 & 12 & \$830.13 \\
+9 & 2 & 6 & 30 & 0.5 & 300 & 9-2-4-6 & 14 & \$740.35 \\
+10 & 2 & 3 & 150 & 3.5 & 165 & 10-2-3 & 164 & \$160.92 \\
+10 & 2 & 4 & 150 & 3.5 & 150 & 10-2-4 & 213 & \$135.04 \\
+10 & 2 & 5 & 150 & 3.5 & 150 & 10-2-3-5 & 9 & \$271.67 \\
+10 & 2 & 6 & 150 & 3.5 & 150 & 10-2-4-6 & 69 & \$183.21 \\
+11 & 3 & 2 & 30 & 0.5 & 300 & 11-3-2 & 16 & \$674.87 \\
+11 & 3 & 4 & 30 & 0.5 & 300 & 11-3-4 & 16 & \$681.95 \\
+11 & 3 & 5 & 30 & 0.5 & 250 & 11-3-5 & 14 & \$615.04 \\
+11 & 3 & 6 & 30 & 0.5 & 150 & 11-3-4-6 & 12 & \$429.95 \\
+12 & 3 & 2 & 100 & 3.0 & 150 & 12-3-2 & 165 & \$124.87 \\
+12 & 3 & 4 & 100 & 3.0 & 150 & 12-3-4 & 144 & \$131.64 \\
+12 & 3 & 5 & 100 & 3.0 & 125 & 12-3-5 & 47 & \$156.71 \\
+12 & 3 & 6 & 100 & 3.0 & 75 & 12-3-4-6 & 4 & \$154.80 \\
+13 & 4 & 6 & 40 & 0.5 & 150 & 13-4-6 & 21 & \$348.17 \\
+14 & 4 & 6 & 90 & 3.5 & 90 & 14-4-6 & 168 & \$73.88 \\
+15 & 5 & 2 & 30 & 0.5 & 300 & 15-5-3-2 & 12 & \$838.75 \\
+15 & 5 & 3 & 30 & 0.5 & 250 & 15-5-3 & 13 & \$663.88 \\
+15 & 5 & 4 & 30 & 0.5 & 260 & 15-5-3-4 & 11 & \$765.79 \\
+15 & 5 & 6 & 30 & 0.5 & 230 & 15-5-3-4 & 10 & \$753.93 \\
+16 & 5 & 2 & 100 & 3.0 & 150 & 16-5-3-2 & 6 & \$288.75 \\
+16 & 5 & 3 & 100 & 3.0 & 175 & 16-5-3 & 45 & \$222.21 \\
+16 & 5 & 4 & 100 & 3.0 & 130 & 16-5-3-4 & 3 & \$288.85 \\
+16 & 5 & 6 & 100 & 3.0 & 115 & 16-5-3-4-6 & 0 & \$298.45 \\
 \hline
 \end{longtable}
 
-classes) the performance of the MTS heuristic may suffer.\\
-This observation is consistent with our theoretical bounds.
+The simulation results for a series of scaled versions of this problem are shown in Table IV. As in Example 1, the results show that both the MTO and MTS heuristics are effective with large sales volumes (scale factor 10.0), but again MTO dominates MTS in all instances. Note the relative performance of the MTS heuristic is somewhat worse than in Example 1. This suggests that on problems with a higher level of detail (e.g., many itineraries and fare classes) the performance of the MTS heuristic may suffer. This observation is consistent with our theoretical bounds.
 
-7.1.3.Example 3:Overbooking and No-Shows.We next consider the effect of
-overbooking and no-shows on the network in Figure 1.We assume a uniform
-probability of a customer showing up of \(\gamma\) for all O-D pairs.To
-make comparisonsto Example1 easier,we assume the demand data are those
-given in Table I except that the common value of
-\(\lambda _ { 0 } = 3 0 0\) is multiplied bythe factor \(1 / \gamma .\)
-In this way the expected demand net of refunds has the same value as in
-Example 1 for any given set of prices. We further assume that the
-airline collects no revenue from those customers who do not show up and
-that the overbooking charges imposed for each leg are the values shown
-in Table V.These overbooking charges are the penalties/ costs paid when
-the airline is unable to accommodate a customer.These values are
-sufficiently large that there is no incentive to have net expected
-demand exceed leg capacities.
-
-Together, these assumptions imply the following implementation of the
-heuristics.First, the optimal prices in TableIremain the same.For the
-MTS heuristic, the allocations in Table Iare scaled up by a factor
-\(1 / \gamma\) and reservations are accepted for each itinerary up to
-this limit.In the MTO heuristic,all reservations are accepted.In either
-case,each reservation shows up with probability \(\gamma ,\) and any
-excess demand for leg capacities must be satisfied at the costs shown in
-Table V.
-
-This example was run for a variety of values for \(\gamma\) and the
-results are shown in Table VI.Again,all figures have a relative error of
-\(\pm 1 \%\) at a \(9 5 \%\) confidence level. Note that the revenue is
-only about \(2 \%\) lower than that in Example 1,except for
-\(\gamma = 0 . 6\) where it is about \(3 \%\) lower.What is rather
-surprising is that the revenue does not go down appreciably as the
-probability of showing up decreases; not until \(\gamma = 0 . 6\) is
-there a statistically significant drop in revenue.1
-
-Table IV Simulation Results for Example 2
-
-\begin{longtable}[]{@{}|l|l|l|l|l|l|@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
+\begin{longtable}{|l|l|l|l|l|l|}
 \hline
-\multicolumn{2}{@{}l}{%
-Problem Instance} & \multicolumn{2}{l}{%
-MTO} & \multicolumn{2}{l@{}}{%
-MTS} \\
+\multicolumn{2}{|l|}{Problem Instance} & \multicolumn{2}{l|}{MTO} & \multicolumn{2}{l|}{MTS} \\
 \hline
-Scale & Upper Bound (\()</td><td>Revenue (\)) & \% UB & Revenue (\$) &
-\% UB & \\
+Scale & Upper Bound (\$) & Revenue (\$) & \% UB & Revenue (\$) & \% UB \\
 \hline
 0.1 & 41,070 & 32,048 & 78.03\% & 27,899 & 67.93\% \\
 \hline
@@ -1272,21 +710,47 @@ Scale & Upper Bound (\()</td><td>Revenue (\)) & \% UB & Revenue (\$) &
 \hline
 \end{longtable}
 
-Table VI Simulation Results for Example 3
+\section{7.1.3.Example 3: Overbooking and No-Shows}\label{overbooking-and-no-shows}
 
-\begin{longtable}[]{@{}|l|l|l|l|l|l|@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
+We next consider the effect of overbooking and no-shows on the network in Figure 1. We assume a uniform probability of a customer showing up of \(\gamma\) for all O-D pairs. To make comparisons to Example 1 easier, we assume the demand data are those given in Table I except that the common value of \(\lambda_0 = 300\) is multiplied by the factor \(1 / \gamma\). In this way the expected demand net of refunds has the same value as in Example 1 for any given set of prices. We further assume that the airline collects no revenue from those customers who do not show up and that the overbooking charges imposed for each leg are the values shown in Table V. These overbooking charges are the penalties/costs paid when the airline is unable to accommodate a customer. These values are sufficiently large that there is no incentive to have net expected demand exceed leg capacities.
+
+\begin{longtable}{|l|l|}
 \hline
-\multicolumn{2}{@{}l}{%
-Problem Instance} & \multicolumn{2}{l}{%
-MTO} & \multicolumn{2}{l@{}}{%
-MTS} \\
+Leg (Edge) & Charge \\
 \hline
-Y & Upper Bound Revenue (\()</td><td>(\)) & \%UB & Revenue (\$） & \% UB
-& \\
+(1,2) & \$576.6 \\
+\hline
+(1,3) & \$812.5 \\
+\hline
+(1,6) & \$775.6 \\
+\hline
+(2,3) & \$634.3 \\
+\hline
+(2,4) & \$643.5 \\
+\hline
+(3,2) & \$581.2 \\
+\hline
+(3,4) & \$710.3 \\
+\hline
+(3,5) & \$689.5 \\
+\hline
+(4,6) & \$593.3 \\
+\hline
+(5,2) & \$717.5 \\
+\hline
+(5,3) & \$714.9 \\
+\hline
+\end{longtable}
+
+Together, these assumptions imply the following implementation of the heuristics. First, the optimal prices in Table I remain the same. For the MTS heuristic, the allocations in Table I are scaled up by a factor \(1 / \gamma\) and reservations are accepted for each itinerary up to this limit. In the MTO heuristic, all reservations are accepted. In either case, each reservation shows up with probability \(\gamma\), and any excess demand for leg capacities must be satisfied at the costs shown in Table V.
+
+This example was run for a variety of values for \(\gamma\) and the results are shown in Table VI. Again, all figures have a relative error of \(\pm 1\%\) at a \(95\%\) confidence level. Note that the revenue is only about \(2\%\) lower than that in Example 1, except for \(\gamma = 0.6\) where it is about \(3\%\) lower. What is rather surprising is that the revenue does not go down appreciably as the probability of showing up decreases; not until \(\gamma = 0.6\) is there a statistically significant drop in revenue.
+
+\begin{longtable}{|l|l|l|l|l|l|}
+\hline
+\multicolumn{2}{|l|}{Problem Instance} & \multicolumn{2}{l|}{MTO} & \multicolumn{2}{l|}{MTS} \\
+\hline
+\(\gamma\) & Upper Bound (\$) & Revenue (\$) & \% UB & Revenue (\$) & \% UB \\
 \hline
 1.0 & 661,200 & 636,858 & 96.32\% & 629,875 & 95.26\% \\
 \hline
@@ -1300,265 +764,109 @@ Y & Upper Bound Revenue (\()</td><td>(\)) & \%UB & Revenue (\$） & \% UB
 \hline
 \end{longtable}
 
-Also note that, unlike Examples 1 and 2, the MTS heuristic in this case
-appears to be slightly better than the MTOheuristic.
+Also note that, unlike Examples 1 and 2, the MTS heuristic in this case appears to be slightly better than the MTO heuristic.
 
-We note that scaling up allocations by \(1 / \gamma\) is a common
-strategy used by many airlines.The use of scaling factors (not
-necessarily \(1 / \gamma \}\) isdescribed in Belobaba (1987a),and its
-accuracy as an approximation to optimal overbooking levels is discussed
-at some length in McGill (1989).
+We note that scaling up allocations by \(1 / \gamma\) is a common strategy used by many airlines. The use of scaling factors (not necessarily \(1 / \gamma\)) is described in Belobaba (1987a), and its accuracy as an approximation to optimal overbooking levels is discussed at some length in McGill (1989).
 
-Though this is only one example, it again suggests that a simple
-deterministic correction,in this case scaling up the allocation limits
-by \(1 / \gamma ,\) is surprisingly effective.The stochastic effects of
-no-shows appear to produce only a minor drop in revenue.Indeed, for this
-example one can show that imposing even a modest fee of \(\$ 25\) for
-not showing up more than compensates for the lost revenue due to
-overbooking charges.This is .due to the fact that，roughly
-speaking,no-show fees grow linearly with the number of reservations
-while the overbooking charges grow proportional to the square root of
-the number of reservations. Thus,for large scale problems,modest no-show
-fees can effectively offset quite large overbooking charges.
+Though this is only one example, it again suggests that a simple deterministic correction, in this case scaling up the allocation limits by \(1 / \gamma\), is surprisingly effective. The stochastic effects of no-shows appear to produce only a minor drop in revenue. Indeed, for this example one can show that imposing even a modest fee of \$25 for not showing up more than compensates for the lost revenue due to overbooking charges. This is due to the fact that, roughly speaking, no-show fees grow linearly with the number of reservations while the overbooking charges grow proportional to the square root of the number of reservations. Thus, for large scale problems, modest no-show fees can effectively offset quite large overbooking charges.
 
-7.1.4.Example 4: Time Varying Demand. In this example we examine the
-effect of a time varying demand function on a simple,one-product
-problem.Unlike the previous examples where a single fixed price isused
-for each product,in this case different prices are offered in response
-to a temporal change in demand.
+\section{7.1.4.Example 4: Time Varying Demand}\label{time-varying-demand}
 
-Consider a single leg problem with an initial capacity of \(x = 5 2 5\)
-seats.Let \(t = 1\) be the sales horizon,and assume that demand at time
-\(s \in ( 0 , 1 ]\) is given by the linear function
+In this example we examine the effect of a time varying demand function on a simple, one-product problem. Unlike the previous examples where a single fixed price is used for each product, in this case different prices are offered in response to a temporal change in demand.
 
+Consider a single leg problem with an initial capacity of \(x = 525\) seats. Let \(t = 1\) be the sales horizon, and assume that demand at time \(s \in (0, 1]\) is given by the linear function
 \[
-\lambda ( p , s ) = a ( s ) - b ( s ) p ,
+\lambda(p, s) = a(s) - b(s) p ,
 \]
+where the time-dependent coefficients \(a(s)\) and \(b(s)\) are piecewise constant as shown in Table VII.
 
-where the time-dependent coefficients \(a ( s )\) ，and \(b ( s )\) are
-piecewise constant as shown in Table VII.
-
-To solve the deterministic problem,one first computes the intensity that
-maximizes the revenue rate over each interval. If the resulting
-intensities are feasible, then they are optimal.Otherwise,the optimal
-intensities equalize the marginal revenue rates of both time intervals
-and exhaust the capacity.For this example, the solution to the
-deterministic problem is given by
-
+To solve the deterministic problem, one first computes the intensity that maximizes the revenue rate over each interval. If the resulting intensities are feasible, then they are optimal. Otherwise, the optimal intensities equalize the marginal revenue rates of both time intervals and exhaust the capacity. For this example, the solution to the deterministic problem is given by
 \[
-p _ { d } ( s ) = \left\{ \begin{array} { c c } { 2 0 0 , } & { 0 \leqslant s \leqslant 0 . 7 5 , } \\ { 3 0 0 , } & { 0 . 7 5 < s \leqslant 1 , } \end{array} \right.
+p_d(s) = \left\{ \begin{array}{cc} 
+200, & 0 \leqslant s \leqslant 0.75, \\
+300, & 0.75 < s \leqslant 1, 
+\end{array} \right.
 \]
-
 and
-
 \[
-\lambda _ { d } ( s ) = \left\{ \begin{array} { l l } { 6 0 0 , } & { 0 \leqslant s \leqslant 0 . 7 5 , } \\ { 3 0 0 , } & { 0 . 7 5 < s \leqslant 1 . } \end{array} \right.
+\lambda_d(s) = \left\{ \begin{array}{ll} 
+600, & 0 \leqslant s \leqslant 0.75, \\
+300, & 0.75 < s \leqslant 1. 
+\end{array} \right.
 \]
+Notice that the optimal deterministic price increases from \(\$200\) to \(\$300\) at time 0.75. Using the pricing policy that is optimal for the deterministic problem, we simulated the performance of three heuristics. The MTO heuristic accepts all demands until the inventory is exhausted. The MTS heuristic allocates \(450 = \int_{0}^{0.75} \lambda_d(s) ds\) units for sales over \([0, 0.75]\) and \(75 = \int_{0.75}^{1} \lambda_d(s) ds\) units for sales over \((0.75, 1]\).
 
-Notice that the optimal deterministic price increases from \(\$ 200\) to
-\(\$ 300\) at time 0.75.Using the pricing policy that is optimal for the
-deterministic problem,we simulated the performance of three
-heuristics.The MTO heuristic accepts all demands until the inventory is
-exhausted.The MTS heuristic allocates
-\(4 5 0 = \textstyle \int _ { 0 } ^ { 0 . 7 5 } \lambda _ { d } ( s ) d s\)
-units for sales over {[}0,0.75{]} and
-\(7 5 = \textstyle \int _ { 0 . 7 5 } ^ { 1 } \lambda _ { d } ( s ) d s\)
-units for sales over (0.75, 1{]}.
+Finally, we consider a refinement of the MTS heuristic that allows unsold units allocated for sales during \([0, 0.75]\) to be made available for sale during \((0.75, 1]\). Thus, if under the MTS heuristic 448 (out of the 450 reserved) units are sold during \([0, 0.75]\), then 77 instead of 75 units are made available for sale during \((0.75, 1]\). As an additional refinement, sales at \(\$300\) are allowed to start before time 0.75 if the 450 reserved by the MTS heuristic to be sold for \(\$200\) over \([0, 0.75]\) are sold before time 0.75. Thus, if under the MTS heuristic 450 units are sold by time 0.65 then sales at \(\$300\) start at time 0.65. Of course, demand over the time interval \([0.65, 0.75]\) consists of people who are willing to pay the higher fare. We call this the booking limit (BL) heuristic. The refinement of the BL heuristic over the MTS heuristic improves revenue by opening the high fare early as a consequence of brisk sales at the lower fare, and by allowing sales at the high fare of inventory that was not sold at the low fare. The BL heuristic is similar in spirit to traditional yield management policies, e.g., Brumelle and McGill, that protect inventory for sale at higher fares.
 
-Finally,we considera refinement of the MTS heuristic that allows unsold
-units allocated for sales during {[}0, 0.75{]} to be made available for
-sale during (O.75,1{]}. Thus, if under the MTS heuristic 448 (out of the
-450 reserved under the MTS heuristic） units are sold during
-{[}0,O.75{]}, then 77 instead of 75 units are made available for sale
-during (0.75, 1{]}.As an additional refinement, sales at \(\$ 300\) are
-allowed to start before time 0.75 if the 45O reserved by the MTS
-heuristic to be sold for \(\$ 200\) over {[}0, 0.75{]} are sold before
-time O.75.Thus,if under the MTS heuristic 450 units are sold by time
-O.65 then sales at \(\$ 300\) start at time 0.65.Of course,demand over
-the time interval {[}O.65, O.75{]} consists of people who are willing to
-pay the higher fare.We call this the booking limit (BL） heuristic.The
-refinement of the BL heuristic over the MTS heuristic improves revenue
-by opening.the high fare early as a consequence of brisk sales at the
-lower fare,and by allowing sales at the high fare of inventory
-thatwasnot sold at the low fare.The BL heuristic is similar in spirit to
-traditional yield management policies,e.g., Brumelle and McGill, that
-protect inventory for sale at higher fares.
+The columns of Table VIII under the headings MTO, MTS, and BL present the performance of these allocation policies in absolute and relative terms. The first column of Table VII gives the deterministic upper bound. Notice that all heuristics performed well, with the BL heuristic having a slight advantage. Unlike most of the network examples, it appears that protecting space works better than a FCFS allocation. However, the effect of the allocation scheme is relatively minor (\(0.6\%\) improvement in BL over MTO), again suggesting that if prices are set correctly, FCFS allocation is still quite good.
 
-The columns of Table VIII under the headings MTO MTS,and BL present the
-performance of these allocation policies in absolute and relative
-terms.The first column of Table VII gives the deterministic upper
-bound.Notice that all heuristics performed well, with the BL heuristic
-having a slight advantage.Unlike most of the network examples,it appears
-that protecting space works better thana FCFS allocation.However, the
-effect of the allocation scheme is relatively minor \(0 . 6 \%\)
-improvement in BL Over MTO),again suggesting that if prices are set
-correctly,FCFS allocation is still quite good.
-
-Table VII Coeffcients of Linear Demand Function for Example 4
-
-\begin{longtable}[]{@{}|l|l|@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
+\begin{longtable}{|l|l|}
 \hline
-0\textless s≤0.75 & 0.75\textless s≤1 \\
+\textbf{Time Interval} & \textbf{Coefficients} \\
 \hline
-a(s)= 1200 & a(s)= 600 \\
+\(0 < s \leq 0.75\) & \(a(s) = 1200\), \(b(s) = 3\) \\
 \hline
-b(s)=3 & b(s)= 1 \\
+\(0.75 < s \leq 1\) & \(a(s) = 600\), \(b(s) = 1\) \\
 \hline
 \end{longtable}
 
-Table VIII Performance of Heuristics on Example 4
-
-\begin{longtable}[]{@{}|l|l|l|l|l|@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
+\begin{longtable}{|l|l|l|l|l|}
 \hline
-& Upper Bound & MTO & MTS & BL \\
+& \textbf{Upper Bound} & \textbf{MTO} & \textbf{MTS} & \textbf{BL} \\
 \hline
-Rev.(\$) & 112,500 & 109,586.25 & 109,597.50 & 110,283.75 \\
+Revenue (\$) & 112,500 & 109,586.25 & 109,597.50 & 110,283.75 \\
 \hline
-\%UB & 100\% & 97.4\% & 97.6\% & 98.0\% \\
+\% UB & 100\% & 97.4\% & 97.6\% & 98.0\% \\
 \hline
 \end{longtable}
 
-\section{7.2.Fixed Allocation and Booking Limit
-Examples}\label{fixed-allocation-and-booking-limit-examples}
+\section{7.2.Fixed Allocation and Booking Limit Examples}\label{fixed-allocation-and-booking-limit-examples}
 
-The previous examples show that in many cases allocation policies and
-booking limits have only a marginal impact on revenue,provided prices
-are set correctly.In particular,a simple FCFS allocation works nearly as
-well as fixed (MTS）or booking limit (BL）allocation schemes.This
-seemingly contradicts the fact that,in practice,booking limit policies
-typically produce significant revenue increases.Indeed Smith et
-al.report a \(5 \%\) increase in revenue for American Airlines,worth
-approximately \(\$ 1.4\) billion dollars over a three-year
-period,attributable to effective yield management. In this section,we
-propose two explanations for this discrepancy:(1） price flexibility may
-be limited,and (2) prices may be set incorrectly (misspricing occurs).
-In both cases,we show that using booking limits can significantly
-improve revenues.
+The previous examples show that in many cases allocation policies and booking limits have only a marginal impact on revenue, provided prices are set correctly. In particular, a simple FCFS allocation works nearly as well as fixed (MTS) or booking limit (BL) allocation schemes. This seemingly contradicts the fact that, in practice, booking limit policies typically produce significant revenue increases. Indeed Smith et al. report a \(5\%\) increase in revenue for American Airlines, worth approximately \(\$1.4\) billion dollars over a three-year period, attributable to effective yield management. In this section, we propose two explanations for this discrepancy: (1) price flexibility may be limited, and (2) prices may be set incorrectly (mispricing occurs). In both cases, we show that using booking limits can significantly improve revenues.
 
-7.2.1.Example 5:Limits on Price Flexibility.A key as sumption in the
-previous examples is that prices could be chosenwithoutconstraints.If
-each instanceofayield management problem corresponds to a particular day
-or even a particular set of flights within a day, then effectively we
-are assuming that each day or individual flight can be priced
-separately.In practice,this degree of price flexibility is
-rarelyachievable;it wouldbe quite confusing for customers,make
-advertising difficult,and complicate the airlines' own planning and
-reservation systems.Indeed,most airlines offer prices that typically
-remain in effect for several weeks at a time.Underlying
-demand,however，often changes dramatically from day to day or even
-within a day. One mechanism for increasing revenues under such volatile
-conditions is precisely to offer several prices for each product and
-then vary the allocation of space to these prices in response to changes
-in demand. In this way,one retains the advantage of a stable set of
-prices while achieving some ability to respond to short-term
-fluctuations in demand; in a sense,varying the allocation provides a
-means of synthesizing a continuous range of prices from a
-relativelysmall set of fare classes.
+\section{7.2.1.Example 5: Limits on Price Flexibility}\label{limits-on-price-flexibility}
 
-A simple,deterministic example illustrates this effect. Consider a
-single leg flight with a capacity of 1OO seats that
-operatesonceeachdayoftheweek.Thereisafixedsales horizon \(t\) for each
-day,and without loss of generality,we assume \(t = 1\) .Total demand for
-each day variesand has an exponential form
-\(\lambda ( p ) ~ = ~ \lambda _ { 0 } e ^ { - \epsilon _ { 0 } ( p / p _ { 0 } - 1 ) }\)
-. The reference price and elasticity are assumed fixed at
-\(p _ { 0 } = \$ 300\) and \(\epsilon _ { 0 }\) \(= 3\)
-,respectively.For simplicity,we assume that the only parameter that
-varies from one day to the next is \(\lambda _ { 0 } ;\) the demand at
-the reference price \(p _ { 0 }\) Demand during the week is divided into
-heavy,medium,and light days.On heavy days (MondayandFriday),
-\(\lambda _ { 0 } = 1 2 5\) ； onmediumdays(Tuesday to Thursday),
-\(\lambda _ { 0 } = 5 0\) ；and on light days (Saturday and Sunday),
-\(\lambda _ { 0 } = 2 5\) ：
+A key assumption in the previous examples is that prices could be chosen without constraints. If each instance of a yield management problem corresponds to a particular day or even a particular set of flights within a day, then effectively we are assuming that each day or individual flight can be priced separately. In practice, this degree of price flexibility is rarely achievable; it would be quite confusing for customers, make advertising difficult, and complicate the airlines' own planning and reservation systems. Indeed, most airlines offer prices that typically remain in effect for several weeks at a time. Underlying demand, however, often changes dramatically from day to day or even within a day. One mechanism for increasing revenues under such volatile conditions is precisely to offer several prices for each product and then vary the allocation of space to these prices in response to changes in demand. In this way, one retains the advantage of a stable set of prices while achieving some ability to respond to short-term fluctuations in demand; in a sense, varying the allocation provides a means of synthesizing a continuous range of prices from a relatively small set of fare classes.
 
-If one had complete flexibility in choosing prices,each type of day
-could be priced separately,i.e., one would treat each day as an
-independent instance and apply a different pricing policy to it. We
-shall call this option the FLEX pricing policy. Table IX shows the
-optimal prices to charge on each type of dayalong with the daily and
-weeklyrevenues obtained using the FLEX prices. (All revenues in Table IX
-are based on deterministic models.)
+A simple, deterministic example illustrates this effect. Consider a single leg flight with a capacity of 100 seats that operates once each day of the week. There is a fixed sales horizon \(t\) for each day, and without loss of generality, we assume \(t = 1\). Total demand for each day varies and has an exponential form \(\lambda(p) = \lambda_0 e^{-\epsilon_0 (p / p_0 - 1)}\). The reference price and elasticity are assumed fixed at \(p_0 = \$300\) and \(\epsilon_0 = 3\), respectively. For simplicity, we assume that the only parameter that varies from one day to the next is \(\lambda_0\); the demand at the reference price \(p_0\). Demand during the week is divided into heavy, medium, and light days. On heavy days (Monday and Friday), \(\lambda_0 = 125\); on medium days (Tuesday to Thursday), \(\lambda_0 = 50\); and on light days (Saturday and Sunday), \(\lambda_0 = 25\).
 
-Table IX Demand Data and Revenues: Example 5
+If one had complete flexibility in choosing prices, each type of day could be priced separately, i.e., one would treat each day as an independent instance and apply a different pricing policy to it. We shall call this option the FLEX pricing policy. Table IX shows the optimal prices to charge on each type of day along with the daily and weekly revenues obtained using the FLEX prices. (All revenues in Table IX are based on deterministic models.)
 
-\begin{longtable}[]{@{}|l|l|l|l|@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
+Since offering a separate price for each day of the week may not be feasible in practice, two alternative options are considered: (1) offer only a single fixed price for the entire week (SP policy); and (2) offer two fares (discount and full), again fixed for the entire week, but vary the allocation of seats to these fares on a daily basis. We call this latter option the booking limit (BL) policy.
+
+Of course, we would like to use the best possible implementation of these two policies. For the SP policy, one can show that the best price to offer is \(\$257\). For the BL policy, we used the FLEX price for light days (\(\$161\)) as the discount price, and the FLEX price for heavy days (\(\$322\)) as the full price. Table X shows the demand if each of these fare levels was used exclusively over the horizon and gives the optimal allocation of seats to these fare classes. (See Gallego and van Ryzin for a detailed discussion of the optimal policy for this type of discrete price problem.)
+
+Table IX shows the daily and weekly revenues obtained from the optimal implementations of the SP and BL policies. Note that the weekly revenue of the SP policy is substantially less than that obtained from using the FLEX policy. The loss in revenue in this case is about \(21\%\). The BL policy revenue loss relative to the FLEX policy, at about \(5\%\), is significantly less than that for the SP policy. Thus, we see that in this example booking policies truly provide substantial increases in revenue; they allow one to make up approximately half the gap between the revenue of a pure fixed price policy and a completely flexible pricing policy.
+
+This example illustrates how one can use a limited number of price classes together with a dynamic allocation scheme to recapture some of the revenue achievable through flexible pricing without introducing an extremely complicated price structure.
+
+\begin{longtable}{|l|l|l|l|}
 \hline
-\multicolumn{4}{@{}l@{}}{%
-} \\
+& \textbf{Light} & \textbf{Medium} & \textbf{Heavy} \\
 \hline
-& Light & Medium & Heavy \\
+\# Days/Wk & 2 & 3 & 2 \\
 \hline
-\#Days/Wk & 2 & 3 & 2 \\
-\hline
-入0 & 25 & 50 & 125 \\
+\(\lambda_0\) & 25 & 50 & 125 \\
 \hline
 Opt. Price & \$161 & \$231 & \$322 \\
 \hline
-Rev.FLEX & \$16,100 & \$23,100 & \$32,200 \$165,900 \\
+Rev. FLEX & \$16,100 & \$23,100 & \$32,200 \\
 \hline
-Rev.~SP & \$9,874 & \$19,768 & \$25,700 \$130,452 \\
+Rev. SP & \$9,874 & \$19,768 & \$25,700 \\
 \hline
-Rev.~BL & \$16,100 & \$20,125 & \$32,200 \$156,975 \\
+Rev. BL & \$16,100 & \$20,125 & \$32,200 \\
+\hline
+\textbf{Weekly Total} & \textbf{FLEX: \$165,900} & \textbf{SP: \$130,452} & \textbf{BL: \$156,975} \\
 \hline
 \end{longtable}
 
-Since offering a separate price for each day of the week may not be
-feasible in practice, two alternative options are considered:(1) offer
-only a single fixed price for the entire week (SP policy);and (2) offer
-two fares (discount and full),again fixed for the entire week,but vary
-the allocation of seats to these fares on a daily basis.We call this
-latter option the booking limit (BL) policy.
-
-Of course,we would like to use the best possible imple mentation of
-these two policies.For the SP policy, one can show that the best price
-to offer is \(\$ 257\) For the BL policy, we used the FLEX price for
-light days (\$161) as the discount price,and the FLEX price for heavy
-days(\$322) as the full price.Table X shows the demand if each of these
-fare levels was used exclusively over the horizon and gives the optimal
-allocation of seats to these fare classes. (See Gallego and van Ryzin
-for a detailed discussion of the optimal policy for this type of
-discrete price problem.)
-
-Table IX show the daily and weekly revenues obtained from the optimal
-implementations of the SP and BL policies.Note that the weekly revenue
-of the SP policy is substantially less than that obtained from using the
-FLEX policy.The loss in revenue in this case is.about \(21 \%\) The BL
-policy revenue loss relative to the FLEX policy，at about \(5 \%\) ,is
-significantly less than that for the SP policy. Thus,we see that in this
-example booking policies truly provide substantial increases in revenue;
-they allow one to make up approximately half the gap between the revenue
-of a pure fixed price policy and a completely flexible pricing policy.
-
-This example illustrates how one can use a limited number of price
-classes together with a dynamic allocation scheme to recapture some of
-the revenue achievable through flexible pricing without introducing an
-extremely complicated price structure.
-
-Table X Booking Limit Demands and Allocations: Example 5
-
-\begin{longtable}[]{@{}|l|l|l|l|@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
+\begin{longtable}{|l|l|l|l|}
 \hline
-& Light & Medium & Heavy \\
+& \textbf{Light} & \textbf{Medium} & \textbf{Heavy} \\
 \hline
 Demand at Disc. & 100 & 201 & 502 \\
 \hline
-Demand atFull & 20 & 40 & 100 \\
+Demand at Full & 20 & 40 & 100 \\
 \hline
 Disc. Alloc. & 100 & 75 & 0 \\
 \hline
@@ -1566,225 +874,107 @@ Full Alloc. & 0 & 25 & 100 \\
 \hline
 \end{longtable}
 
-Table XI Performance of Heuristics Based on Pricing Policy-a
+\section{7.2.2.Example 6: Mispricing}\label{mispricing}
 
-\begin{longtable}[]{@{}|l|l|l|l|l|@{}}
-\toprule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
+Another case in which an allocation policy can have a significant impact is when mispricing occurs. Consider again the time varying demand function of Example 4 with a capacity of 525 seats. Suppose that the decision maker mistakenly underestimates the parameters \(a(s)\) over \((0, 0.75]\) to be 900 instead of 1200.
+
+The optimal price for the deterministic problem, based on the estimated expected demand, is obtained by setting the marginal revenue rates equal to zero in each of the two time intervals. This results in
+\[
+p_a(s) = \left\{ \begin{array}{ll} 
+150, & 0 \leqslant s \leqslant 0.75, \\
+300, & 0.75 < s \leqslant 1. 
+\end{array} \right.
+\]
+The estimated expected demand rate at \(p_a\) is
+\[
+\lambda_a(s) = \left\{ \begin{array}{ll} 
+450, & 0 \leqslant s \leqslant 0.75, \\
+300, & 0.75 < s \leqslant 1. 
+\end{array} \right.
+\]
+Consequently, the deterministic solution based on the estimated expected demand allocates \(337 \simeq 450 \times 0.75\) seats for sales at \(\$150\) over the interval \((0, 0.75]\) and \(75 = 300 \times 0.25\) seats for sales at \(\$300\) over the interval \((0.75, 1]\). Call this pricing/allocation policy Policy-a.
+
+The MTO heuristic accepts all requests at \(\$150\) over \((0, 0.75]\), and all requests at \(\$300\) over \((0.75, 1]\) on a first-come-first-serve basis until the capacity is exhausted. The MTS heuristic reserves 337 seats for sales at \(\$150\), and 75 seats for sales at \(\$300\).
+
+The BL heuristic reserves 75 seats for sales at \(\$300\), but makes all unsold units at time 0.75 available for sales at \(\$300\) during \([0.75, 1]\). See Example 4 for a more complete description of the BL heuristic.
+
+Notice the actual expected demand rate at \(p_a\) is
+\[
+\lambda(s) = \left\{ \begin{array}{ll} 
+750, & 0 \leqslant s \leqslant 0.75, \\
+300, & 0.75 < s \leqslant 1. 
+\end{array} \right.
+\]
+An upper bound on the revenue under Policy-a is obtained by finding the best allocation of space assuming that demand is deterministic. This calculation yields \(\$90,000 = 450 \times \$150 + 75 \times \$300\). Table XI reports the performance of the MTO, MTS and BL heuristics under pricing Policy-a.
+
+For Policy-a, the MTO and the MTS heuristics perform poorly. Under the MTO heuristic virtually all the capacity is sold at the promotional fare of \(\$150\) per seat. Under the MTS heuristic only 412 seats are made available for sale. In contrast, the BL heuristic performs near optimally capturing \(98.8\%\) of the deterministic upper bound. This is because, unlike the MTO heuristic, the BL heuristic reserves 75 seats for the high fare, and unlike the MTS heuristic, it makes all the capacity available for sale. The average number of unsold seats was zero under the MTO heuristic, 113 under the MTS heuristic, and 3 under the BL heuristic.
+
+This example illustrates the sensitivity of both the MTO and the MTS heuristics to pricing errors and shows that performance can be improved by protecting space from excess low fare demand. One can show that if the parameters of \(a(s)\) are overestimated in this example, the MTO and MTS heuristics are less sensitive to the resulting pricing errors. In this case, higher than optimal prices are charged, and hence low fare sales do not consume space needed for the high fare demand.
+
+\begin{longtable}{|l|l|l|l|l|}
 \hline
-& UB & MTO & MTS & BL \\
+& \textbf{Upper Bound} & \textbf{MTO} & \textbf{MTS} & \textbf{BL} \\
 \hline
-Rev.~(\$) & \$90,000 & \$78,848 & \$73,002 & \$88,994 \\
+Revenue (\$) & \$90,000 & \$78,848 & \$73,002 & \$88,994 \\
 \hline
-\% Det. & 100\% & 87.6\% & 88.1\% & 98.8 \\
+\% Det. & 100\% & 87.6\% & 88.1\% & 98.8\% \\
 \hline
 \end{longtable}
 
-7.2.2.Example 6: Misspricing. Another case in which an allocation policy
-can have a significant impact is when misspricing occurs. Consider again
-the time varying demand function of Example 4 with a capacity of 525
-seats. Suppose that the decision maker mistakenly underestimates the
-parameters \(a ( s )\) over(0,0.75） to be 900 instead of 1200.
-
-The optimal price for the deterministic problem, based on the estimated
-expected demand,is obtained by setting the marginal revenue rates equal
-to zero in each of the two time intervals.This results in
-
-\[
-p _ { a } ( s ) = \left\{ \begin{array} { l l } { 1 5 0 , } & { 0 \leqslant s \leqslant 0 . 7 5 , } \\ { 3 0 0 , } & { 0 . 7 5 < s \leqslant 1 . } \end{array} \right.
-\]
-
-The estimated expected demand rate at \(p _ { a }\) is
-
-\[
-\lambda _ { a } ( s ) = \left\{ \begin{array} { l l } { 4 5 0 , } & { 0 \leqslant s \leqslant 0 . 7 5 , } \\ { 3 0 0 , } & { 0 . 7 5 < s \leqslant 1 . } \end{array} \right.
-\]
-
-Consequently,the deterministic solution based on the estimated expected
-demand,allocates \(3 3 7 \simeq 4 5 0 \times 0 . 7 5\) seats for sales
-at \(\$ 150\) over the interval (O, O.75{]} and \(7 5 =\)
-\(3 0 0 \times 0 . 2 5\) seats for sales at \(\$ 300\) over the interval
-(0.75, 1{]}. Call this pricing/allocation policy,Policy-
-\(\mathbf { \nabla } \cdot \mathbf { a }\) ：
-
-The MTO heuristic accepts all requests at \(\$ 150\) over (0,
-0.75{]},and all requests at \(\$ 300\) over (0.75,1{]} on a
-firstcome-first-serve basis until the capacity is exhausted.The
-MTSheuristic reserves 337 seats for salesat \(\$ 150\) ,and 75 seats for
-sales at \(\$ 300\)
-
-The BL heuristic reserves 75 seats for sales at \(\$ 300\) ，but makes
-all unsold units at time O.75 available for sales at \(\$ 300\) during
-{[}0.75,1{]}. See Example 4 for a more complete description of the BL
-heuristic.
-
-Notice the actual expected demand rate at \(p _ { a }\) is
-
-\[
-\lambda ( s ) = \left\{ \begin{array} { l l } { 7 5 0 , } & { 0 \leqslant s \leqslant 0 . 7 5 , } \\ { 3 0 0 , } & { 0 . 7 5 < s \leqslant 1 . } \end{array} \right.
-\]
-
-An upper bound on the revenue under Policy-a is obtained by finding the
-best allocation of space assuming that demand is deterministic.This
-calculation yields \(\$ 90,000\)
-\(4 5 0 \times \ S 1 5 0 + 7 5 \times \ S 3 0 0\) ，Table XI reports the
-performance of the MTO,MTS and BL heuristics under pricing Policy-
-\(\mathbf { \nabla } \cdot \mathbf { \vec { a } }\) ：
-
-For Policy- \$ \_ \{ \} \$ , the MTO and the MTS heuristics perform
-poorly.Under the MTO heuristic virtually all the capacity is sold at the
-promotional fare of \(\$ 150\) per seat.Under the MTS heuristic only 412
-seats are made available for sale. In contrast, the BL heuristic
-performs near optimally capturing \(9 8 . 8 \%\) of the deterministic
-upper bound. This is because,unlike the MTO heuristic, the BL heuristic
-reserves 75 seats for the high fare,and unlike the MTS heuristic, it
-makes all the capacity available for sale.The average number of unsold
-seats was zero under the MTO heuristic,113 under the MTS heuristic,and 3
-under the BL heuristic.
-
-This example illustrates the sensitivity of both the MTO and the MTS
-heuristics to pricing errors and shows that performance can be improved
-by protecting space from excess low fare demand. One can show that if
-the param eters of \(a ( s )\) are overestimated in this example, the
-MTO and MTS heuristics are less sensitive to the resulting pricing
-errors.In this case,higher than optimal prices are charged,and hence low
-fare sales do not consume space needed for the high fare demand.
-
 \section{8.CONCLUSIONS}\label{conclusions}
 
-We have shown how a rich class of revenue management problems can be
-modeled using a single,unified frame work.For this large class of
-problems,our results show that the pricing policies derived from
-deterministic models are quite close to optimal.
+We have shown how a rich class of revenue management problems can be modeled using a single, unified framework. For this large class of problems, our results show that the pricing policies derived from deterministic models are quite close to optimal.
 
-We also showed that when prices are chosen based on these deterministic
-models, the effect of allocation schemes appears to be relatively
-minor.These are,in a way,negativeresults and suggest that yield
-management is relatively ineffective when pricing decisions are made
-correctly.In practice,yield management's main benefit may be to
-compensate for prices that are not optimally matched to demand, rather
-than to exploit revenue opportunities due to second-order,stochastic
-effects.In addition, the practice may-and probably does-serve as a
-simple mechanism for synthesizing a wide variety of prices using
-onlyalimited number of relativelystable fareclasses.We believe such
-insights will prove to be quite beneficial in guiding the development of
-better yield management systems in practice.Further,our bounds provide a
-means to evaluate the relative benefit of a given system.
+We also showed that when prices are chosen based on these deterministic models, the effect of allocation schemes appears to be relatively minor. These are, in a way, negative results and suggest that yield management is relatively ineffective when pricing decisions are made correctly. In practice, yield management's main benefit may be to compensate for prices that are not optimally matched to demand, rather than to exploit revenue opportunities due to second-order, stochastic effects. In addition, the practice may—and probably does—serve as a simple mechanism for synthesizing a wide variety of prices using only a limited number of relatively stable fare classes. We believe such insights will prove to be quite beneficial in guiding the development of better yield management systems in practice. Further, our bounds provide a means to evaluate the relative benefit of a given system.
 
-There are certainly many possible directions for future research in this
-area.We have focused exclusively on airline applications; no doubt there
-are other interesting ap plications,such as the multi-day hotel problem,
-that could be investigated using a similar approach.A more
-challengingproblem is to try to combine demand function estimation with
-pricing/allocation decisions. This would reflect the more realistic case
-where demand functions are not directly observable.Also,understanding
-the role that competitors play by explicitly modeling their networks and
-pricing decisions is an important future research topic.
+There are certainly many possible directions for future research in this area. We have focused exclusively on airline applications; no doubt there are other interesting applications, such as the multi-day hotel problem, that could be investigated using a similar approach. A more challenging problem is to try to combine demand function estimation with pricing/allocation decisions. This would reflect the more realistic case where demand functions are not directly observable. Also, understanding the role that competitors play by explicitly modeling their networks and pricing decisions is an important future research topic.
 
 \section{ENDNOTE}\label{endnote}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  The fact that revenue decreases in \(\gamma\) over the range 0.95-
-  0.80 is not statistically significant.Moreover,the MTO heuristic uses
-  integer allocations,which introduces roundoff errors. As a result,
-  changing \(\gamma\) does not result in an exact proportional change in
-  the allocations,which may also account for some of this slightly
-  unusual revenue behavior.
+\item The fact that revenue decreases in \(\gamma\) over the range 0.95–0.80 is not statistically significant. Moreover, the MTO heuristic uses integer allocations, which introduces roundoff errors. As a result, changing \(\gamma\) does not result in an exact proportional change in the allocations, which may also account for some of this slightly unusual revenue behavior.
 \end{enumerate}
-
-\section{ACKNOWLEDGMENT}\label{acknowledgment}
-
-Thisresearch wassponsored byNational Science Foundation Grant
-SES-93-09394.
 
 \section{REFERENCES}\label{references}
 
-BELOBABA,P.P.1987a.Air Travel Demand and Airline Seat Inventory
-Management. Unpublished Ph.D.~Dissertation. MIT, Cambridge, MA.\\
-BELOBABA,P.P.1987b.Airline Yield Management: An Overview of Seat
-Inventory Control. Trans. Sci. 21, 63-73.\\
-BELOBABA,P.P.1989.Application of a Probabilistic Decision Model to
-Airline Seat Inventory Control. Opns. Res. 37, 183-197.\\
-BITRAN,G.R.，AND S.M. GILBERT.1992.Managing Hotel Reservations with
-Uncertain Arrivals. Working Paper, MIT Sloan School.\\
-BREMAUD,P.1980.Point Processes and Queues，Martingale Dynamics.
-Springer-Verlag, New York.\\
-BRUMELLE, S.L., J. I. MCGILL,T.H. OUM,K. SAWAKI AND M.W.TRETHwwAY.
-1990.Allocation of Airline Seats Between Stochastically Dependent
-Demand. Trans. Sci. 24,183-192.\\
-BRUMELLE, S.L., AND J. I. McGILL. 1993.Airline Seat Allocation with
-Multiple Nested Fare Classes. Opns.Res. 41, 127-137.\\
-CHATWIN,R.E.1992. Optimal Airline Overbooking. Ph.D.~Thesis, Stanford
-University,Palo Alto.\\
-COHEN，M.A.1977.Joint Pricing and Ordering Policy for Exponentially
-Decaying Inventory with Known Demand. Naval Res. Logist. 24, 257-268.\\
-CURRY,R.E.1989. Optimal Airline Seat Allocation with Fare Classes Nested
-by Origins and Destinations. Trans. Sci. 24,193-204.\\
-DROR, M., P. TRUDEAU AND S.P.LADANY. 1988. NetWOrk Models for Seat
-Allocation of Flights.Tran.Res.22B,239-250.\\
-FENG,Y., AND G. GALLEGo. 1995. Optimal Stopping Times for Promotional
-Fares and Optimal Starting Times for Endof-Season Sales. Mgmt. Sci.
-41,1371-1391.\\
-GALLEGO,G.1992.A Minmax Distribution Free Procedure for the (Q,R)
-Inventory Model. O.R. Letts.11, 55-60.\\
-GALLEGO,G.,AND G.VAN RYZIN.1994. Optimal Dynamic Pricing of Inventories
-with Stochastic Demand Over Finite Horizons. Mgmt. Sci. 40, 999-1020.\\
-GLOVER, F., R. GLOVER, J. LORENZO AND C. MCMILLAN. 1982. The
-Passenger-Mix Problem in the Scheduled Airlines. Interfaces,12,73-79.\\
-KARLIN, S., AND C.R. CARR.1962. Prices and Optimal Inventory Policies.
-In Arrow,K. J.,Karlin, S.and Scarf,H. (eds.),Studies in Applied
-Probability and Management Science.Stanford University Press, Stanford,
-California.\\
-KIMEs, S.E.1989.The Basics of Yield Management.Cornell H.R.A. Quarterly,
-4,14-19.\\
-LADANY, S. P.,AND A. ARBEL. 1991. Optimal Cruise-liner Passenger Cabin
-Pricing Policy. Eur. J. Opnl. Res.55,136-147.\\
-LEE,T.C.,AND M.HERsH.1993.A Model for Dynamic Airline Seat Inventory
-Control with Multiple Seat Bookings. Trans. Sci. 27,252-265.\\
-LIBERMAN,V.,AND U. YECHIALI. 1978.On the Hotel Overbooking Problem---An
-Inventory System with Stochastic Cancellations.Mgmt. Sci.11,1117-1126.\\
-LITTLEWOOD, K.1972. Forecasting and Control of Passengers. 12th AGIFORS
-Symposium Proceedings.95-128.\\
-LUENBERGER,D.G.1969. Optimization by Vector Space Methods.John Wiley \&
-Sons, New York.\\
-McGILL, J. I. 1989. Optimization and Estimation Problems in Airline
-Yield Management. Unpublished Ph.D.Dissertation, University of British
-Columbia, Vancouver, B.C.\\
-RoBINSON,L. W. 1995.Optimal and Approximate Control Policies for Airline
-Booking with Sequential Fare Classes. Working Paper, Cornell University,
-Opns. Res. 43,252-263.\\
-RoTHSTEIN,M.1971.An Airline Overbooking Model. Trans. Sci. 5, 180-192.\\
-RoTHSTEIN,M. 1974.Hotel Overbooking as a Markovian Sequential Decision
-Process. Dec.~Sci. 5,389-404.\\
-SMITH,B., J. LEIMKUHLER,R.DARROW AND J. SAMUELS.1992. Yield Management
-at American Airlines. Interfaces 22, 8-31.\\
-SOUMIS,F., AND A. NAGURNEY. 1993.A Stochastic, Multiclass Airline
-Network Equilibruim Model.Opns. Res. 41, 721-730.\\
-TALLURI, T. K. 1993. Airline Revenue Management with Passenger Routing
-Control: A New Model with Solution Approaches. Working Paper, USAir,
-Arlington, VA.\\
-WANG,K. 1983. Optimum Seat Allocation for Multi-Leg Flights with
-Multiple Fare Types.Proceedings of the AGIFORS 23rd Annual Symposium,
-225-246.\\
-WEATHERFORD,L.R,AND S.E.BODILY.1992.A TaXOnomy and Research Overview of
-Perishable-Asset Revenue Management: Yield Management, Overbooking and
-Pricing. Opns.Res. 40,831-844.\\
-WEATHERFORD,L., S. BODILY AND P. PFEIFER. 1993. Mdeling the Customer
-Arrival Process and Comparing Decisin Rules in Perishable Asset Revenue
-Management Situations. Trans. Sci. 27,239-251.\\
-WILLIAMsON,E.L. 1992. Airline Network Seat Control. Ph.D.~Thesis, MIT,
-Cambridge, MA.\\
-WoLLMER，R.D.1986a.A Hub-Spoke Seat Management Model. Unpublished
-Internal Report, McDonnell Douglas Corporation, Long Beach, CA.\\
-WoLLMER，R.D.1986b.An Airline Reservation Model for Opening and Closing
-Fare Classes.Unpublished Internal Report，McDonnell Douglas Corporation,
-Long Beach, CA.\\
-WOLLMER, R. D.1992. An Airline Seat Management Model for a Single Leg
-Route when Lower Fare Classes Book First. Opns. Res.40,26-37.
+\section*{References}
+
+BELOBABA, P. P. 1987a. Air Travel Demand and Airline Seat Inventory Management. Unpublished Ph.D. Dissertation. MIT, Cambridge, MA.  
+BELOBABA, P. P. 1987b. Airline Yield Management: An Overview of Seat Inventory Control. *Trans. Sci.* **21**, 63–73.  
+BELOBABA, P. P. 1989. Application of a Probabilistic Decision Model to Airline Seat Inventory Control. *Opns. Res.* **37**, 183–197.  
+BITRAN, G. R., AND S. M. GILBERT. 1992. Managing Hotel Reservations with Uncertain Arrivals. Working Paper, MIT Sloan School.  
+BREMAUD, P. 1980. *Point Processes and Queues, Martingale Dynamics*. Springer-Verlag, New York.  
+BRUMELLE, S. L., J. I. MCGILL, T. H. OUM, K. SAWAKI, AND M. W. TRETHWAY. 1990. Allocation of Airline Seats Between Stochastically Dependent Demand. *Trans. Sci.* **24**, 183–192.  
+BRUMELLE, S. L., AND J. I. MCGILL. 1993. Airline Seat Allocation with Multiple Nested Fare Classes. *Opns. Res.* **41**, 127–137.  
+CHATWIN, R. E. 1992. Optimal Airline Overbooking. Ph.D. Thesis, Stanford University, Palo Alto.  
+COHEN, M. A. 1977. Joint Pricing and Ordering Policy for Exponentially Decaying Inventory with Known Demand. *Naval Res. Logist.* **24**, 257–268.  
+CURRY, R. E. 1989. Optimal Airline Seat Allocation with Fare Classes Nested by Origins and Destinations. *Trans. Sci.* **24**, 193–204.  
+DROR, M., P. TRUDEAU, AND S. P. LADANY. 1988. Network Models for Seat Allocation of Flights. *Trans. Res.* **22B**, 239–250.  
+FENG, Y., AND G. GALLEGO. 1995. Optimal Stopping Times for Promotional Fares and Optimal Starting Times for End-of-Season Sales. *Mgmt. Sci.* **41**, 1371–1391.  
+GALLEGO, G. 1992. A Minmax Distribution Free Procedure for the (Q,R) Inventory Model. *O.R. Letts.* **11**, 55–60.  
+GALLEGO, G., AND G. VAN RYZIN. 1994. Optimal Dynamic Pricing of Inventories with Stochastic Demand Over Finite Horizons. *Mgmt. Sci.* **40**, 999–1020.  
+GLOVER, F., R. GLOVER, J. LORENZO, AND C. MCMILLAN. 1982. The Passenger-Mix Problem in the Scheduled Airlines. *Interfaces*, **12**, 73–79.  
+KARLIN, S., AND C. R. CARR. 1962. Prices and Optimal Inventory Policies. In Arrow, K. J., Karlin, S., and Scarf, H. (eds.), *Studies in Applied Probability and Management Science*. Stanford University Press, Stanford, California.  
+KIMES, S. E. 1989. The Basics of Yield Management. *Cornell H.R.A. Quarterly*, **4**, 14–19.  
+LADANY, S. P., AND A. ARBEL. 1991. Optimal Cruise-liner Passenger Cabin Pricing Policy. *Eur. J. Opnl. Res.* **55**, 136–147.  
+LEE, T. C., AND M. HERSH. 1993. A Model for Dynamic Airline Seat Inventory Control with Multiple Seat Bookings. *Trans. Sci.* **27**, 252–265.  
+LIBERMAN, V., AND U. YECHIALI. 1978. On the Hotel Overbooking Problem—An Inventory System with Stochastic Cancellations. *Mgmt. Sci.* **11**, 1117–1126.  
+LITTLEWOOD, K. 1972. Forecasting and Control of Passengers. *12th AGIFORS Symposium Proceedings*. 95–128.  
+LUENBERGER, D. G. 1969. *Optimization by Vector Space Methods*. John Wiley & Sons, New York.  
+McGILL, J. I. 1989. Optimization and Estimation Problems in Airline Yield Management. Unpublished Ph.D. Dissertation, University of British Columbia, Vancouver, B.C.  
+ROBINSON, L. W. 1995. Optimal and Approximate Control Policies for Airline Booking with Sequential Fare Classes. Working Paper, Cornell University, *Opns. Res.* **43**, 252–263.  
+ROTHSTEIN, M. 1971. An Airline Overbooking Model. *Trans. Sci.* **5**, 180–192.  
+ROTHSTEIN, M. 1974. Hotel Overbooking as a Markovian Sequential Decision Process. *Dec. Sci.* **5**, 389–404.  
+SMITH, B., J. LEIMKUHLER, R. DARROW, AND J. SAMUELS. 1992. Yield Management at American Airlines. *Interfaces* **22**, 8–31.  
+SOUMIS, F., AND A. NAGURNEY. 1993. A Stochastic, Multiclass Airline Network Equilibrium Model. *Opns. Res.* **41**, 721–730.  
+TALLURI, T. K. 1993. Airline Revenue Management with Passenger Routing Control: A New Model with Solution Approaches. Working Paper, USAir, Arlington, VA.  
+WANG, K. 1983. Optimum Seat Allocation for Multi-Leg Flights with Multiple Fare Types. *Proceedings of the AGIFORS 23rd Annual Symposium*, 225–246.  
+WEATHERFORD, L. R., AND S. E. BODILY. 1992. A Taxonomy and Research Overview of Perishable-Asset Revenue Management: Yield Management, Overbooking and Pricing. *Opns. Res.* **40**, 831–844.  
+WEATHERFORD, L., S. BODILY, AND P. PFEIFER. 1993. Modeling the Customer Arrival Process and Comparing Decision Rules in Perishable Asset Revenue Management Situations. *Trans. Sci.* **27**, 239–251.  
+WILLIAMSON, E. L. 1992. Airline Network Seat Control. Ph.D. Thesis, MIT, Cambridge, MA.  
+WOLLMER, R. D. 1986a. A Hub-Spoke Seat Management Model. Unpublished Internal Report, McDonnell Douglas Corporation, Long Beach, CA.  
+WOLLMER, R. D. 1986b. An Airline Reservation Model for Opening and Closing Fare Classes. Unpublished Internal Report, McDonnell Douglas Corporation, Long Beach, CA.  
+WOLLMER, R. D. 1992. An Airline Seat Management Model for a Single Leg Route when Lower Fare Classes Book First. *Opns. Res.* **40**, 26–37.
 
 \end{document}

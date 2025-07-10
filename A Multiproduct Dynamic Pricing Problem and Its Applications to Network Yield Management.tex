@@ -74,35 +74,18 @@ We begin by formally stating the formulation and assumptions of our general mode
 
 Next,in Section 7 we examine several applications of our results to specific airline yield management problems. These include network, product differentiation, and overbooking problems and problems with time varying demand.We also examine how the lack of price flexibility and misspricing affect revenues and the performance of the various heuristics.Our conclusions and thoughts for further research are presented in Section 8.
 
-\section{4.ASSUMPTIONS AND
-FORMULATIONS}\label{assumptions-and-formulations}
+\section{4.ASSUMPTIONS AND FORMULATIONS}\label{assumptions-and-formulations}
 
 \section{4.1.Modeling Assumptions}\label{modeling-assumptions}
 
-We assume a market with imperfect competition in which demand for each
-product \(j = 1 , \ldots , n\) varies with its price \(p ^ { j }\)
-.Demand for products at time \(s\) is a multivariate,stochastic point
-process with Markovian intensities.At any time \(s\) ,the vector of
-intensities \(\lambda = ( \lambda ^ { 1 } , \dots , \lambda ^ { n } )\)
-is determined by \(s\) and the current price vector
-\(p = ( p ^ { 1 } , \ldots , p ^ { n } )\) through a demand function
-\(\lambda ( p , s )\) ， \(\lambda \colon R ^ { n + 1 } \to R ^ { n }\)
-Thus, demand is.a controlled Poisson process.
+We assume a market with imperfect competition in which demand for each product \(j = 1 , \ldots , n\) varies with its price \(p ^ { j }\) .Demand for products at time \(s\) is a multivariate,stochastic point process with Markovian intensities.At any time \(s\) ,the vector of intensities \(\lambda = ( \lambda ^ { 1 } , \dots , \lambda ^ { n } )\) is determined by \(s\) and the current price vector \(p = ( p ^ { 1 } , \ldots , p ^ { n } )\) through a demand function \(\lambda ( p , s )\) ， \(\lambda \colon R ^ { n + 1 } \to R ^ { n }\) Thus, demand is.a controlled Poisson process.
 
-We assume the demand function \(\lambda ( p , s )\) is known,and
-further, that it satisfies the following regularity conditions.
+We assume the demand function \(\lambda ( p , s )\) is known,and further, that it satisfies the following regularity conditions.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  For every \(s\) ，the demand function \(\lambda ( p , s )\) has an
-  inverse,denoted
-  \(p ( \lambda , s ) , p ( \cdot , s ) \colon R _ { + } ^ { n } \to R _ { + } ^ { n }\)
-  . Thus,we can and shall view the vector of intensities
-  \(\lambda = ( \lambda ^ { 1 } , \ldots , \lambda ^ { n } )\) as the
-  firm's decision variables. In this case,one can imagine the firm
-  setting the output intensities \(\lambda\) and the market determining
-  the prices \(p\) based on these output intensities.
+  For every \(s\) ，the demand function \(\lambda ( p , s )\) has an inverse,denoted \(p ( \lambda , s ) , p ( \cdot , s ) \colon R _ { + } ^ { n } \to R _ { + } ^ { n }\) . Thus,we can and shall view the vector of intensities \(\lambda = ( \lambda ^ { 1 } , \ldots , \lambda ^ { n } )\) as the firm's decision variables. In this case,one can imagine the firm setting the output intensities \(\lambda\) and the market determining the prices \(p\) based on these output intensities.
 \item
   The revenue rate at time \(s\) ，defined by
 \end{enumerate}
@@ -111,75 +94,19 @@ further, that it satisfies the following regularity conditions.
 r ( \lambda , s ) \doteq \lambda ^ { \prime } p ( \lambda , s ) ,
 \]
 
-is continuous,bounded and concave.(For a vector \(\lambda\) ，we let
-\(\lambda ^ { \prime }\) denote its transpose.) Further,we assume it
-satisfies the conditions
-\(\begin{array} { r } { \operatorname* { l i m } _ { \lambda : \lambda ^ { j } \to 0 } \lambda ^ { j } p ^ { j } ( \lambda , s ) = 0 } \end{array}\)
-for all finite \(\lambda\) and all \(j = 1 , \dotsc , n\) ，and its
-maximizer \(\lambda _ { 0 } ^ { j } ( s )\) is uniformly bounded, i.e.,
-\(\lambda _ { 0 } ^ { j } ( s ) \leqslant \overline { { \lambda } } < + \infty\)
-for all \(j\) and \(s\) . Informally, the first condition says that no
-revenue is earned at a sales rate of zero,while the second says that
-sales rates are always bounded.
+is continuous,bounded and concave.(For a vector \(\lambda\) ，we let \(\lambda ^ { \prime }\) denote its transpose.) Further,we assume it satisfies the conditions \(\begin{array} { r } { \operatorname* { l i m } _ { \lambda : \lambda ^ { j } \to 0 } \lambda ^ { j } p ^ { j } ( \lambda , s ) = 0 } \end{array}\) for all finite \(\lambda\) and all \(j = 1 , \dotsc , n\) ，and its maximizer \(\lambda _ { 0 } ^ { j } ( s )\) is uniformly bounded, i.e., \(\lambda _ { 0 } ^ { j } ( s ) \leqslant \overline { { \lambda } } < + \infty\) for all \(j\) and \(s\) . Informally, the first condition says that no revenue is earned at a sales rate of zero,while the second says that sales rates are always bounded.
 
-3.For each product \(j\) and all times \(s\) there exists an null price
-\(p _ { \infty } ^ { j } ( s )\) (possibly \(+ \infty )\) such that if
-\(\{ p _ { k } \}\) is any sequence of price vectors satisfying
-\(p _ { k } ^ { j } \to p _ { \infty } ^ { j } ( s )\) ，then
-\(\begin{array} { r } { \operatorname* { l i m } _ { k \to \infty } \lambda ^ { j } ( p _ { k } , } \end{array}\)
-\(s ) = 0\) .Essentially,this condition says that there always exists
-some price that we can use to effectively``turn off'' the demand for
-product \(j\) 、This allows us to model the out-of-stock
-condition，i.e.，not being able to provide a final product \(j\) due to
-the lack of one or more resources,as an implicit constraint that forces
-the firm to price at \(p ^ { j } =\) \(p _ { \infty } ^ { j } ( s )\)
-for all times \(s\) during which the inventory of any resource \(i\) is
-less than \(a _ { i j }\) .(Cohen 1977 and Karlin and Carr 1962 make a
-similar null price assumption for singleresource problems.)
+3.For each product \(j\) and all times \(s\) there exists an null price \(p _ { \infty } ^ { j } ( s )\) (possibly \(+ \infty )\) such that if \(\{ p _ { k } \}\) is any sequence of price vectors satisfying \(p _ { k } ^ { j } \to p _ { \infty } ^ { j } ( s )\) ，then \(\begin{array} { r } { \operatorname* { l i m } _ { k \to \infty } \lambda ^ { j } ( p _ { k } , } \end{array}\) \(s ) = 0\) .Essentially,this condition says that there always exists some price that we can use to effectively``turn off'' the demand for product \(j\) 、This allows us to model the out-of-stock condition，i.e.，not being able to provide a final product \(j\) due to the lack of one or more resources,as an implicit constraint that forces the firm to price at \(p ^ { j } =\) \(p _ { \infty } ^ { j } ( s )\) for all times \(s\) during which the inventory of any resource \(i\) is less than \(a _ { i j }\) .(Cohen 1977 and Karlin and Carr 1962 make a similar null price assumption for singleresource problems.)
 
-A function \(\lambda ( p , s )\) that satisfies all these assumptions is
-calledaregulardemand function.
+A function \(\lambda ( p , s )\) that satisfies all these assumptions is calledaregulardemand function.
 
-\section{4.2.Formulation of the Stochastic
-Problem}\label{formulation-of-the-stochastic-problem}
+\section{4.2.Formulation of the Stochastic Problem}\label{formulation-of-the-stochastic-problem}
 
-The \(n\) final products are produced from \(m\) types of
-resources.There is an initial stock of each resource \(i\) denoted
-\(x ^ { i }\) ，and we define the vector
-\(x = ( x ^ { 1 } , \ldots , x ^ { m } ) ^ { \prime } \in\)
-\(\mathscr { Z } _ { + } ^ { m }\) . (Here \(\mathscr { L } _ { + }\)
-denotes the set of positive integers.） The firm has a deadline
-\(t > 0\) after which selling must stop, and no additional resources can
-be obtained over \([ 0 , t ]\) .Product \(j\) requires \(a _ { i j }\)
-units of resource type \(i\) and \(A = [ a _ { i j } ]\) . We assume
-\(A\) is·integer valued and has no zero columns; that is,each product
-uses at least one of the \(m\) resource types. Let the counting process
-\(N _ { s } ^ { j }\) denote the number of type \(j\) products sold up
-to time \(s\) and
-\(N _ { s } = ( N _ { s } ^ { 1 } , \ldots , N _ { s } ^ { n } )\) Let
-\(p _ { s } = ( p _ { s } ^ { 1 } , . . . , p _ { s } ^ { n } )\) be the
-vector of prices at time \(s\) The intensity of the process
-\(N _ { s }\) is controlled by \(p _ { s }\) through a regular demand
-function as described above.We assume this demand function is known.A
-demand for product \(j\) is realized at time \(s\) if
-\(d N _ { s } ^ { j } = 1\) ,in which case the firm takes
-\(a _ { i j }\) units of each resource i, \(i = 1 , \ldots , m\) ,out of
-its inventory,produces the product,and provides it to the customer in
-return for a revenue of \(p _ { s } ^ { j }\)
+The \(n\) final products are produced from \(m\) types of resources.There is an initial stock of each resource \(i\) denoted \(x ^ { i }\) ，and we define the vector \(x = ( x ^ { 1 } , \ldots , x ^ { m } ) ^ { \prime } \in\) \(\mathscr { Z } _ { + } ^ { m }\) . (Here \(\mathscr { L } _ { + }\) denotes the set of positive integers.） The firm has a deadline \(t > 0\) after which selling must stop, and no additional resources can be obtained over \([ 0 , t ]\) .Product \(j\) requires \(a _ { i j }\) units of resource type \(i\) and \(A = [ a _ { i j } ]\) . We assume \(A\) is·integer valued and has no zero columns; that is,each product uses at least one of the \(m\) resource types. Let the counting process \(N _ { s } ^ { j }\) denote the number of type \(j\) products sold up to time \(s\) and \(N _ { s } = ( N _ { s } ^ { 1 } , \ldots , N _ { s } ^ { n } )\) Let \(p _ { s } = ( p _ { s } ^ { 1 } , . . . , p _ { s } ^ { n } )\) be the vector of prices at time \(s\) The intensity of the process \(N _ { s }\) is controlled by \(p _ { s }\) through a regular demand function as described above.We assume this demand function is known.A demand for product \(j\) is realized at time \(s\) if \(d N _ { s } ^ { j } = 1\) ,in which case the firm takes \(a _ { i j }\) units of each resource i, \(i = 1 , \ldots , m\) ,out of its inventory,produces the product,and provides it to the customer in return for a revenue of \(p _ { s } ^ { j }\)
 
-Prices are chosen using a nonanticipating pricing policy
-\(p _ { s } = p ( \lambda _ { s } , s )\) .The vector of prices
-\(p _ { s }\) must be chosen from a set \({ \mathcal { P } } ( s )\) of
-allowable prices.Equivalently prices may be chosen via nonanticipating
-intensities \(\lambda _ { s } = \lambda ( p _ { s } , s )\) .The set of
-allowable intensities is denoted by
-\(\Lambda ( s ) = \{ \lambda ( p , s )\)
-\(p \in \mathcal { P } ( s ) \}\) ,and we assume initially that
-\(\Lambda ( s )\) is convex for all \(s\) ，although the convexity
-restriction can be relaxed in certain casesas explainedbelow.
+Prices are chosen using a nonanticipating pricing policy \(p _ { s } = p ( \lambda _ { s } , s )\) .The vector of prices \(p _ { s }\) must be chosen from a set \({ \mathcal { P } } ( s )\) of allowable prices.Equivalently prices may be chosen via nonanticipating intensities \(\lambda _ { s } = \lambda ( p _ { s } , s )\) .The set of allowable intensities is denoted by \(\Lambda ( s ) = \{ \lambda ( p , s )\) \(p \in \mathcal { P } ( s ) \}\) ,and we assume initially that \(\Lambda ( s )\) is convex for all \(s\) ，although the convexity restriction can be relaxed in certain casesas explainedbelow.
 
-We denote by \(\mathfrak { u }\) the class of all nonanticipating
-pricing policieswhich satisfy
+We denote by \(\mathfrak { u }\) the class of all nonanticipating pricing policieswhich satisfy
 
 \[
 \int _ { 0 } ^ { t } A d N _ { s } \leqslant x \quad \mathrm { ( a . s . ) , ~ a n d }
@@ -189,36 +116,17 @@ pricing policieswhich satisfy
 p _ { s } \in \mathcal { P } ( s ) \Leftrightarrow \lambda _ { s } \in \Lambda ( s ) , \quad 0 \leqslant s \leqslant t .
 \]
 
-Constraint (2) acts to``turn off'' the demand process for a product
-\(j\) when the firm lacks sufficient resources to provide it.Thus as
-soon as a resource, say \(i\) ,is exhausted, at time \(s\) ,the prices
-of all products \(j\) consuming resource \(i ( a _ { i j }\) \(> 0 \}\)
-）are increased to \(p _ { \infty } ^ { j } ( s )\) . The existence of a
-null price \(p _ { \infty } ^ { j } ( s )\) for all \(j\) at all times
-\(s\) guarantees that (2) can always be satisfied (with probability 1).
-Finally,we assume that the salvage value of unused resources is zero.We
-show below that this is assumption is made without loss of generality.
+Constraint (2) acts to``turn off'' the demand process for a product \(j\) when the firm lacks sufficient resources to provide it.Thus as soon as a resource, say \(i\) ,is exhausted, at time \(s\) ,the prices of all products \(j\) consuming resource \(i ( a _ { i j }\) \(> 0 \}\) ）are increased to \(p _ { \infty } ^ { j } ( s )\) . The existence of a null price \(p _ { \infty } ^ { j } ( s )\) for all \(j\) at all times \(s\) guarantees that (2) can always be satisfied (with probability 1).Finally,we assume that the salvage value of unused resources is zero.We show below that this is assumption is made without loss of generality.
 
-Note that pricing policies are nonanticipating in the sense that the
-price at time \(s\) can depend only on \(s\) and on the realization of
-sales up to but not including time s.Also, since we allow policies where
-the price depends on the actual realization of demand, the price
-\(p _ { s }\) and the corresponding demand intensity \(\lambda _ { s }\)
-are themselves random vectors.Finally,note that the price vector does
-not need to be a continuous function of time; it merely needs to be
-contained in the set \(\mathcal { P } ( s )\)
+Note that pricing policies are nonanticipating in the sense that the price at time \(s\) can depend only on \(s\) and on the realization of sales up to but not including time s.Also, since we allow policies where the price depends on the actual realization of demand, the price \(p _ { s }\) and the corresponding demand intensity \(\lambda _ { s }\) are themselves random vectors.Finally,note that the price vector does not need to be a continuous function of time; it merely needs to be contained in the set \(\mathcal { P } ( s )\)
 
-Given an initial vector of resource inventories \(x\) ,adeadline
-\(t > 0\) ，and a regular demand process as described above, we want to find a pricing policy in \(\mathfrak { u }\) that maximizes total expected revenue.More formally,we denote the expected revenue of policy
-\(\boldsymbol { u }\) by
+Given an initial vector of resource inventories \(x\) ,adeadline \(t > 0\) ，and a regular demand process as described above, we want to find a pricing policy in \(\mathfrak { u }\) that maximizes total expected revenue.More formally,we denote the expected revenue of policy \(\boldsymbol { u }\) by
 
 \[
 J ^ { u } ( x , t ) \doteq E _ { u } \biggl [ \int _ { 0 } ^ { t } p _ { s } ^ { \prime } \ d N _ { s } \biggl ] ,
 \]
 
-and the firm's problem is to find a pricing policy \(u ^ { * }\) ,if
-such a policy exits,that maximizes the total expected revenue generated
-over \([ 0 , t ] ,\) ，denoted \(J ^ { * } ( x , t )\) .Equivalently,
+and the firm's problem is to find a pricing policy \(u ^ { * }\) ,if such a policy exits,that maximizes the total expected revenue generated over \([ 0 , t ] ,\) ，denoted \(J ^ { * } ( x , t )\) .Equivalently,
 
 \[
 J ^ { * } ( x , t ) \doteq \operatorname* { s u p } _ { \boldsymbol { \pi } \in \boldsymbol { 0 } \boldsymbol { \jmath } } J ^ { \boldsymbol { u } } ( x , t ) .
@@ -226,238 +134,112 @@ J ^ { * } ( x , t ) \doteq \operatorname* { s u p } _ { \boldsymbol { \pi } \in 
 
 \section{4.3.Special Cases}\label{special-cases}
 
-We briefly mention some special cases of this formulation to illustrate
-its range of application. Further examples are given in Section 4.
+We briefly mention some special cases of this formulation to illustrate its range of application. Further examples are given in Section 4.
 
-Nonstationary Demand.Demand may change over time due to
-seasonalities,day-of-the-week effects,or the increased or decreased
-desirability of products as the deadline approaches. Such
-nonstationarity is modeled using a time varying demand function.
+Nonstationary Demand. Demand may change over time due to seasonalities, day-of-the-week effects, or the increased or decreased desirability of products as the deadline approaches. Such nonstationarity is modeled using a time varying demand function.
 
-Discounted Revenue. One can have discounted revenue functions of the
-form \(r ( \lambda , s ) = e ^ { - \beta s } \lambda p ( \lambda , s )\)
-，provided \(r ( \lambda ,\) \(s \dot { }\) ）satisfies the regularity
-assumptions.
+Discounted Revenue. One can have discounted revenue functions of the form \(r ( \lambda , s ) = e ^ { - \beta s } \lambda p ( \lambda , s )\), provided \(r ( \lambda , s )\) satisfies the regularity assumptions.
 
-Resource Salvage Values.It is clear that with salvage values
-\(q ^ { i } \geqslant 0\) for resources \(i = 1 , \ldots , m\) ，we
-would never set
-\(p ^ { j } < \pi ^ { j } \doteq \ \Sigma _ { i = 1 } ^ { m } a _ { i j } q ^ { i }\)
-for any \(j ;\) therefore, we can define a new price vector
-\(\bar { \hat { p } } ^ { j } = p ^ { j } - \pi ^ { j }\) and demand
-function
-\(\hat { \lambda } ( \hat { p } ^ { j } ) \stackrel { - } { = } \lambda ( \hat { p } ^ { j } + \pi ^ { j } )\)
-that reduce the problem to the zerosalvage-value case.(In this
-case,``revenue''in the problem in interpreted as revenue in excess of
-the total salvage value of the initial stock of resources,
-\(q ^ { \prime } x\) ）
+Resource Salvage Values. It is clear that with salvage values \(q ^ { i } \geqslant 0\) for resources \(i = 1 , \ldots , m\) , we would never set \(p ^ { j } < \pi ^ { j } \doteq \ \Sigma _ { i = 1 } ^ { m } a _ { i j } q ^ { i }\) for any \(j ;\) therefore, we can define a new price vector \(\bar { \hat { p } } ^ { j } = p ^ { j } - \pi ^ { j }\) and demand function \(\hat { \lambda } ( \hat { p } ^ { j } ) \stackrel { - } { = } \lambda ( \hat { p } ^ { j } + \pi ^ { j } )\) that reduce the problem to the zero salvage-value case. (In this case, ``revenue'' in the problem is interpreted as revenue in excess of the total salvage value of the initial stock of resources, \(q ^ { \prime } x\).)
 
-Group Pricing.It is often possible to market multiples of a single
-product as a new product. For example,this occurs frequently in the
-airlines when blocks of space are sold to tour groups. This sort of
-group pricing can be modeled by introducing columns of the form
-\(A _ { k } ^ { j } = k A ^ { j } ,\) \(k \in \mathcal { Z } _ { + }\)
-,and then specifying a separate price and separate demand function for
-each such column.
+Group Pricing. It is often possible to market multiples of a single product as a new product. For example, this occurs frequently in the airlines when blocks of space are sold to tour groups. This sort of group pricing can be modeled by introducing columns of the form \(A _ { k } ^ { j } = k A ^ { j } ,\) \(k \in \mathcal { Z } _ { + }\) , and then specifying a separate price and separate demand function for each such column.
 
-Compound Poisson Demand. Suppose demand for product \(j\) is compound
-Poisson.That is,each customer request \(k\) items with probability
-\(q _ { k } , k = 1 , \ldots , K < + \infty\)
-\(\begin{array} { r } { \sum _ { k } q _ { k } = 1 } \end{array}\) Let
-\(A ^ { j }\) be the column corresponding to product \(j\) and let
-\(p ^ { j } ( \lambda , s )\) be the inverse demand function of product
-\(j\) 、In this case,one can replace this single product by \(K\)
-products with columns \(A _ { k } ^ { j } = k A ^ { j }\)
-\(k = 1 , \dots , K\) and inverse demand functions
-\(p _ { k } ^ { j } ( \lambda , s ) = k p ^ { j } ( \lambda , s )\) ,and
-add the set of convex constraints
-\(\lambda _ { k } ^ { j } = q _ { k } \lambda ^ { j }\)
-\(k = 1 , \ldots , K\) 、This yields an equivalent problem inthe
-standard form ofour formulation.
+Compound Poisson Demand. Suppose demand for product \(j\) is compound Poisson. That is, each customer requests \(k\) items with probability \(q _ { k } , k = 1 , \ldots , K < + \infty\), \(\sum _ { k } q _ { k } = 1\). Let \(A ^ { j }\) be the column corresponding to product \(j\) and let \(p ^ { j } ( \lambda , s )\) be the inverse demand function of product \(j\). In this case, one can replace this single product by \(K\) products with columns \(A _ { k } ^ { j } = k A ^ { j }\), \(k = 1 , \dots , K\) and inverse demand functions \(p _ { k } ^ { j } ( \lambda , s ) = k p ^ { j } ( \lambda , s )\), and add the set of convex constraints \(\lambda _ { k } ^ { j } = q _ { k } \lambda ^ { j }\), \(k = 1 , \ldots , K\). This yields an equivalent problem in the standard form of our formulation.
 
-Stochastic Customer Selection of Products.In many cases, firms cannot
-control the price .of each product separately.For example,airlines
-typically offer a fare for O-D pairs only and cannot force passengers to
-use a particular itinerary (path） connecting the O-D pairs,since
-typically all ``legal''connections of legs are allowed.If demand
-functions are linear,this situation can be modeled as follows: Let \(p\)
-denote the price for a given O-D pair connected by \(K\) distinct
-paths.Let \(q _ { k } , k = 1 , \ldots , K\) be the probabilities
-representing preferences of customers for these paths; that is,a given
-customer requests path \(k\) with probability \(q _ { k }\) .By pricing
-the O-D pair at \(p\) ，intensities
-\(\lambda _ { k } = q _ { k } \lambda ( p )\) ，are generated for each
-path \(k = 1 , \ldots , K .\) If \(\lambda ( p )\) is linear and
-\(\mathcal { P } ( s )\) is convex, then the set of achievable
-intensities \(\Lambda ( s )\) is convex,and the problem reduces to our
-standard form.
+Stochastic Customer Selection of Products. In many cases, firms cannot control the price of each product separately. For example, airlines typically offer a fare for O-D pairs only and cannot force passengers to use a particular itinerary (path) connecting the O-D pairs, since typically all ``legal'' connections of legs are allowed. If demand functions are linear, this situation can be modeled as follows: Let \(p\) denote the price for a given O-D pair connected by \(K\) distinct paths. Let \(q _ { k } , k = 1 , \ldots , K\) be the probabilities representing preferences of customers for these paths; that is, a given customer requests path \(k\) with probability \(q _ { k }\). By pricing the O-D pair at \(p\), intensities \(\lambda _ { k } = q _ { k } \lambda ( p )\), are generated for each path \(k = 1 , \ldots , K .\) If \(\lambda ( p )\) is linear and \(\mathcal { P } ( s )\) is convex, then the set of achievable intensities \(\Lambda ( s )\) is convex, and the problem reduces to our standard form.
 
-Discrete Fare Classes. It many cases, firms do not have complete
-flexibility in setting prices.For example,airlines are often forced to
-match the fares of competitors or are committed to offering a certain
-number of advertised promotional fares.As a result,a firm may be
-restricted to a small number of price points for each product. This
-means that,on a tactical level, the firm may be able to control only the
-availability of its various fares,and may not have the freedom to change
-the fares themselves.
+Discrete Fare Classes. In many cases, firms do not have complete flexibility in setting prices. For example, airlines are often forced to match the fares of competitors or are committed to offering a certain number of advertised promotional fares. As a result, a firm may be restricted to a small number of price points for each product. This means that, on a tactical level, the firm may be able to control only the availability of its various fares, and may not have the freedom to change the fares themselves.
 
-To model this situation,one can consider the set of allowable prices
-\(P ( s )\) to be a finite set, reflecting the possible fares that can
-be offered for each product together with the null prices
-\(p _ { \infty } ^ { j }\) that block demand for product \(j =\)
-\(1 , \ldots , n\) .The set \(\Lambda ( s )\) is then a finite set as
-well.In this case,the decision is which of the discrete set of prices to
-make available at any point in time for each product. If the null price
-is offered,then the product is closed,and no sales are made.This type of
-decision is more in the spirit of traditional yield management
-problems,in which one controls the availability of various fare classes
-for a given product.The discrete price formulation creates a technical
-problem since \(\Lambda ( s )\) is not convex in this case; however, we
-discuss in Section 4.5 how this restriction can be relaxed if the
-revenue rate is constant or piecewise constant in time. If the revenue
-rate is continuously varying in time, it is possible to use randomized
-rules to overcome the convexity problem.
+To model this situation, one can consider the set of allowable prices \(P ( s )\) to be a finite set, reflecting the possible fares that can be offered for each product together with the null prices \(p _ { \infty } ^ { j }\) that block demand for product \(j = 1 , \ldots , n\). The set \(\Lambda ( s )\) is then a finite set as well. In this case, the decision is which of the discrete set of prices to make available at any point in time for each product. If the null price is offered, then the product is closed, and no sales are made. This type of decision is more in the spirit of traditional yield management problems, in which one controls the availability of various fare classes for a given product. The discrete price formulation creates a technical problem since \(\Lambda ( s )\) is not convex in this case; however, we discuss in Section 4.5 how this restriction can be relaxed if the revenue rate is constant or piecewise constant in time. If the revenue rate is continuously varying in time, it is possible to use randomized rules to overcome the convexity problem.
 
 \section{4.4.Optimality Conditions}\label{optimality-conditions}
 
-The formulation (5) is an example of an intensity control problem.An
-optimal solution can be found in principle through the Hamilton-Jacobi
-sufficient conditions (Bré- maud 1980, Theorem VII.1):
+The formulation (5) is an example of an intensity control problem. An optimal solution can be found in principle through the Hamilton-Jacobi sufficient conditions (Brémaud 1980, Theorem VII.1):
 
 \[
-\begin{array} { l } { \displaystyle \frac { \partial } { \partial t } J ^ { * } ( x , t ) } \\ { = \displaystyle \operatorname* { s u p } _ { \lambda \in \Lambda ( x , s ) } \bigg \{ r ( \lambda , s ) - \sum _ { j = 1 } ^ { n } \lambda ^ { j } [ J ^ { * } ( x , t ) - J ^ { * } ( x - A ^ { j } , t ) ] \bigg \} , } \end{array}
+\begin{array} { l }
+{ \displaystyle \frac { \partial } { \partial t } J ^ { * } ( x , t ) } \\
+{ = \displaystyle \operatorname* { s u p } _ { \lambda \in \Lambda ( x , s ) } \bigg \{ r ( \lambda , s ) - \sum _ { j = 1 } ^ { n } \lambda ^ { j } [ J ^ { * } ( x , t ) - J ^ { * } ( x - A ^ { j } , t ) ] \bigg \} , }
+\end{array}
 \]
 
 \section{where}\label{where}
 
 \[
-\Lambda ( x , s ) = \Lambda ( s ) \cap \{ \lambda \colon \lambda ^ { j } = 0 { \mathrm { ~ i f ~ } } a _ { i j } < x ^ { i } { \mathrm { ~ f o r ~ s o m e ~ } } i \} ,
+\Lambda ( x , s ) = \Lambda ( s ) \cap \{ \lambda \colon \lambda ^ { j } = 0 \mathrm { ~ i f ~ } a _ { i j } < x ^ { i } \mathrm { ~ f o r ~ s o m e ~ } i \} ,
 \]
 
-denotes the set of allowable intensities in state \(x\) at time \(s\)
-and \(A ^ { j }\) denotes the \(j\) th column of \(A . J ^ { * }\)
-satisfies the boundary conditions
+denotes the set of allowable intensities in state \(x\) at time \(s\) and \(A ^ { j }\) denotes the \(j\) th column of \(A\). \(J ^ { * }\) satisfies the boundary conditions
 
 \[
-\begin{array} { r l } { J ^ { * } ( x , t ) = 0 } & { { } \forall t \qquad } & { x \colon x ^ { i } < a _ { i j } \mathrm { ~ f o r ~ s o m e ~ } i } \\ { J ^ { * } ( x , 0 ) = 0 } & { { } \forall x . \qquad \mathrm { a n d ~ a l l } j = 1 , \dots , n } \end{array} .
+\begin{array} { r l }
+{ J ^ { * } ( x , t ) = 0 } & { } \forall t \qquad & { x \colon x ^ { i } < a _ { i j } \mathrm { ~ f o r ~ s o m e ~ } i } \\
+{ J ^ { * } ( x , 0 ) = 0 } & { } \forall x . \qquad \mathrm { a n d ~ a l l } j = 1 , \dots , n
+\end{array} .
 \]
 
-This implicitly defines a system of first-order,typically
-nonlinear,differential equations.
+This implicitly defines a system of first-order, typically nonlinear, differential equations.
 
-In general it is very difficult to find closed form solutions to systems
-of differential equations such as the one presented above.(See Gallego
-and van Ryzin 1994 for a closed-form solution for a single-product
-problem with an exponential demand function.）Although some of these
-systems can be solved numerically,the solutions tend to call for
-continuous price decreases between sales and for price jumps immediately
-after each sale.Therefore,we next examine an approach for finding
-provably good suboptimal pricing policies based on analyzing a
-deterministic versionof thisproblem.
+In general it is very difficult to find closed form solutions to systems of differential equations such as the one presented above. (See Gallego and van Ryzin 1994 for a closed-form solution for a single-product problem with an exponential demand function.) Although some of these systems can be solved numerically, the solutions tend to call for continuous price decreases between sales and for price jumps immediately after each sale. Therefore, we next examine an approach for finding provably good suboptimal pricing policies based on analyzing a deterministic version of this problem.
 
-\section{4.5.Formulation ofDeterministic
-Problem}\label{formulation-ofdeterministic-problem}
+\section{4.5.Formulation of Deterministic Problem}\label{formulation-ofdeterministic-problem}
 
-The deterministic problem is defined as follows.At time zero,the firm
-has a vector of material supplies \(x\) ，which are continuous
-quantities, and a line of products \(j = 1 , \dots ,\) （20 \(n\) which
-are sold in continuous amounts.To produce a unit quantity of product
-\(j\) requires quantities \(a _ { i j }\) of each material
-\(i = 1 , \ldots , m\) . As before \(A = [ a _ { i j } ] ,\) and the
-firm has a finite time \(t > 0\) to sell its products.Demand at time
-\(s\) is modeled as a vector of deterministic rates
-\(\begin{array} { r l } { \lambda ( s ) } & { { } = } \end{array}\)
-\(( \lambda ^ { 1 } ( s ) , \ldots , \lambda ^ { n } ( s ) )\) that are
-functions \(\lambda ( p , s )\) of the current product price vector
-\(p ( s ) = ( p ^ { 1 } ( s ) , \ldots , p ^ { n } ( s ) )\) . We assume
-the demand function and the revenue function
-\(r ( \lambda ( s ) , s ) =\) \(\lambda ^ { \prime } p ( \lambda , s )\)
-satisfy our regularity assumptions as before and that salvage values are
-zero.The price vector \(p ( s )\) must again be chosen from a set
-\(\mathcal { P } ( s )\) of allowable prices.As before,we can
-equivalently view the firm as setting the vector of sales rates
-\(\lambda ( s ) \in \Lambda ( s )\) ，which implies charging a vector of
-prices \(p ( s ) = p ( \lambda ( s ) ) \in \mathcal { P } ( s )\)
+The deterministic problem is defined as follows. At time zero, the firm has a vector of material supplies \(x\), which are continuous quantities, and a line of products \(j = 1, \dots, n\) which are sold in continuous amounts. To produce a unit quantity of product \(j\) requires quantities \(a_{ij}\) of each material \(i = 1, \ldots, m\). As before \(A = [a_{ij}]\), and the firm has a finite time \(t > 0\) to sell its products. Demand at time \(s\) is modeled as a vector of deterministic rates \(\lambda(s) = (\lambda^1(s), \ldots, \lambda^n(s))\) that are functions \(\lambda(p, s)\) of the current product price vector \(p(s) = (p^1(s), \ldots, p^n(s))\). We assume the demand function and the revenue function \(r(\lambda(s), s) = \lambda' p(\lambda, s)\) satisfy our regularity assumptions as before and that salvage values are zero. The price vector \(p(s)\) must again be chosen from a set \(\mathcal{P}(s)\) of allowable prices. As before, we can equivalently view the firm as setting the vector of sales rates \(\lambda(s) \in \Lambda(s)\), which implies charging a vector of prices \(p(s) = p(\lambda(s)) \in \mathcal{P}(s)\).
 
-The firm's problem is to maximize the total revenue generated over
-\([ 0 , t ]\) given \(x\) ，denoted
-\(\boldsymbol { J } ^ { d } ( \boldsymbol { x } , t )\)
+The firm's problem is to maximize the total revenue generated over \([0, t]\) given \(x\), denoted \(J^d(x, t)\)
 
 \[
-J ^ { d } ( x , t ) = \operatorname* { m a x } \int _ { 0 } ^ { t } r ( \lambda ( s ) , s ) \ d s
+J^d(x, t) = \operatorname*{max}_{\lambda(\cdot)} \int_{0}^{t} r(\lambda(s), s)  ds
 \]
 
 subject to
 
 \[
-\begin{array} { l } { \displaystyle \int _ { 0 } ^ { t } { \mathcal A } \lambda ( s ) ~ d s \leqslant x , } \\ { \lambda ( s ) \in \Lambda ( s ) , \quad 0 \leqslant s \leqslant t . } \end{array}
+\begin{array}{l}
+\displaystyle \int_{0}^{t} A \lambda(s)  ds \leqslant x, \\
+\lambda(s) \in \Lambda(s), \quad 0 \leqslant s \leqslant t.
+\end{array}
 \]
 
-This problem is a deterministic optimization problem whose solution, if
-one exists,is a function from \([ 0 , t ]\) to \(R ^ { n }\) denoted
-\(\lambda _ { d } ( s )\) . Such problems can be analyzed either through
-the calculus of variations or the more general theory of optimization in
-vector spaces (Luenberger 1969).
+This problem is a deterministic optimization problem whose solution, if one exists, is a function from \([0, t]\) to \(\mathbb{R}^n\) denoted \(\lambda_d(s)\). Such problems can be analyzed either through the calculus of variations or the more general theory of optimization in vector spaces (Luenberger 1969).
 
-Notice that in the time invariant case where \(r ( \lambda , s ) =\)
-\(r ( \lambda )\) and \(\Lambda ( s ) = \Lambda\) ,theabove problem
-reduces to a convex programming problem in \(R ^ { n }\) ,and solutions
-are always constant intensities (prices) over \([ 0 , t ]\) 、Itis not
-hard to show that one can allow \(\Lambda\) to be nonconvex in this
-case.This is accomplished by replacing \(\Lambda\) by its convex hull
-and interpreting the resulting constant intensity solution of the new
-problem asa mixture of intensities from the original problem,the mixture
-being achieved by varying the amount of time each fare is offered over
-the sales horizon.Indeed,in this case where \(\Delta\) is discrete the
-deterministic problem reduces to a linear program,with decision
-variables being the amount of time each discrete price (intensity） is
-offered over \([ 0 , t ]\) .The resulting solution is a set of piecewise
-constant intensities.An especially important application of this case is
-when prices,and hence intensities,are restricted to a finite set of fare
-classes as was discussed in Section 4.3.(See Gallego and van Ryzin for a
-detailed explanation of this case for a single-item problem.） This same
-approach can be easily extended to the case where the revenue function
-and constraint sets are piecewise con stant over time.
+Notice that in the time invariant case where \(r(\lambda, s) = r(\lambda)\) and \(\Lambda(s) = \Lambda\), the above problem reduces to a convex programming problem in \(\mathbb{R}^n\), and solutions are always constant intensities (prices) over \([0, t]\). It is not hard to show that one can allow \(\Lambda\) to be nonconvex in this case. This is accomplished by replacing \(\Lambda\) by its convex hull and interpreting the resulting constant intensity solution of the new problem as a mixture of intensities from the original problem, the mixture being achieved by varying the amount of time each fare is offered over the sales horizon. Indeed, in this case where \(\Lambda\) is discrete the deterministic problem reduces to a linear program, with decision variables being the amount of time each discrete price (intensity) is offered over \([0, t]\). The resulting solution is a set of piecewise constant intensities. An especially important application of this case is when prices, and hence intensities, are restricted to a finite set of fare classes as was discussed in Section 4.3. (See Gallego and van Ryzin for a detailed explanation of this case for a single-item problem.) This same approach can be easily extended to the case where the revenue function and constraint sets are piecewise constant over time.
 
-Weuse the fact that the optimal revenue in the deterministic problem can
-be expressed as
+We use the fact that the optimal revenue in the deterministic problem can be expressed as
 
 \[
-J ^ { d } ( x , t ) = \sum _ { j = 1 } ^ { n } \bar { p } ^ { j } \alpha ^ { j } ,
+J^d(x, t) = \sum_{j=1}^{n} \bar{p}^j \alpha^j,
 \]
 
 where
 
 \[
-\alpha ^ { j } = \int _ { 0 } ^ { t } \lambda _ { d } ^ { j } ( s ) ~ d s ,
+\alpha^j = \int_{0}^{t} \lambda_d^j(s)  ds,
 \]
 
 is the total quantity of product \(j\) sold under the optimal policy and
 
 \[
-\bar { p } ^ { j } = \frac { \int _ { 0 } ^ { t } p _ { d } ^ { j } ( s ) \lambda _ { d } ^ { j } ( s ) ~ d s } { \int _ { 0 } ^ { t } \lambda _ { d } ^ { j } ( s ) ~ d s } ,
+\bar{p}^j = \frac{\int_{0}^{t} p_d^j(s) \lambda_d^j(s)  ds}{\int_{0}^{t} \lambda_d^j(s)  ds},
 \]
 
-is the weighted average price obtained for product \(j\)
+is the weighted average price obtained for product \(j\).
 
-\section{4.6.Relationship Between Stochastic and Deterministic
-Problems}\label{relationship-between-stochastic-and-deterministic-problems}
+\section{4.6.Relationship Between Stochastic and Deterministic Problems}\label{relationship-between-stochastic-and-deterministic-problems}
 
-Our first theorem proves the rather intuitive result that the
-deterministic problem provides an upper bound on the stochastic
-problem.The proof requires a preliminary lemma.Let μ = (μ1,..
-\(\pmb { \mu } = ( \mu _ { 1 } , \ldots , \mu _ { m } )\) be a real
-\(m\) -vector. For \(\mu \geqslant\) O and any \(u \in \mathcal { U }\)
-,define the augmented value function
+Our first theorem proves the rather intuitive result that the deterministic problem provides an upper bound on the stochastic problem. The proof requires a preliminary lemma. Let \(\mu = (\mu_1, \ldots, \mu_m)\) be a real \(m\)-vector. For \(\mu \geqslant 0\) and any \(u \in \mathcal{U}\), define the augmented value function
 
 \[
-\begin{array} { l } { { J ^ { u } ( x , t , \mu ) = E _ { u } \Bigg [ \Bigg ] _ { 0 } ^ { t } \left( r ( \lambda _ { s } , s ) - \mu ^ { \prime } A \lambda _ { s } \right) d s \Bigg ] } } \\ { { \quad \quad + \ \mu ^ { \prime } x \geqslant J ^ { u } ( x , t ) , } } \end{array}
+\begin{array}{l}
+J^u(x, t, \mu) = E_u \left[ \int_{0}^{t} \left( r(\lambda_s, s) - \mu' A \lambda_s \right) ds \right] \\
+\quad +  \mu' x \geqslant J^u(x, t),
+\end{array}
 \]
 
 and its deterministic equivalent
 
 \[
-J ^ { d } ( x , t , \mu ) = \operatorname* { m a x } _ { \{ \lambda ( s ) \in \Lambda ( s ) \} } \int _ { 0 } ^ { t } \left( r ( \lambda ( s ) , s ) - \mu ^ { \prime } A \lambda ( s ) \right) d s
+J^d(x, t, \mu) = \operatorname*{max}_{\{\lambda(s) \in \Lambda(s)\}} \int_{0}^{t} \left( r(\lambda(s), s) - \mu' A \lambda(s) \right) ds
 \]
 
 We claim the following.
@@ -465,93 +247,77 @@ We claim the following.
 \section{Lemma 1.}\label{lemma-1.}
 
 \[
-J ^ { u } ( x , t , \mu ) \leqslant J ^ { d } ( x , t , \mu ) \quad \forall u \in \mathcal { V } , \mu \geqslant 0 .
+J^u(x, t, \mu) \leqslant J^d(x, t, \mu) \quad \forall u \in \mathcal{U}, \mu \geqslant 0.
 \]
 
-Proof.The claim follows by viewing the integrand inside the expectation
-in (11) as purely a function of \(\lambda\) and maximizing pointwise:
+Proof. The claim follows by viewing the integrand inside the expectation in (11) as purely a function of \(\lambda\) and maximizing pointwise:
 
 \[
-\begin{array} { l } { \displaystyle { J ^ { u } ( x , t , \mu ) \leqslant \int _ { 0 } ^ { t } \underset { \lambda \in \Lambda ( s ) } { \operatorname* { m a x } } \left. r ( \lambda , s ) - \mu ^ { \prime } A \lambda \right. d s + \mu ^ { \prime } x } } \\ { \displaystyle { = \underset { \{ \lambda ( s ) \in \Lambda ( s ) \} } { \operatorname* { m a x } } \int _ { 0 } ^ { t } \left( r ( \lambda ( s ) , s ) - \mu ^ { \prime } A \lambda ( s ) \right) d s + \mu ^ { \prime } x } } \\ { \displaystyle { \doteq J ^ { d } ( x , t , \mu ) . } \prod } \end{array}
+\begin{array}{l}
+\displaystyle J^u(x, t, \mu) \leqslant \int_{0}^{t} \max_{\lambda \in \Lambda(s)} \left\{ r(\lambda, s) - \mu' A \lambda \right\} ds + \mu' x \\
+\displaystyle = \max_{\{\lambda(s) \in \Lambda(s)\}} \int_{0}^{t} \left( r(\lambda(s), s) - \mu' A \lambda(s) \right) ds + \mu' x \\
+\displaystyle \doteq J^d(x, t, \mu). \quad \blacksquare
+\end{array}
 \]
 
 We are now ready to prove our first theorem.
 
-Theorem 1. If \(\lambda ( p , s )\) isa regular demand function, then
-for all nonnegative integer \(x\) and all \(0 \leqslant t < + \infty\)
-（20
+Theorem 1. If \(\lambda(p, s)\) is a regular demand function, then for all nonnegative integer \(x\) and all \(0 \leqslant t < +\infty\)
 
 \[
-J ^ { * } ( x , t ) \leqslant J ^ { d } ( x , t ) .
+J^*(x, t) \leqslant J^d(x, t).
 \]
 
-Proof. By our regularity assumption,we have
-\(\lambda _ { s } ^ { j } \leqslant \overline { { \lambda } } < \infty\)
-which implies \(\textstyle \int _ { 0 } ^ { t } A \lambda _ { s } d s\)
-is finite almost surely for all \(t \geq 0\) Because
-\(u \in \mathcal { U }\) satisfies
-\(\begin{array} { r } { \int _ { 0 } ^ { t } \boldsymbol { A } d N _ { s } \leqslant \boldsymbol { x } } \end{array}\)
-(a.s.),we have by Brémaud, Theorem I1.8,
+Proof. By our regularity assumption, we have \(\lambda_s^j \leqslant \overline{\lambda} < \infty\) which implies \(\int_{0}^{t} A \lambda_s  ds\) is finite almost surely for all \(t \geq 0\). Because \(u \in \mathcal{U}\) satisfies \(\int_{0}^{t} A dN_s \leqslant x\) (a.s.), we have by Brémaud, Theorem II.8,
 
 \[
-E _ { u } \Bigg [ \int _ { 0 } ^ { t } A d N _ { s } \Bigg ] = E _ { u } \Bigg [ \int _ { 0 } ^ { t } A \lambda _ { s } ~ d s \Bigg ] \leqslant x .
+E_u \left[ \int_{0}^{t} A dN_s \right] = E_u \left[ \int_{0}^{t} A \lambda_s  ds \right] \leqslant x.
 \]
 
-Since the demand intensity in the control problem (5）is Markovian, it
-is sufficient to consider only Markovian policies \(\boldsymbol { u }\)
-(Brémaud,Corollary VII.2). That is,policies for which the price at time
-\(s\) is a function \(p _ { s } = p _ { u } ( x - N _ { s } , s )\)
-（204号 only.(Equivalently,the intensity at time \(s\) is a function
-\(\lambda _ { s } = \lambda _ { u } ( x - N _ { s } , s ) .\)
-)ByBrémaud, Theorem II.8,we have,
+Since the demand intensity in the control problem (5) is Markovian, it is sufficient to consider only Markovian policies \(u\) (Brémaud, Corollary VII.2). That is, policies for which the price at time \(s\) is a function \(p_s = p_u(x - N_s, s)\) only. (Equivalently, the intensity at time \(s\) is a function \(\lambda_s = \lambda_u(x - N_s, s).\)) By Brémaud, Theorem II.8, we have,
 
 \[
-\begin{array} { c } { { J ^ { u } ( x , t ) = E _ { u } \Bigg [ \displaystyle \int _ { 0 } ^ { t } p _ { u } ( x - N _ { s } , s ) ^ { \prime } d N _ { s } \Bigg ] } } \\ { { = E _ { u } \Bigg [ \displaystyle \int _ { 0 } ^ { t } r ( \lambda _ { u } ( x - N _ { s } , s ) , s ) d s \Bigg ] , } } \end{array}
+\begin{array}{c}
+J^u(x, t) = E_u \left[ \int_{0}^{t} p_u(x - N_s, s)' dN_s \right] \\
+= E_u \left[ \int_{0}^{t} r(\lambda_u(x - N_s, s), s) ds \right],
+\end{array}
 \]
 
-andbydefinition
+and by definition
 
 \[
-J ^ { * } ( x , t ) = \operatorname* { s u p } _ { u \in \mathfrak { q } } J ^ { u } ( x , t ) .
+J^*(x, t) = \operatorname*{sup}_{u \in \mathcal{U}} J^u(x, t).
 \]
 
-Thus,by (11) and Lemma 1 we have
+Thus, by (11) and Lemma 1 we have
 
 \[
-J ^ { * } ( x , t ) \leqslant \underset { \mu \geqslant 0 } { \operatorname* { i n f } } J ^ { d } ( x , t , \mu ) .
+J^*(x, t) \leqslant \inf_{\mu \geqslant 0} J^d(x, t, \mu).
 \]
 
-Theorem 1 then follows by noting that the quantity on the right,above,is
-the optimal value of the dual of the deterministic optimization problem
+Theorem 1 then follows by noting that the quantity on the right, above, is the optimal value of the dual of the deterministic optimization problem
 
 \[
-J ^ { d } ( x , t ) = \operatorname* { m a x } \int _ { 0 } ^ { t } r ( \lambda ( s ) , s ) \ d s
+J^d(x, t) = \operatorname*{max} \int_{0}^{t} r(\lambda(s), s)  ds
 \]
 
 subject to
 
 \[
-\begin{array} { l } { \displaystyle \int _ { 0 } ^ { t } { A \lambda ( s ) ~ d s } \leqslant x } \\ { \displaystyle \lambda ( s ) \in \Lambda ( s ) , \quad 0 \leqslant s \leqslant t , } \end{array}
+\begin{array}{l}
+\displaystyle \int_{0}^{t} A \lambda(s)  ds \leqslant x \\
+\displaystyle \lambda(s) \in \Lambda(s), \quad 0 \leqslant s \leqslant t,
+\end{array}
 \]
 
-where the constraints we are relaxing are linear and thus convex,
-\(\Lambda ( s )\) is convex by assumption,and the objective functional
-is concave. If \(x > 0\) ,the solution \(\lambda ( s ) = 0\) 0
-\(0 \leqslant\) \(s \leqslant t\) gives
-\(\textstyle \int _ { 0 } ^ { t } A \lambda ( s ) d s < x\) and thus is
-an interior point of the relaxed constraint set.Under these
-conditions,there existsa multiplier \(\mu ^ { * } \geqslant 0\) for
-which
+where the constraints we are relaxing are linear and thus convex, \(\Lambda(s)\) is convex by assumption, and the objective functional is concave. If \(x > 0\), the solution \(\lambda(s) = 0\) for \(0 \leqslant s \leqslant t\) gives \(\int_{0}^{t} A \lambda(s) ds < x\) and thus is an interior point of the relaxed constraint set. Under these conditions, there exists a multiplier \(\mu^* \geqslant 0\) for which
 
 \[
-\operatorname* { i n f } _ { \mu \geqslant 0 } J ^ { d } ( x , t , \mu ) = J ^ { d } ( x , t , \mu ^ { \ast } ) = J ^ { d } ( x , t ) ,
+\inf_{\mu \geqslant 0} J^d(x, t, \mu) = J^d(x, t, \mu^*) = J^d(x, t),
 \]
 
-so the duality gap is zero (Luenberger, Section 8.6, Theorem 1).This
-together with (15） establishes the result for \(x > 0\) If
-\(x ^ { i } = 0\) for some resource \(i\) ,it is not hard to see that
-any product \(j\) that uses resource \(i\) canbe eliminated and the
-problem can be reduced to one in which \(x > 0\) □
+so the duality gap is zero (Luenberger, Section 8.6, Theorem 1). This together with (15) establishes the result for \(x > 0\). If \(x^i = 0\) for some resource \(i\), it is not hard to see that any product \(j\) that uses resource \(i\) can be eliminated and the problem can be reduced to one in which \(x > 0\). \(\square\)
+
 
 \section{5.TWO ASYMPTOTICALLY OPTIMAL
 HEURISTICS}\label{two-asymptotically-optimal-heuristics}

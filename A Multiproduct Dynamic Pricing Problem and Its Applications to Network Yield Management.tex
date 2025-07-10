@@ -18,167 +18,33 @@ GUILLERMO GALLEGO and GARRETT VAN RYZIN
 ColumbiaUniversity,NewYork (Received May 1993; revisions received
 October 1993,November 1993;accepted September 1994)
 
-Afirmhasinventoriesofasetofcomponents
-thatareusedtoproduceasetofproducts.Thereisafinitehorizonoverwhichthefirm
-cansellitsproductsDemandforachproduct
-isastochasticpointprocesswithanintensitythatisafunctionofthevectorofprices
-forthe productsandthetimeatwhichthesepricesareofered.The problem is
-topricethefinishedproductssoastomaximizetotal expectedrevenueover the
-finitesales horizon.An upper boundontheoptimal expected revenue is
-established by analyzing a deterministicversionof theproblem.The
-solution tothedeterminstic problemsuggests twoheuristics
-forthestochasticproblem
-thatareshowntobeasymptoticalloptimalastheexpectedsales volumetends to
-infinity.Severalapplicationsof themodel to network yield management are
-given.Numerical examplesillustrateboth therangeof problems thatcanbe
-modeledunder this frameworkandtheefectivenessof
-theproposedheuristics.Theresults provideseveralfundamental insights
-intotheperformanceof yield management systems.
+A firm has inventories of a set of components that are used to produce a set of products. There is a finite horizon over which the firm can sell its products. Demand for each product is a stochastic point process with an intensity that is a function of the vector of prices for the products and the time at which these prices are offered. The problem is to price the finished products so as to maximize total expected revenue over the finite sales horizon. An upper bound on the optimal expected revenue is established by analyzing a deterministic version of the problem. The solution to the deterministic problem suggests two heuristics for the stochastic problem that are shown to be asymptotically optimal as the expected sales volume tends to infinity. Several applications of the model to network yield management are given. Numerical examples illustrate both the range of problems that can be modeled under this framework and the effectiveness of the proposed heuristics. The results provide several fundamental insights into the performance of yield management systems.
 
-field management is the practice of using booking 1 policies together with information systems data to increase revenues by intelligently
-matching capacity with demand. It is now widely practiced in capacity-constrained service industries such as the airlines,hotels,car
-rentals, and cruise-lines.Historically,yield management started as an
-operations function, focusing only on capacity allocation given exogenous demand estimates.However, there is a growing consensus among
-researchers and practitioners alike that the pricing decisions that
-induce demand cannot be separated from traditional, capacity-oriented
-yield management decisions; these two decision are inextricably
-linked.Pricing decisions influence the demand statistics that form the
-basic inputs to any yield management sys tem,and pricing decisions in
-turn must ultimately be based on knowledge of the underlying capacity
-constraints and yield management policies.Therefore,to realize the full
-benefits of yield management， joint pricing/allocation schemes are
-necessary.
+Yield management is the practice of using booking policies together with information systems data to increase revenues by intelligently matching capacity with demand. It is now widely practiced in capacity-constrained service industries such as the airlines, hotels, car rentals, and cruise-lines. Historically, yield management started as an operations function, focusing only on capacity allocation given exogenous demand estimates. However, there is a growing consensus among researchers and practitioners alike that the pricing decisions that induce demand cannot be separated from traditional, capacity-oriented yield management decisions; these two decisions are inextricably linked. Pricing decisions influence the demand statistics that form the basic inputs to any yield management system, and pricing decisions in turn must ultimately be based on knowledge of the underlying capacity constraints and yield management policies. Therefore, to realize the full benefits of yield management, joint pricing/allocation schemes are necessary.
 
-While what must be done, namely coordinating pricing and allocation,is
-.clear,exactly how it should be accomplished remains somewhat a
-mystery.The problem is complicated by the fact that in many
-applications,most notably the airlines,many markets (origin-destination
-pairs） compete for the same resources (leg capacities); therefore, the
-pricing/allocation problem must be solved jointly for a large number of
-markets and resources.Uncertainty in the demand process and the dynamic
-nature of the allocation decisions further compound the diffculty of the
-problem.
+While what must be done, namely coordinating pricing and allocation, is clear, exactly how it should be accomplished remains somewhat a mystery. The problem is complicated by the fact that in many applications, most notably the airlines, many markets (origin-destination pairs) compete for the same resources (leg capacities); therefore, the pricing/allocation problem must be solved jointly for a large number of markets and resources. Uncertainty in the demand process and the dynamic nature of the allocation decisions further compound the difficulty of the problem.
 
-\section{1.MODEL DESCRIPTION AND
-APPLICATIONS}\label{model-description-and-applications}
+\section{1.MODEL DESCRIPTION AND APPLICATIONS}\label{model-description-and-applications}
 
-We propose a dynamic, stochastic model of yield management problems that
-addresses the joint pricing/allocation decision in a multiple-market,
-multiple-resource setting Specifically,we define the problem in terms of
-products and resources.To provide a unit of product
-\(j , j = 1 , \ldots , n\) requires \(a _ { i j }\) units of resource
-\(i , i = 1 , \ldots , m\) . We define the bill of materials matrix
-\(A = [ a _ { i j } ]\) .We assume \(A\) is an integer valued matrix.
-Demand for each product \(j\) is modeled as a stochastic point process
-with intensity \(\lambda ^ { j }\) (All vectors are column vectors
-unless otherwise stated.） The vector of demand intensities
-\(\lambda = ( \lambda ^ { 1 } , \ldots , \lambda ^ { n } )\) at time
-\(s\) ,is a function of \(s\) and the vector of current prices \(p \ =\)
-\(( p ^ { 1 } , \ldots , p ^ { n } )\) .This demand function need only
-satisfy some general regularity conditions. Demand for a given product
-\(j\) is allowed to depend on time, the price of product \(j ,\) and the
-price of products other than \(j ;\) however,we do not allow the current
-demand to be a function of past or future prices.Thus,we assume that
-customers respond only to current prices and do not act strategically by
-adjusting their buying behavior in response to the firm's pricing
-policy.This is certainlya limitation of the model.To consider strategic
-customer behavior would require a gametheoretic formulation,which,
-though quite interesting,is beyond the scope of our present analysis.
+We propose a dynamic, stochastic model of yield management problems that addresses the joint pricing/allocation decision in a multiple-market, multiple-resource setting. Specifically, we define the problem in terms of products and resources. To provide a unit of product \(j , j = 1 , \ldots , n\) requires \(a _ { i j }\) units of resource \(i , i = 1 , \ldots , m\). We define the bill of materials matrix \(A = [ a _ { i j } ]\). We assume \(A\) is an integer-valued matrix. Demand for each product \(j\) is modeled as a stochastic point process with intensity \(\lambda ^ { j }\) (all vectors are column vectors unless otherwise stated). The vector of demand intensities \(\lambda = ( \lambda ^ { 1 } , \ldots , \lambda ^ { n } )\) at time \(s\), is a function of \(s\) and the vector of current prices \(p = ( p ^ { 1 } , \ldots , p ^ { n } )\). This demand function need only satisfy some general regularity conditions. Demand for a given product \(j\) is allowed to depend on time, the price of product \(j\), and the price of products other than \(j\); however, we do not allow the current demand to be a function of past or future prices. Thus, we assume that customers respond only to current prices and do not act strategically by adjusting their buying behavior in response to the firm's pricing policy. This is certainly a limitation of the model. To consider strategic customer behavior would require a game-theoretic formulation, which, though quite interesting, is beyond the scope of our present analysis.
 
-Given initial quantities of resources at time zero and a time horizon
-t,the problem is to control prices,perhaps subject to price
-constraints,in order to maximize expected revenue over the interval
-\([ 0 , t ]\)
+Given initial quantities of resources at time zero and a time horizon \(t\), the problem is to control prices, perhaps subject to price constraints, in order to maximize expected revenue over the interval \([ 0 , t ]\).
 
-It is perhaps not immediately clear that this formulation is a
-reasonable model of a yield management problem.In particular,there
-appear to be no``allocation''decisions. However, one can view
-allocation,at least conceptually, as a pricing decision.
+It is perhaps not immediately clear that this formulation is a reasonable model of a yield management problem. In particular, there appear to be no "allocation" decisions. However, one can view allocation, at least conceptually, as a pricing decision. This is true for two reasons. First, if each product has only one fare class associated with it or each fare class is well differentiated in terms of payment requirements, travel restrictions, etc., then closing a fare class is mathematically equivalent to setting the price for the corresponding product at a sufficiently high price, so that the expected demand rate is zero, and the fare class is effectively closed. In practice, of course, one would simply tell customers that the fare is no longer available. By modeling the closing of fares as we do, with no additional demands occurring after the last sale, we intentionally blur the distinction between demand and sales, and view pricing and allocation as one decision. In Section 7.2.1, we discuss situations in which limitations on pricing flexibility require a separate allocation policy.
 
-This is true for two reasons.First, if each product has onlyone fare
-class associated with it or each fare class is well differentiated in
-terms of payment requirements, travel restrictions,etc.,then closinga
-fare class is mathe matically equivalent to setting the price for the
-corresponding product at a sufficiently high price,so that the expected
-demand rate is zero,and the fare class is effectively closed.In
-practice,of course,one would simply tell customers that the fare is no
-longer available.By modeling the closing of fares as we do,with no
-additional demands occurring after the last sale,we intentionally blur
-the distinction between demand and sales,and view pricing and allocation
-as one decision. In Section 7.2.1,we discuss situations in which
-limitations on pricing flexibility require a separate allocation policy.
+Second, if one offers multiple fare classes for a given product which is not well differentiated, closing a low fare is mathematically equivalent to setting it to the next highest fare. Notice that this may cause an increase in demand at the next highest fare because some customers who are willing to buy at the low fare are also willing to buy at the next highest fare when the former is not available. This phenomenon is known in the airline industry as demand recapture.
 
-Second,if one offers multiple fare classes for a given product which is
-not well differentiated,closing a low fare is mathematically equivalent
-to setting it to the next highest fare.Notice that this may cause an
-increase in demand at the next highest fare because some customers who
-are willing to buy at the low fare are also willing to buy at the next
-highest fare when the former is not available.This phenomenon is known
-in the airline industry as demand recapture.
+In both instances, closing fare classes is equivalent to changing the "menu" of prices offered to customers at any point in time. In these two ways, one can map a wide range of joint pricing/allocation schemes into equivalent pure pricing schemes. The advantage of the pricing framework is that it allows for a unified analysis of a rich class of yield management problems, and it directly reveals the relationship between pricing and allocation decisions.
 
-In both instances,closing fare classes is equivalent to changing the
-``menu'' of prices offered to customers at any point in time. In these
-two ways,one can map a wide range of joint pricing/allocation schemes
-into equivalent purepricing schemes. The advantage of the pricing
-framework is that it allows fora unified analysis of a rich class of
-yield management problems,and it directlyreveals the relationship
-between pricing and allocation decisions.
+Multidimensional problems of the type suggested by our formulation arise in a wide variety of applications. For example, in the case of airlines, a "product" is an itinerary (path) from an origin (O) to a destination (D) in an airline network and a "resource" is a seat on a particular flight leg (edge) in the network. A customer traveling from O to D requires one unit of resource on each leg in a particular itinerary from O to D. In some cases, one might have two products that use precisely the same set of resources. Again, this occurs in airline applications when well-differentiated coach and super-saver products exist for each itinerary. In this case, a product is an O-D itinerary at a certain fare level/restriction combination.
 
-Multidimensional problems of the type suggested by our formulation arise
-in a wide variety of applications. For example,in the case of
-airlines,a``product''is an itinerary (path) from an origin (O) to a
-destination (D) in an airline network and a ``resource'' is a seat on a
-particular flight leg (edge) in the network.A customer traveling from O
-to D requires one unit of resource on each leg in a particular itinerary
-from O to D.In some cases,one might have two products that use precisely
-the same set of resources. Again, this occurs in airline applications
-when well differentiated coach and super-saver products exist for each
-itinerary.In this case a product is an O-D itinerary at a certain fare
-level/restriction combination.
+Another example of such multidimensional problems is found in the hotel industry. Yield management problems for hotels are often viewed as quite different from airline problems since customers may occupy a room for several nights. Because of this overlapping effect, each day cannot be viewed as an independent instance. To model this problem under the above framework, one defines a product for each possible combination of days that a customer might request over a specific period of time, e.g., one month. Resources correspond to room capacities on each day of the planning period (perhaps net of any group reservations), and products correspond to particular subsets of days. For example, one product could be a Monday-to-Thursday stay during Week 1. If sold, this product would then consume one unit each of the resources corresponding to the days Monday, Tuesday, Wednesday, and Thursday of Week 1. Our multiproduct, multiresource formulation naturally captures the inter-day dependencies found in hotel booking.
 
-Another example of such multidimensional problems is found in the hotel
-industry. Yield management problems for hotels are often viewed as quite
-different from airline problems since customers may occupy a room for
-several nights.Because of this overlapping effect,each day cannot be
-viewed as an independent instance.To model this problem under the above
-framework, one defines a product for each possible combination of days
-that a customer might request over a specific period of time,e.g.,one
-month. Resources correspond to room capacities on each day of the
-planning period (perhaps net of any group reservations)，and products
-correspond to particular subsets of days.For example,one product could
-be a Monday-toThursday stay during Week 1. If sold, this product would
-then consume one unit each of the resources correspondingto the
-daysMonday,Tuesday,Wednesday,and Thursday of Week 1. Our multiproduct,
-multiresource formulation naturally captures the inter-day dependencies
-found in hotel booking.
+Our model also applies to situations quite distinct from those of traditional yield management. One example is the style or fashion goods industry. In the fashion industry, contracts for garment production typically are fixed well in advance of a given selling season. During a sales season, retailers face the problem of adjusting prices, usually through periodic sales and/or mark-downs, so as to maximize the total revenue from their initial stock. These problems are often multi-dimensional in nature for two reasons. First, demand for products may be dependent due to the fact that one product may substitute for or complement another. Second, both products and resources may correspond to specific garment types at particular locations (either retail outlets or warehouses). Thus, if transshipments are allowed, the same "product" (garment \(j\) at location \(x\)) may be provided using one of several "resources" (garment \(j\) at another location \(y\)).
 
-Our model also applies to situations quite distinct from those of
-traditional yield management. One example is the style or fashion goods
-industry. In the fashion industry, contracts for garment production
-typically are fixed well in advance of a given selling season. During a
-sales season, retailers face the problem of adjusting prices,usually
-through periodic sales and/or mark-downs,so as to maximize the total
-revenue from their initial stock.These problems are often
-multi-dimensional in nature for two reasons.First, demand for products
-may be dependent due to the fact that one product may substitute for or
-complement another. Second, both products and resources may correspond
-to specific garment types at particular locations (either retail outlets
-or warehouses). Thus,if transshipments are allowed, the
-same``product''(garment \(j\) at location \(x\) ） may be provided using
-one of several ``resources'' (garment \(j\) at another location y).
+Other possible applications of the model include production/inventory problems where resources are components that can be assembled into a certain number of available products in a product line. The problem then is to price the product line to maximize the revenue from a given initial stock of components. For example, assembling a line of personal computers which share common components but are subject to rapid obsolescence is one possible application in this category.
 
-Other possible applications of the model include production/inventory
-problems where resources are components that can be assembled into a
-certain number of available products in a product line.The problem then
-is to price the product line to maximize the revenue from a given
-initial stock of components. For example, assembling a line of personal
-computers which share common components but are subject to rapid
-obsolescence is one possible application in this category.
-
-In the interest of brevity and to maintain focus,we shall concentrate on
-airline yield management applications of our model. However,both our
-model and analysis are indeed quite general and can be used in a wide
-variety of other applications.
+In the interest of brevity and to maintain focus, we shall concentrate on airline yield management applications of our model. However, both our model and analysis are indeed quite general and can be used in a wide variety of other applications.
 
 \section{2.LITERATUREREVIEW}\label{literaturereview}
 

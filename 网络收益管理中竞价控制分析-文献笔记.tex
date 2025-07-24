@@ -1,0 +1,164 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{hyperref}
+
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+
+\title{网络收益管理中竞价控制分析——文献笔记}
+\author{研究者}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{引言}
+
+网络收益管理中的竞价控制是一个重要的研究领域，它在航空公司、酒店等行业中有着广泛的应用。本文献笔记总结了该领域的主要理论成果和实践方法。
+
+\textcolor{blue}{\textbf{定义1：竞价控制}}
+
+一个控制策略，其中为每个网络边设置阈值价格（称为竞价），只有当产品的票价超过其所需资源的竞价之和时，才会销售该产品。
+
+\section{理论基础}
+
+\textcolor{blue}{\textbf{定理1：最优性定理}}
+
+在腿容量和销售量较大的情况下，竞价控制策略是渐近最优的，前提是使用正确的竞价。
+
+网络收益管理的动态规划模型可以表示为：
+\[
+J_k(x) = \max_{u_k(\cdot) \in \mathcal{U}(x)} E[R_k u_k(x, R_k) + J_{k-1}(x - A u_k(x, R_k))]
+\]
+
+其中$J_k(x)$表示在时间$k$、容量状态$x$下的最大期望收益。
+
+\textcolor{blue}{\textbf{命题1：控制结构命题}}
+
+如果$R_k^j$具有有限的一阶矩，则存在最优控制$u_k^*$，其形式为：
+\[
+u_k^*(x,r^j) = \begin{cases}
+1 & \text{如果 } r^j \geq J_{k-1}(x) - J_{k-1}(x - A^j) \text{ 且 } A^j \leq x \\
+0 & \text{其他情况}
+\end{cases}
+\]
+
+\section{竞价控制的非最优性}
+
+\textbf{例子1：竞价控制非最优性反例}
+
+考虑一个包含两条腿的简单网络，每条腿有一个单位容量，剩余时间为两个周期。在第2周期，有两个本地行程，每个票价为\$250，到达概率为0.3；一个通程行程票价为\$500，到达概率为0.4。在最后一个周期，只有一个通程票价，收益为\$500，到达概率为0.8。
+
+在这个例子中，无法找到满足以下条件的竞价$\mu_1$和$\mu_2$：
+\begin{itemize}
+\item $\mu_1 > 250$
+\item $\mu_2 > 250$  
+\item $\mu_1 + \mu_2 \leq 500$
+\end{itemize}
+这表明竞价控制不是普遍最优的。
+
+\textcolor{red}{\textbf{重要观察：}}
+
+竞价控制失效的根本原因在于价值函数的非线性性质。具体来说，机会成本$J_k(x) - J_k(x - A^j)$不等于各腿机会成本的和$\sum_{i \in A^j}(J_k(x) - J_k(x - e_i))$。
+
+\section{渐近分析}
+
+\textcolor{blue}{\textbf{定义2：上界问题}}
+
+考虑放松版本的问题：
+\[
+\bar{J}_k(x,\mu) = \max_{\{u_t \in E_n\}} E\left[\sum_{t=1}^k (R_t - \mu A) u_t\right] + \mu x
+\]
+其中$\mu \geq 0$是拉格朗日乘子向量。
+
+\textcolor{blue}{\textbf{定理2：渐近最优性定理}}
+
+如果$R_t^j \leq C$（几乎处处），则
+\[
+\frac{J_{\theta k}^H(\theta x)}{J_{\theta k}(\theta x)} \geq 1 - O(\theta^{-1/2})
+\]
+特别地，
+\[
+\lim_{\theta \to \infty} \frac{J_{\theta k}^H(\theta x)}{J_{\theta k}(\theta x)} = 1
+\]
+
+\section{竞价近似方法}
+
+\subsection{确定性线性规划（DLP）}
+
+\textcolor{blue}{\textbf{定义3：DLP方法}}
+
+对应于近似值函数：
+\[
+J_k^{LP}(x) = \max \sum_{j=1}^n E[R_j] y_j
+\]
+约束条件为：
+\begin{align}
+A y &\leq x \\
+0 &\leq y \leq E[D]
+\end{align}
+
+\subsection{概率非线性规划（PNLP）}
+
+\textcolor{blue}{\textbf{定义4：PNLP方法}}
+
+对应于近似值函数：
+\[
+J_k^{PNLP}(x) = \max \sum_{j=1}^n E[R_j] E[\min\{D_j, y_j\}]
+\]
+约束条件为：
+\begin{align}
+A y &\leq x \\
+y &\geq 0
+\end{align}
+
+\textcolor{red}{\textbf{方法比较：}}
+
+DLP方法只考虑需求的均值而忽略其他分布信息，但在频繁重新优化的情况下表现良好。PNLP方法虽然考虑了需求的随机性，但由于离散静态分配的假设，实际表现常常不如DLP方法。
+
+\section{实际应用考虑}
+
+\textbf{例子2：航空公司应用}
+
+在实际的航空收益管理系统中，竞价控制已被多家航空公司采用。其优势包括：
+\begin{itemize}
+\item 计算复杂度低
+\item 易于实现和维护
+\item 适用于大规模网络
+\item 可处理动态定价环境
+\end{itemize}
+
+\textcolor{red}{\textbf{挑战与限制：}}
+
+\begin{itemize}
+\item 在网络容量受限的情况下可能不是最优的
+\item 需要准确的需求预测
+\item 对价格弹性的假设可能不现实
+\item 竞争环境下的表现需要进一步研究
+\end{itemize}
+
+\section{结论}
+
+\textcolor{blue}{\textbf{命题2：主要结论}}
+
+虽然竞价控制在一般情况下不是最优的，但在腿容量和销售量较大的渐近情况下，使用适当的竞价可以实现最优性。这为实际应用提供了理论基础。
+
+\textcolor{red}{\textbf{未来研究方向：}}
+
+\begin{itemize}
+\item 非平稳需求环境下的竞价控制
+\item 竞争市场中的策略行为
+\item 机器学习方法在竞价优化中的应用
+\item 实时动态调整机制的设计
+\end{itemize}
+
+\section{参考文献}
+
+主要参考了Talluri和van Ryzin (1998)关于网络收益管理中竞价控制分析的经典论文，以及相关的后续研究成果。
+
+\end{document}

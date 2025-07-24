@@ -1,1 +1,635 @@
+\begin{document}
 
+
+\section{4.2. Asymptotic Analysis of Bid Prices Derived from the Upper
+Bound
+Problem}\label{asymptotic-analysis-of-bid-prices-derived-from-the-upper-bound-problem}
+
+Below, \(\mu^{*}\) denotes an optimal solution to (9). Again, we note
+that \(\mu^{*}\) depends on the initial capacity \(x\) and the initial
+time- to- go \(k\) . Consider the following fixed- bid- price heuristic:
+
+\section{Fixed-Bid-Price Heuristic
+(H)}\label{fixed-bid-price-heuristic-h}
+
+At time \(k\) with remaining capacity \(x\) compute \(\mu^{*}\) once by
+solving (9). Then, for all times \(t \leq k\) , accept a request for
+itinerary \(j\) with revenue \(r\) if and only if there is sufficient
+capacity to satisfy it and \(r > \mu^{*}A^{j}\) .
+
+Let \(J_{k}^{H}(x)\) denote the expected revenue of this heuristic given
+initial capacity \(x\) and time- to- go \(k\) . Let \(\theta\) be a
+positive integer, and consider a sequence of problems, indexed by
+\(\theta\) , with initial capacity vectors \(\theta x\) , time- to- go
+\(\theta k\) and revenues, denoted \(R_{t}(\theta)\) , where
+
+\[
+R_{t}(\theta) = _{D}R_{t / \theta} \tag{12}
+\]
+
+and \(\mathbf{\Sigma} = _{D}\) denotes equality in distribution. This
+construction corresponds to splitting each period \(t\) in the original
+problem into \(\theta\) statistically independent and identical periods
+in the scaled problem and at the same time increasing the initial
+capacity by a factor of \(\theta\) . As a result, the relative values of
+demand, capacity and time are preserved.
+
+For the scaled problem, let \(J_{\theta k}^{H}(\theta x)\) denote the
+optimal expected revenue and \(J_{\theta k}^{H}(\theta x)\) denote the
+expected
+
+revenue of the fixed- bid- price heuristic. (We show below that the
+vector \(\mu^{*}\) solves (9) for all \(\theta\) , so the same vector of
+bid prices is used for each problem in the sequence.) The following
+result shows that the fixed- bid- price heuristic is asymptotically
+optimal as the scale of the problem, as measured by \(\theta\) ,
+increases:
+
+THEOREM 1. If \(R_{i}^{j} \equiv C\) (a.s.), then
+
+\[
+\frac{J_{\theta k}^{H}(\theta x)}{J_{\theta k}(\theta x)} \geq 1 - O(\theta^{-1 / 2}).
+\]
+
+In particular,
+
+\[
+\lim_{\theta \to \infty} \frac{J_{\theta k}^{H}(\theta x)}{J_{\theta k}(\theta x)} = 1.
+\]
+
+PROOF. By considering (8) and (12), we have
+
+\[
+\begin{array}{l}{{\sum_{t=1}^{\theta k}\sum_{j=1}^{n}E(R_{t}^{j}(\theta)-\mu A^{j})^{+}+\theta\mu x}}\\ {{=\theta\bigg[\sum_{t=1}^{k}\sum_{j=1}^{n}E(R_{t}^{j}-\mu A^{j})^{+}+\mu x\bigg]=\theta\overline{{J}}_{k}(x,\mu).}}\end{array} \tag{14}
+\]
+
+Therefore, the vector \(\mu^{*}\) that solves (9) is the same for all
+value of \(\theta\) . We therefore have by Lemma 1
+
+\[
+J_{\theta k}(\theta x) \leq \theta v_{k}(x). \tag{13}
+\]
+
+Now consider the fixed- bid- price heuristic with \(\mu^{*}\) as the
+fixed vector of bid prices. We will construct a sample path bound on the
+revenue with these bid prices using a coupling argument. To do so, we
+consider an alternate system which follows the bid- price policy for
+accepting sales, but has no capacity constraint; rather, in the
+alternate system we subtract a revenue of \(C\) for each set sold in
+excess of \(\theta x_{i}\) on each leg \(i\) , where \(C\) is the
+uniform upper bound on the itinerary revenues. Consider the net revenues
+collected in each system for a given sample path of arrivals. Note in
+the two systems, the same revenues are collected up until the time one
+or more of the leg capacities is exhausted.
+
+Now, suppose a request arrives for an itinerary \(j\) that needs a leg
+\(i\) whose capacity is exhausted. If
+\(R_{i}^{j}(\theta) \leq \mu^{*} A^{j}\) , it will be rejected in both
+systems and no revenues will be collected in either system. If
+\(R_{i}^{j}(\theta) > \mu^{*} A^{j}\) , the request will be rejected in
+the original system because of the capacity constraint. In the alternate
+system, it will be accepted but at least one penalty of \(C\) will be
+charged because one or more leg capacities are exhausted. No revenues
+will be collected in the original system, and the alternate system will
+realize a loss since \(R_{i}^{j}(\theta) - C \leq 0\) . Moreover, the
+alternate system will have even less capacity remaining because it
+accepted the request. Hence, it follows that the net revenues in the
+alternate system are, pathwise, a lower bound on the revenues obtained
+under the bid- price heuristic. Therefore,
+
+\[
+\begin{array}{l}{{J_{\theta k}^{H}(\theta x)\geq\sum_{t=1}^{\theta k}\sum_{j=1}^{n}E(R_{t}^{j}(\theta)-\mu^{*}A^{j})^{+}}}\\ {{+\sum_{t=1}^{\theta k}\sum_{j=1}^{n}P(R_{t}^{j}(\theta)>\mu^{*}A^{j})\mu^{*}A^{j}}}\\ {{-C\sum_{i=1}^{m}E(N^{i}-\theta x^{i})^{+},}}\end{array} \tag{14}
+\]
+
+where \(N^{i}\) is the number of leg \(i\) seats sold under the bid-
+price heuristic, which is given by
+
+\[
+N^{i} = \sum_{t = 1}^{\theta k} \sum_{j = 1}^{n} \mathbf{1}\{R_{t}^{j}(\theta) > \mu^{*} A^{j}\} a_{ij}.
+\]
+
+The first two terms in (14) are the actual revenues collected; the last
+term is the total penalties charged.
+
+Let \(Y_{ijt} = \mathbf{1}\{R_{t}^{j} > \mu^{*} A^{j}\} a_{ij}\) and
+note that by (12) and the independence of the vectors \(R_{t}(\theta)\)
+, that \(EN^{i} = \theta \sum_{t = 1}^{k} \sum_{j = 1}^{n} EY_{ijt}\)
+and that
+\(\operatorname {Var}(N^{i}) = \theta \sum_{t = 1}^{k} \sum_{j = 1}^{n} \operatorname {Var}(Y_{ijt})\)
+. We now use a bound due to Gallego (1992), which states that for any
+random variable \(Z\) with mean \(\mu\) and finite variance
+\(\sigma^{2}\) ,
+
+\[
+E(Z - z)^{+} \leq \frac{\sqrt{\sigma^{2} + (z - \mu)^{2}} - (z - \mu)}{2}.
+\]
+
+Applying this bound to the terms in the last sum in (14) and using the
+fact that
+
+\[
+EN^{i} = \sum_{t = 1}^{\theta k} \sum_{j = 1}^{n} P(R_{t}^{j} > \mu^{*} A^{j}) a_{ij} \leq \theta x^{i}
+\]
+
+by the Kuhn Tucker conditions (10) for \(\mu^{*}\) , implies that
+
+\[
+E(N^{i} - \theta x^{i})^{+}\leq \frac{\sqrt{\operatorname{Var}(N^{i}) + (\theta x^{i} - E N^{i})^{2}} - (\theta x^{i} - E N^{i})}{2}
+\]
+
+\[
+\leq \frac{\sqrt{\operatorname{Var}(N^{i})} + |\theta x^{i} - E N^{i}| - (\theta x^{i} - E N^{i})}{2}
+\]
+
+\[
+= \frac{\sqrt{\operatorname{Var}(N^{i})}}{2}. \tag{15}
+\]
+
+Also note that by the Kuhn Tucker conditions (10),
+\(\mu^{*}(\Sigma_{t = 1}^{\theta k}\Sigma_{j = 1}^{n}P(R_{t}^{j}(\theta) > \mu^{*}A^{j})A^{j} - \theta x) = 0\)
+, so that
+
+\[
+\sum_{t = 1}^{\theta k}\sum_{j = 1}^{n}P(R_{t}^{j}(\theta) > \mu^{*}A^{j})\mu^{*}A^{j} = \theta \mu^{*}x. \tag{16}
+\]
+
+Using (15) and (16) in the second and third sums in (14) and using (13),
+we obtain
+
+\[
+J_{\theta k}^{H}(\theta x)\geq \sum_{t = 1}^{\theta k}\sum_{j = 1}^{n}E(R_{t}^{j}(\theta) - \mu^{*}A^{j})^{+}
+\]
+
+\[
++\theta \mu^{*}x - \frac{C}{2}\sqrt{\theta}\sum_{i = 1}^{m}\sqrt{\sum_{t = 1}^{k}\sum_{j = 1}^{n}\operatorname{Var}(Y_{ijt})}
+\]
+
+\[
+= \theta v_{k}(x) - O(\sqrt{\theta}),
+\]
+
+which completes the proof.
+
+\section{4.3. Uniqueness of the Asymptotic Bid
+Prices}\label{uniqueness-of-the-asymptotic-bid-prices}
+
+We next address the uniqueness of the asymptotically optimal bid prices.
+Although the upper bound problem (9) is convex in \(\mu\) , in general
+it is not strictly convex and hence it may not have a unique solution.
+
+To see this, we can write the function \(\overline{J}_{k}(x,\mu)\) as
+
+\[
+\overline{J}_{k}(x,\mu) = g(\mu A) + \mu x. \tag{17}
+\]
+
+where \(g:R^{n}\to R\) is defined as
+
+\[
+g(r) = \sum_{t = 1}^{k}\sum_{j = 1}^{n}E(R_{t}^{j} - r^{j})^{+}, \tag{18}
+\]
+
+and \(r = (r^{1},\ldots ,r^{n})\) . Now if there exists a \(t\) such
+that \(P(R_{t}^{j} > r^{j}) > 0\) , \(\forall r^{j}\geq 0\) , then \(g\)
+is strictly convex on \(R^{n}\) .
+
+However, even if \(g\) is strictly convex, in general \(g(\mu A)\) is
+only (weakly) convex in \(\mu\) . It is not hard to see that the
+function \(g(\mu A)\) will be strictly convex in \(\mu\) if and
+
+only if \(xA = yA\) implies \(x = y\) , which is equivalent to the
+condition: \(xA = 0\) implies \(x = 0\) . But this is true if and only
+if \(A\) has rank \(m\) . Therefore, we have the following sufficient
+condition for uniqueness:
+
+PROPOSITION 3. Suppose for all \(j\) there exists a \(t\) such that
+\(P(R_{t}^{j} > r) > 0\) on \([0, + \infty)\) . Further, suppose rank
+\((A) = m\) . Then the solution to (9) (and hence the vector of
+asymptotically optimal bid prices) is unique.
+
+In most practical settings, we would expect \(n\geqslant m\) and hence
+it is highly likely that \(A\) will have rank \(m\) . In this case,
+sufficiently large tails on the fare distributions will result in unique
+asymptotically optimal bid prices.
+
+However, multiple asymptotically optimal bid- price can occur if fare
+distributions are highly concentrated. For example, one can easily
+construct situations in which there is a range of bid prices that are
+high enough to block a low fare class while still being low enough to
+allow higher fare classes to book; each value produces the same
+acceptance decision (with probability one) and hence all are
+asymptotically optimal bid prices. Alternatively, it is possible that
+because rank \((A)< m\) multiple solutions to (9) exist. As a simple
+example, consider the case of two legs in series \((m = 2)\) with one
+itinerary \((n = 1)\) that traverses both legs. In this case
+\(\operatorname {rank}(A) = 1< m\) , and multiple solutions exist.
+Specifically, it is easy to see in this case \(\overline{J}_{k}(x,\mu)\)
+depends on \(\mu\) only through the sum \(\mu^{1} + \mu^{2}\) .
+
+\section{4.4. Bid Prices and Opportunity
+Cost}\label{bid-prices-and-opportunity-cost}
+
+The above observations illustrate an important point; namely, there is
+not a one- to- one correspondence between optimal bid prices and the
+opportunity cost of leg capacity. That is, one can generate examples of
+bid prices that give near optimal accept/deny decisions but at the same
+time are very poor approximations to the marginal value of leg capacity.
+
+As a simple example of this difference, consider a single- leg problem
+in which high revenue fare classes arrive strictly before low revenue
+fare classes. In this case, it is clear that it is optimal to accept
+arrivals in first- come- first- serve (FCFS) order. Therefore, a
+constant bid price of zero is optimal. On the other hand, the
+opportunity cost \(J_{k}(x) - J_{k}(x - 1)\) at each point in time \(k\)
+is certainly not zero. In other words, while it is sufficient to compare
+the revenue to the true opportunity cost
+
+\(J_{k}(x) - J_{k}(x - 1)\) at each point in time to make optimal
+accept/deny decisions, it is not necessary to do so; other threshold
+values may produce the same accept/deny decision and same optimal
+revenues, as the value of zero does in this case.
+
+One might argue that the real goal is to make the right accept/deny
+decision and therefore it is not worth worrying about the difference
+between optimal bid- price values and opportunity costs; however, in
+practice a good estimate of opportunity cost is often essential. In
+particular, for special event requests- especially ad- hoc group
+bookings- which are typically not part of the forecast, one needs an
+accurate assessment of opportunity cost to make a good decision.
+
+The point, simply, is that one has to be careful about the
+interpretation of the bid prices produced by any optimization algorithm.
+Ideally, we would like the sum of leg bid prices along an itinerary to
+represent the itinerary's opportunity cost. On the other hand, due to
+``degeneracy'' of the value function, this may not always be achievable.
+Yet despite this difficulty, Theorem 1 shows that a properly constructed
+bid- price control rule is still asymptotically optimal against
+forecasted demand. The algorithmic challenge, therefore, is to construct
+bid prices which produce near- optimal acceptance decisions against
+forecasted demand, while simultaneously providing good estimates of the
+opportunity cost (whenever possible), so that special event (group)
+requests can be properly evaluated.
+
+\section{5. A Unified View of Bid Price Approximation
+Schemes}\label{a-unified-view-of-bid-price-approximation-schemes}
+
+It is quite helpful, to view bid price methods as corresponding to
+various approximations of the optimal value function. That is, a given
+approximation method \(A\) yields a function \(J_{k}^{A}(x)\) that
+approximates \(J_{k}(x)\) . The bid prices are then the gradients of
+\(J_{k}^{A}(x)\) , i.e.
+
+\[
+J_{k}(z) - J_{k}(x - A^{j})\approx \nabla_{x}J_{k}^{A}(x)A^{j},
+\]
+
+If the gradient does not exist, then \(\nabla_{x}J_{k}^{A}(x)\) above is
+typically replaced (at least implicitly) by a subgradient of
+\(J_{k}^{A}(x)\) . This interpretation of approximations schemes raises
+two important questions: Is \(J_{k}^{A}(x)\) a good approximation of the
+value function? And more importantly, is \(\nabla_{x}J_{k}^{A}(x)A^{j}\)
+a good approximation of the opportunity cost? In this section, we
+examine these questions for two popular approximation schemes and also
+the asymptotic bid prices developed in Theorem 1.
+
+cost? In this section, we examine these questions for two popular
+approximation schemes and also the asymptotic bid prices developed in
+Theorem 1.
+
+Before proceeding, we note that in actual applications, the
+approximation \(J_{k}^{A}(x)\) is usually resolved frequently to allow
+the vector of bid prices to adjust to changes in remaining capacity
+\(x\) and remaining time \(k\) . In this section, we assume the
+approximations are solved for each \(x\) and \(k\) and compare the
+resulting bid prices to optimal bid prices.
+
+\section{5.1. Deterministic Linear Program
+(DLP)}\label{deterministic-linear-program-dlp}
+
+The deterministic linear programming method corresponds to the
+approximation
+
+\[
+\begin{array}{c}{{J_{k}^{\mathrm{LP}}(x)=\min \sum_{j=1}^{n}E R_{j}y_{j},}}\\ {{A y\leq x,}}\\ {{0\leq y\leq E D,}}\end{array}
+\]
+
+where \(D = (D_{1},\ldots ,D_{n})\) and \(D_{i}\) denotes the demand to
+come for itinerary \(j\) ( \(ED\) is the expected value of \(D\) ) and
+\(R_{j}\) is the (possibly random) revenue associated with itinerary
+\(j\) . In our earlier notation,
+\(D_{j} = \Sigma_{t = 1}^{n} \mathbf{1}\{R_{t}^{\prime} > 0\}\) . The
+decision variables \(y_{j}\) represent a discrete (nonnested), static
+allocation of capacity to each itinerary \(j\) .
+
+If the constraints \(A y\leq x\) are not degenerate (linearly dependent)
+at the optimal solution, then \(\nabla J_{k}^{\mathrm{LP}}(x)\) exists
+and is given by the unique vector of optimal dual prices associated with
+these constraints; if these constraints are degenerate, then there are
+multiple optimal dual price vectors, each of which is only a subgradient
+of the function \(J_{k}^{\mathrm{LP}}(x)\) .
+
+The most serious weakness of the DLP formulation is that it considers
+only the mean demand and ignores all other distributional information.
+As a consequence, the dual values are zero on any leg that has a mean
+demand less than capacity. Despite this deficiency, Williamson's (1992,
+Chapter 6) extensive simulation studies showed that with frequent
+reoptimization, the performance of DLP bid prices is quite good,
+producing higher revenue than both probabilistic math programming models
+(see below) and a variety of leg- based EMSR heuristics.
+
+5.2. Probabilistic Nonlinear Program (PNLP) The probabilistic nonlinear
+programming method corresponds to the approximation
+
+\[
+J_{k}^{\mathrm{PNLP}}(x) = \min \sum_{j = 1}^{n}E R_{j}E\min \{D_{j},y_{j}\} ,
+\]
+
+\[
+A y\leq x,
+\]
+
+\[
+y = 0,
+\]
+
+where again \(D_{j}\) and \(R_{j}\) are defined as in the DLP case. As
+in the DLP, the decision variables \(y_{j}\) represent a discrete,
+static allocation of capacity to each itinerary \(j\) . If the
+constraints \(A y \leq x\) are not degenerate at the optimal solution,
+then \(\nabla J_{k}^{\mathrm{LP}}(x)\) exists and is given by the unique
+vector of optimal dual prices associated with these constraints; if
+these constraints are degenerate, the multiple optimal dual vectors are
+subgradients of the function \(J_{k}^{\mathrm{LP}}(x)\) .
+
+This formulation appears somewhat better than the DLP, in that the term
+\(E \min \{D_{j}, y_{j}\}\) in the objective function captures the
+randomness in demand. However, the assumption of a discrete, static
+allocations of capacity to each fare class can lead to poor behavior.
+This behavior was demonstrated empirically in Williamson's (1992,
+Chapter 6) simulation studies, in which she observed that the PNLP bid
+prices consistently produced lower revenues than the DLP bid prices. In
+a further computational comparison between the DLP and PNLP, Talluri
+(1996) found similar behavior.
+
+To understand the weakness of the PNLP approximation, consider a problem
+with \(m = 1\) leg and \(n\) itineraries on the leg, each of which is
+identical. Assume each itinerary \(j\) has demand, \(D_{j} \sim D\) ,
+where \(D\) is normally distributed with mean \(\mu\) and standard
+deviation \(\sigma\) and that each itinerary has the same deterministic
+revenue \(r\) . The PNLP formulation is then
+
+\[
+J_{k}^{\mathrm{PNLP}}(x) = \min \sum_{j = 1}^{n}r E\min \{D,y_{j}\} ,
+\]
+
+\[
+\sum_{j = 1}^{n}y_{j} = x,
+\]
+
+\[
+y\geq 0,
+\]
+
+where \(D \sim N(\mu , \sigma)\) . By symmetry, the optimal solution is
+\(y_{j} = x / n\) , \(j = 1, \ldots , n\) and hence the Kuhn- Tucker
+conditions imply the optimal dual price \(\lambda\) satisfies
+
+\[
+\lambda = r P(n D > x) = r\left(1 - \Phi \left(\frac{x - n\mu}{n\sigma}\right)\right), \tag{19}
+\]
+
+where \(\Phi (x)\) is the CDF of the standard normal distribution. The
+value \(\lambda\) above then forms our estimate of the marginal value of
+the \(x\) th seat.
+
+But since all itineraries are identical, the marginal value in this
+problem should be the unchanged if we aggregate all \(n\) fare classes
+into one fare class with mean \(n\mu\) and variance \(n\sigma^{2}\) .
+Aggregating and applying the PNLP we find the optimal dual multiplier in
+this case satisfies
+
+\[
+\lambda = r P\left(\sum_{j = 1}^{n}D_{j} > x\right) = r\left(1 - \Phi \left(\frac{x - n\mu}{\sqrt{n}\sigma}\right)\right). \tag{20}
+\]
+
+If \(x \neq n\mu\) and \(n\) is large, (19) and (20) give very different
+estimates of the marginal value. Of course, from first principles we
+know the true opportunity cost is completely independent of how we
+aggregate (or disaggregate) these identical itineraries.
+
+While on the surface this seems like a contrived example, it is not
+unreasonable to expect a similar type of behavior in large hub- and-
+spoke networks. For example, if many uncongested in- bound legs have
+connecting passengers traveling on a single congested outbound leg and
+passengers pay comparable revenues, then the situation is quite similar
+to the example above. That is, one would like to treat all passengers as
+a single fare class (i.e.~``nest'' the fare classes) but the PNLP
+allocates space to each separately, resulting in a distorted estimate of
+the marginal value of the leg. In contrast, the DLP method does indeed
+posses this ``nesting'' property, since, in the above example,
+aggregating all \(n\) fare classes does not change the resulting DLP bid
+price.
+
+\section{5.3. Prorated EMSR}\label{prorated-emsr}
+
+Another method for computing estimates of bid prices is to use a
+prorated expected marginal seat revenue (PEMSR) scheme. Originally
+proposed in Williamson (1992), PEMSR schemes involve allocating a
+portion of the revenue of each itinerary to the legs of the itinerary.
+One then solves \(m\) leg- level problems using the expected marginal
+revenue (EMSR) heuristic proposed by Belobaba (1989). The resulting EMSR
+values from each leg are then used as bid prices.
+
+Specifically, let \(\alpha = (\alpha_{1}, \ldots , \alpha_{m})\) be a
+non- negative real vector. For each itinerary \(j\) , define new
+revenues, one for each leg in the itinerary, by
+
+Table 2 Problem Data for Iterative Allocation Example
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Time (k) & Itin. (A) & Fare & Prob. \\
+\multirow{2}{*}{2} & AB & \$100 & 0.5 \\
+& CD & \$100 & 0.5 \\
+\multirow{2}{*}{1} & ABC & \$1000 & 0.5 \\
+& BCD & \$1000 & 0.5 \\
+\end{longtable}
+
+\[
+R_{ij} = \frac{\alpha_i}{\Sigma_{i\in A_j}\alpha_i} R_{j}, i\in A_j.
+\]
+
+Next, treat each leg \(i\) independently as if it received demand
+\(D_{j},\) but with reduced revenue \(R_{ij}\) and solve the
+corresponding leg- level EMSR.1 The approximation to the value function
+is then
+
+\[
+J_{k}^{\mathrm{PEMSR}}(x) = \sum_{i = 1}^{m}J_{i}(x_{i},\alpha),
+\]
+
+where \(J_{i}(x_{i},\alpha)\) denotes the expected revenue of leg \(i\)
+under the allocation \(\alpha\)
+
+Williamson (1992) investigated several methods for determining the
+allocation \(\alpha_{j}\) including prorating based on mileage, number
+of legs and the relative revenue value of local demand on each leg. Her
+conclusion is that none of these fixed allocations is very robust in
+general. Indeed, it is not hard to see that if one leg of an itinerary
+is highly congested and all others have abundant capacity, then the
+revenue of the itinerary should be entirely allocated to the congested
+leg. Depending on the realization of demand, however, the congested leg
+could be any of the legs on the itinerary; hence, no fixed allocation
+scheme can be expected to work well in all cases.
+
+An intriguing idea along these lines, again appearing in Williamson
+(1992, p.~107) but not pursued fully there, is to prorate revenues using
+an iterative loop. That is, first obtain the marginal values based on
+some initial proration scheme and EMSR calculations. Then, use these
+marginal values to do the next round of proration and EMSR calculations.
+Repeat these iterations until the marginal values (hopefully) converge.
+The hope here is that the bid- prices will converge to a near- optimal
+set of bid- prices. Unfortunately there is little theoretical
+justification behind this idea.
+
+Even if the bid prices converge to some value (it is not entirely clear
+if convergence is guaranteed), they do not necessarily converge to a
+good set of bid- prices. For example, consider a three- leg line
+network, with nodes A, B, C and D. Each of the three legs, AB, BC and
+CD, has one remaining seat. Suppose \(t = 2\) and we have data for
+itinerary arrivals as shown in Table 2. If we start with an allocation
+of fares for \(t = 1\) using equal weights, prorate the fares in period
+\(t = 1\) by these weights, and then compute the expected marginal value
+of each leg we get \(\mu_{\mathrm{AB}} = 250\) ,
+\(\mu_{\mathrm{BC}} = 500\) and \(\mu_{\mathrm{CD}} = 250\) .
+
+The results of repeated applications of this procedure are shown in
+Table 3. Note that the bid prices converge to \(\mu_{\mathrm{AB}} = 0\)
+, \(\mu_{\mathrm{BC}} = 1000\) and \(\mu_{\mathrm{CD}} = 0\) . However,
+by inspection of the data in Table 2, it is clear that we want to reject
+both of the itineraries arriving in period \(t = 2\) , so we need
+\(\mu_{\mathrm{AB}} > 100\) and \(\mu_{\mathrm{CD}} > 100\) . Such a
+policy yields an expected revenue of
+{\$\textbackslash)1,000\textbackslash(. Because the iterative proration
+scheme produces zero bid prices for legs AB and CD, it accepts both of
+the itineraries in period\$} t=2 {\$\textbackslash), generating an
+expected revenue of only \textbackslash(\$} 600\$.
+
+One problem with the iterative proration scheme is that once the problem
+is broken up into leg- level problems, all network information is lost.
+Additional problems can arise due to the fact that many EMSR methods
+assume fare classes have ordered arrivals, usually with lower fare
+classes arriving before high fare classes, see Belobaba (1987, 1989),
+Brumelle et al.~(1990), and Curry
+
+Table 3 Example of Convergence of Iterative Proration Scheme \((t = 1)\)
+
+\begin{longtable}[]{@{}|l|l|l|l|@{}}
+\toprule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\hline
+Iter. & μAB & μBC & μCD \\
+\hline
+0 & 250.0 & 500.0 & 250.0 \\
+\hline
+1 & 166.7 & 666.7 & 166.7 \\
+\hline
+2 & 100 & 800 & 100 \\
+\hline
+. & . & . & . \\
+\hline
+. & . & . & . \\
+\hline
+. & . & . & . \\
+\hline
+∞ & 0 & 1000 & 0 \\
+\hline
+\end{longtable}
+
+(1989). In a proration scheme, the regular ordering of arrivals is often
+destroyed, and certainly any assumption of low prorated revenues
+arriving strictly before high prorated revenues becomes untenable.
+
+\section{5.4. Asymptotic Bid Prices}\label{asymptotic-bid-prices}
+
+The asymptotic analysis provides an alternative approximation approach.
+Indeed, note from (9) that \(\nabla_{x}v_{k}(x) = \mu^{*}\) , so we can
+view the upper bound \(v_{k}(x)\) as an approximation of \(J_{k}(x)\)
+with \(\mu^{*}\) its (sub)gradient. The approximation (9) is somewhat
+unique in that it is solved directly in the space of the bid prices
+\(\mu ,\) whereas in the DLP and NLP methods, \(\mu\) is a dual value of
+a problem whose primal variables are inventory allocations.
+
+The approximation (9) has the ``nesting'' property because the objective
+function in (9) sums all arriving itineraries \(j\) whose revenue
+exceeds the fixed thresholds \(\mu A^{j}\) . As a result, it does not
+suffer from the discrete allocation problem of the PNLP method. For
+example, suppose two itineraries \(j_{1}\) and \(j_{2}\) are entered as
+separate columns of \(A_{j}\) but in reality \(A^{j_{1}} = A^{j_{2}}\)
+and each has the same fare distribution. If these two itineraries were
+combined into a new itinerary (by adding the probabilities of arrival in
+each period together) the asymptotic bid prices would not change, which
+is the correct behavior.
+
+At the same time, the approximation (9) suffers from the same weakness
+as the DLP in that its value only depends on the first moment of demand.
+Indeed, if, as above, we let \(D_{j}\) denote the demand to come for
+itinerary \(j\) and \(R_{j}\) denote the random revenue associated with
+itinerary \(j,\) then (9) becomes
+
+\[
+v_{k}(x) = \min_{\mu \geq 0}\sum_{j = 1}^{n}ED_{j}E(R_{j} - \mu A_{j})^{+} + \mu^{T}x,
+\]
+
+which only depends on \(ED_{j}\)
+
+The problem here is that the asymptotic analysis is too ``coarse'' to
+capture some of the second- order stochastic effects which the PNLP
+captures. As a result, as in the DLP case, the asymptotic bid- prices
+will turn out to be zero if the mean demand on a leg is strictly less
+than its capacity. This is indeed correct behavior asymptotically, but
+for demands with high variance near capacity, the actual bid price could
+be significantly larger than zero, possibly even more than some of the
+fares of the lower fare classes. Indeed, under appropriate scaling, one
+can show that, as fare variances tend to zero, the asymptotic bid prices
+from (9) approach the DLP bid prices. One can then combine this result
+with Theorem 1 to show that as fare variances tend to zero, the DLP bid
+prices are also asymptotically optimal.
+
+However, the asymptotic approximation, unlike the DLP and PNLP methods,
+accounts for variability in itinerary revenues, which provides a
+significant advantage in approximating optimal bid prices when fares
+vary significantly within itinerary / fare- classes.
+
+As a simple example of this effect, consider a singleleg problem with
+only one fare class. Suppose the actual fares \(R\) vary and have
+distribution \(F(r)\) with mean \(ER\) If the mean demand, \(ED_{i}\) is
+significantly higher than capacity, \(x_{i}\) the bid price produced by
+DLP and PNLP methods both approach \(ER\) . That is, reducing the leg
+capacity by one almost certainly results in a lost sale, which each of
+these models values at \(ER\) . Under an optimal bid- price policy,
+however, the bid price rises above \(ER\) as the demand / capacity ratio
+increases. This occurs because, with many requests to choose from, it is
+optimal to be selective and accept only the higher fares within the fare
+class (i.e.~fares in the ``right tail'' of the distribution) rather than
+accepting all fares. From (9), one can show that the optimal bid price
+in the above example tends to a value \(r^{*}\) satisfying
+
+\[
+ED(1 - F(r^{*})) = x.
+\]
+
+Depending on the distribution of \(F_{\prime}\) the value of \(r^{*}\)
+can be significantly higher than \(ER\) ; hence the DLP and PNLP methods
+will under- estimates the optimal bid price. A complimentary effect can
+occur when the demand / capacity ratio is small; in this case, the DLP
+and NLP models may tend to over- estimate the optimal bid price.
+
+
+
+\end{document}

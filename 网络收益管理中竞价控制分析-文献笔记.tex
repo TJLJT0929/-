@@ -1,0 +1,486 @@
+% This LaTeX document needs to be compiled with XeLaTeX.
+\documentclass[
+  10pt
+]{article}
+\usepackage[margin=2cm,includehead=true,includefoot=true,centering,]{geometry}
+\usepackage{xcolor}
+\usepackage{ucharclasses}
+\usepackage{hyperref}
+\usepackage{amsmath,amssymb}
+\usepackage{amsfonts}
+\usepackage[version=4]{mhchem}
+\usepackage{stmaryrd}
+\usepackage{bbold}
+\usepackage{polyglossia}
+\usepackage{fontspec}
+\usepackage{ctex}
+\usepackage[export]{adjustbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{setspace}
+\setstretch{1.2}
+
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\hypersetup{colorlinks=true, linkcolor=blue, filecolor=magenta, urlcolor=cyan,}
+\urlstyle{same}
+
+\usepackage{colortbl}
+\definecolor{table-row-color}{HTML}{999999}
+\definecolor{table-rule-color}{HTML}{999999}
+\arrayrulecolor{table-rule-color}     % color of \toprule, \midrule, \bottomrule
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
+
+% 定义颜色
+\definecolor{darkblue}{rgb}{0.0, 0.0, 0.5}
+\definecolor{darkred}{rgb}{0.5, 0.0, 0.0}
+\definecolor{darkgreen}{rgb}{0.0, 0.4, 0.0}
+\definecolor{lightgray}{rgb}{0.95, 0.95, 0.95}
+\definecolor{lightblue}{rgb}{0.85, 0.9, 1.0}
+\definecolor{lightred}{rgb}{1.0, 0.9, 0.9}
+
+% 定义盒子环境
+\usepackage{tcolorbox}
+\tcbuselibrary{most}
+
+\newtcolorbox{definitionbox}{
+  colback=lightblue,
+  colframe=darkblue,
+  fonttitle=\bfseries,
+  title=定义,
+  sharp corners,
+  boxrule=1pt
+}
+
+\newtcolorbox{theorembox}{
+  colback=lightred,
+  colframe=darkred,
+  fonttitle=\bfseries,
+  title=定理,
+  sharp corners,
+  boxrule=1pt
+}
+
+\newtcolorbox{propositionbox}{
+  colback=lightgray,
+  colframe=darkgreen,
+  fonttitle=\bfseries,
+  title=命题,
+  sharp corners,
+  boxrule=1pt
+}
+
+\setotherlanguages{english}
+\IfFontExistsTF{Source Han Serif CN}
+{\newfontfamily\chinesefont{Source Han Serif CN}}
+{\IfFontExistsTF{Noto Serif CJK SC}
+  {\newfontfamily\chinesefont{Noto Serif CJK SC}}
+  {\IfFontExistsTF{SimSun}
+    {\newfontfamily\chinesefont{SimSun}}
+    {\IfFontExistsTF{FangSong}
+      {\newfontfamily\chinesefont{FangSong}}
+      {\newfontfamily\chinesefont{Arial Unicode MS}}
+}}}
+\IfFontExistsTF{Times New Roman}
+{\newfontfamily\englishfont{Times New Roman}}
+{\IfFontExistsTF{Liberation Serif}
+  {\newfontfamily\englishfont{Liberation Serif}}
+  {\IfFontExistsTF{DejaVu Serif}
+    {\newfontfamily\englishfont{DejaVu Serif}}
+    {\newfontfamily\englishfont{Arial}}
+}}
+
+\author{}
+\date{2025-07-24}
+
+\begin{document}
+
+\title{\textbf{每周文献阅读笔记}}
+\maketitle
+
+\section{文献基本信息}
+
+\textbf{论文标题：}An Analysis of Bid-Price Controls for Network Revenue Management
+
+\textbf{作者：}Kalyan Talluri and Garrett van Ryzin
+
+\textbf{发表期刊：}Management Science, Vol. 44, No. 11, Part 1 of 2 (Nov., 1998), pp. 1577-1593
+
+\textbf{发表日期：}1998年11月
+
+\textbf{DOI：}10.1287/mnsc.44.11.1577
+
+\textbf{关键词：}Revenue Management, Bid-Price Controls, Network Optimization, Dynamic Programming, Asymptotic Analysis
+
+\section{摘要}
+
+\textcolor{red}{\textbf{研究背景与问题：}}竞价控制（Bid-Price Controls）正在成为收益管理应用中控制库存销售的日益流行的方法。在这种控制形式中，为资源或库存单位（航班航段座位、特定日期的酒店房间等）设置阈值价格或"竞价"价格，只有当提供的票价超过提供产品所需的所有资源的阈值价格之和时，才会销售产品（特定行程上某个票价等级的座位或一段日期的房间）。
+
+\textcolor{red}{\textbf{核心方法：}}使用需求过程的一般模型，作者证明了竞价控制一般情况下不是最优的，并分析了为什么竞价方案可能无法产生正确的接受/拒绝决策。然而，他们证明了当航段容量和销售量很大时，竞价控制是渐近最优的，前提是使用正确的竞价价格。
+
+\textcolor{red}{\textbf{主要贡献：}}
+\begin{itemize}
+\item 提供了最优收益的分析上界
+\item 分析了渐近最优竞价价格的性质
+\item 证明了这些价格在时间上是常数，即使在需求非平稳时也是如此
+\item 显示了它们可能不是唯一的
+\end{itemize}
+
+\textcolor{red}{\textbf{实践意义：}}这项工作为起源于Simpson (1989)和Williamson (1992)的重要实践发展提供了坚实的理论基础，为航空公司和酒店行业广泛采用的原点-目的地（OD）收益管理提供了理论支撑。
+
+\section{核心内容}
+
+\subsection{问题背景与模型设定}
+
+\subsubsection{网络收益管理问题的定义}
+
+网络收益管理的核心是在多资源、多产品的环境中做出动态定价和资源配置决策。考虑一个具有$m$条弧（航段）的航空网络，可以提供$n$个原点-目的地行程。设$a_{ij}$为行程$j$使用航段$i$上的座位数量（如果航段$i$不是行程$j$的一部分，则$a_{ij} = 0$）。定义矩阵$A = [a_{ij}]$。
+
+网络状态由航段容量向量$x = (x^1, \ldots, x^m)$描述。如果销售了行程$j$，网络状态将变为$x - A^j$。为了简化分析，假设没有取消或缺席，因此不需要超售。
+
+\subsubsection{竞价控制的基本原理}
+
+\begin{definitionbox}
+\textbf{竞价控制的定义：}一个控制$u_k(x,r)$被称为竞价控制，如果存在实值函数$\mu_k(x) = (\mu_k^1(x), \ldots, \mu_k^m(x))$（称为竞价价格），使得：
+
+$$u_k^j(x,r^j) = \begin{cases}
+1 & \text{if } r^j \geq \sum_{i \in A^j} \sum_{h=0}^{a_{ij}-1} \mu_k^i(x-h) \text{ and } A^j \leq x \\
+0 & \text{otherwise}
+\end{cases}$$
+
+即，竞价控制为每条航段在每个时间点和每个容量状态指定一组竞价价格，使得当且仅当有可用容量且票价超过行程使用的所有容量单位的竞价价格之和时，我们才接受特定行程的请求。
+\end{definitionbox}
+
+\subsubsection{数学模型的建立}
+
+时间是离散的，$k$表示到出发前剩余的时间段数。在每个时间段$t$内，假设最多有一个行程请求到达。所有预订事件在时间$t$的建模为单个随机向量$R_t = (R_t^1, \ldots, R_t^n)$的实现。
+
+如果$R_t^j > 0$，这表示行程$j$的请求发生，其相关收益为$R_t^j$；如果$R_t^j = 0$，这表示$j$没有请求发生。序列$\{R_t; t \geq 1\}$假设是独立的，具有已知的联合分布$F_t(r)$，其支持在$\mathcal{S}$上。
+
+给定剩余时间$k$、当前座位库存$x$和当前请求$R_k$，面临决策：是否接受当前请求？设$n$维向量$u_k$表示这个决策，其中如果在时间$k$接受行程$j$的请求，则$u_k^j = 1$，否则$u_k^j = 0$。
+
+\subsection{理论分析}
+
+\subsubsection{最优控制结构分析}
+
+为了制定动态规划来确定最优决策$u_k^*(x,r)$，设$J_k(x)$表示在时间$k$给定座位库存$x$的最大期望收益（剩余成本）。那么$J_k(x)$必须满足Bellman方程：
+
+$$J_k(x) = \max_{u_k(\cdot) \in \mathcal{U}(x)} E[R_k u_k(x,R_k) + J_{k-1}(x - A u_k(x,R_k))]$$
+
+边界条件为：$J_0(x) = 0, \quad \forall x$
+
+\begin{propositionbox}
+\textbf{命题1（最优控制的存在性和形式）：}如果$R_k^j$对所有$k$和$j$都有有限的一阶矩，那么$J_k(x)$对所有有限的$x$都是有限的，并且存在形式为以下的最优控制$u_k^*$：
+
+$$u_k^*(x,r^j) = \begin{cases}
+1 & \text{if } r^j \geq J_{k-1}(x) - J_{k-1}(x - A^j) \text{ and } A^j \leq x \\
+0 & \text{otherwise}
+\end{cases}$$
+\end{propositionbox}
+
+这个命题说明最优策略的形式是：当且仅当我们有足够的剩余容量并且$r^j \geq J_{k-1}(x) - J_{k-1}(x - A^j)$时，才接受行程$j$的票价$r^j$。
+
+\subsubsection{竞价控制非最优性的证明}
+
+作者通过反例证明了竞价控制一般情况下不是最优的。考虑一个简单的网络，有两条航段，每条航段有一个容量单位，剩余时间段为两个。
+
+在这个例子中，作者证明了竞价价格$\mu_1$和$\mu_2$在第2期必须满足$\mu_1 > 250$、$\mu_2 > 250$和$\mu_1 + \mu_2 \leq 500$，这显然是不可能的。因此，没有竞价策略能在第2期产生最优决策。
+
+\begin{propositionbox}
+\textbf{命题2（竞价最优性与价值函数结构的关系）：}假设$A$的元素只有零或一（即没有多次请求），并且$A$有单位矩阵作为子矩阵。进一步假设对所有$t$和$j$，边际分布$F_t^j(x)$在$(0, +\infty)$上严格递增。那么竞价控制方案最优当且仅当$J_k$满足：
+
+$$J_k(x) - J_k(x - A^j) = \sum_{i \in A^j} (J_k(x) - J_k(x - e_i))$$
+
+对于所有$k, j$和$x \geq A^j$。
+\end{propositionbox}
+
+\subsection{渐近分析}
+
+\subsubsection{上界问题的构造}
+
+作者考虑了原问题的放松版本：
+
+$$\bar{J}_k(x,\mu) = \max_{\{u_t \in E_n\}} E\left[\sum_{t=1}^k (R_t - \mu' A) u_t\right] + \mu' x$$
+
+这里，$u_t$是适应于$\mathcal{F}_t$并满足$u_t \in E_n$的过程，但不需要满足$\sum_{t=1}^k A u_t \leq x$（几乎肯定）。
+
+\textbf{引理1：}对任何$\mu \geq 0$，$J_k(x) \leq \bar{J}_k(x,\mu)$。
+
+为了从这个关系创建最好的上界，将在$\mu \geq 0$上最小化$\bar{J}_k(x,\mu)$。评估$\bar{J}_k(x,\mu)$并不困难，因为在(7)中问题按时间段分解。因此，(7)的最优策略简单地是：
+
+$$u_t^j = \begin{cases}
+1 & \text{if } r^j > \mu A^j \\
+0 & \text{otherwise}
+\end{cases}$$
+
+在这个最优控制下评估成本得到：
+
+$$\bar{J}_k(x,\mu) = \sum_{t=1}^k \sum_{j=1}^n E(R_t^j - \mu A^j)^+ + \mu x$$
+
+\subsubsection{渐近最优性定理}
+
+\begin{theorembox}
+\textbf{定理1（渐近最优性主定理）：}如果$R_t^j \leq C$（几乎肯定）对某个常数$C$，那么：
+
+$$\frac{J_{\theta k}^H(\theta x)}{J_{\theta k}(\theta x)} \geq 1 - O(\theta^{-1/2})$$
+
+特别地：
+
+$$\lim_{\theta \to \infty} \frac{J_{\theta k}^H(\theta x)}{J_{\theta k}(\theta x)} = 1$$
+
+其中$J_{\theta k}^H(\theta x)$表示固定竞价启发式的期望收益。
+\end{theorembox}
+
+这个定理说明了当问题的规模（以$\theta$衡量）增加时，固定竞价启发式是渐近最优的。
+
+\subsubsection{渐近竞价价格的唯一性分析}
+
+\begin{propositionbox}
+\textbf{命题3（渐近竞价价格的唯一性条件）：}假设对所有$j$存在$t$使得$P(R_t^j > r) > 0$在$[0, +\infty)$上。进一步假设$\text{rank}(A) = m$。那么问题(9)的解（因此渐近最优竞价价格的向量）是唯一的。
+\end{propositionbox}
+
+在大多数实际设置中，我们期望$n \geq m$，因此$A$很可能具有秩$m$。在这种情况下，票价分布上足够大的尾部将导致唯一的渐近最优竞价价格。
+
+但是，如果票价分布高度集中，则可能出现多个渐近最优竞价价格。
+
+\subsection{实践应用}
+
+\subsubsection{常见竞价价格计算方法}
+
+作者将竞价方法视为最优价值函数的各种近似的对应物。即，给定的近似方法$A$产生一个近似$J_k(x)$的函数$J_k^A(x)$。竞价价格然后是$J_k^A(x)$的梯度：
+
+$$J_k(x) - J_k(x - A^j) \approx \nabla_x J_k^A(x) A^j$$
+
+作者考虑了几种流行的近似方案：
+
+\paragraph{确定性线性规划（DLP）}
+DLP方法对应于近似：
+
+$$J_k^{LP}(x) = \max \sum_{j=1}^n E R_j y_j$$
+$$\text{subject to: } A y \leq x, \quad 0 \leq y \leq E D$$
+
+其中$D = (D_1, \ldots, D_n)$，$D_j$表示行程$j$的待到需求。
+
+\paragraph{概率非线性规划（PNLP）}
+PNLP方法对应于近似：
+
+$$J_k^{PNLP}(x) = \max \sum_{j=1}^n E R_j E \min\{D_j, y_j\}$$
+$$\text{subject to: } A y \leq x, \quad y \geq 0$$
+
+\paragraph{按比例EMSR}
+另一种计算竞价价格估计的方法是使用按比例期望边际座位收益(PEMSR)方案。这些方案涉及将每个行程的收益的一部分分配给行程的各航段。
+
+\subsubsection{算法的优缺点分析}
+
+\textbf{DLP的优缺点：}
+\begin{itemize}
+\item 优点：具有"嵌套"属性，聚合相同的行程不会改变DLP竞价价格
+\item 缺点：只考虑平均需求，忽略所有其他分布信息；在平均需求小于容量的任何航段上，对偶值为零
+\end{itemize}
+
+\textbf{PNLP的优缺点：}
+\begin{itemize}
+\item 优点：目标函数中的项$E \min\{D_j, y_j\}$捕获了需求的随机性
+\item 缺点：对每个票价类别进行离散、静态容量分配的假设可能导致糟糕的行为
+\end{itemize}
+
+\textbf{渐近竞价价格的优势：}
+\begin{itemize}
+\item 具有"嵌套"属性
+\item 考虑了行程收益的可变性
+\item 在票价在行程/票价类别内显著变化时，提供了近似最优竞价价格的显著优势
+\end{itemize}
+
+\section{关键定理和命题}
+
+\begin{definitionbox}
+\textbf{Definition 1: 竞价控制的正式定义}
+
+一个控制$u_k(x,r)$被称为竞价控制，如果存在实值函数$\mu_k(x) = (\mu_k^1(x), \ldots, \mu_k^m(x))$（称为竞价价格），使得：
+
+$$u_k^j(x,r^j) = \begin{cases}
+1 & \text{if } r^j \geq \sum_{i \in A^j} \sum_{h=0}^{a_{ij}-1} \mu_k^i(x-h) \text{ and } A^j \leq x \\
+0 & \text{otherwise}
+\end{cases}$$
+\end{definitionbox}
+
+\begin{propositionbox}
+\textbf{Proposition 1: 最优控制的存在性和形式}
+
+如果$R_k^j$对所有$k$和$j$都有有限的一阶矩，那么$J_k(x)$对所有有限的$x$都是有限的，并且存在形式为以下的最优控制$u_k^*$：
+
+$$u_k^*(x,r^j) = \begin{cases}
+1 & \text{if } r^j \geq J_{k-1}(x) - J_{k-1}(x - A^j) \text{ and } A^j \leq x \\
+0 & \text{otherwise}
+\end{cases}$$
+\end{propositionbox}
+
+\begin{propositionbox}
+\textbf{Proposition 2: 竞价最优性与价值函数结构的关系}
+
+假设$A$的元素只有零或一，并且$A$有单位矩阵作为子矩阵。进一步假设边际分布$F_t^j(x)$在$(0, +\infty)$上严格递增。那么竞价控制方案最优当且仅当$J_k$满足：
+
+$$J_k(x) - J_k(x - A^j) = \sum_{i \in A^j} (J_k(x) - J_k(x - e_i))$$
+
+对于所有$k, j$和$x \geq A^j$。
+\end{propositionbox}
+
+\begin{theorembox}
+\textbf{Theorem 1: 渐近最优性主定理}
+
+如果$R_t^j \leq C$（几乎肯定）对某个常数$C$，那么：
+
+$$\frac{J_{\theta k}^H(\theta x)}{J_{\theta k}(\theta x)} \geq 1 - O(\theta^{-1/2})$$
+
+特别地：
+
+$$\lim_{\theta \to \infty} \frac{J_{\theta k}^H(\theta x)}{J_{\theta k}(\theta x)} = 1$$
+\end{theorembox}
+
+\begin{propositionbox}
+\textbf{Proposition 3: 渐近竞价价格的唯一性条件}
+
+假设对所有$j$存在$t$使得$P(R_t^j > r) > 0$在$[0, +\infty)$上。进一步假设$\text{rank}(A) = m$。那么问题的解（因此渐近最优竞价价格的向量）是唯一的。
+\end{propositionbox}
+
+\section{研究贡献与意义}
+
+\subsection{理论贡献总结}
+
+\begin{enumerate}
+\item \textbf{首次系统分析竞价控制的理论基础：}本文首次使用动态规划框架系统分析了竞价控制在网络收益管理中的理论基础，填补了这一重要实践方法的理论空白。
+
+\item \textbf{证明了竞价控制的非最优性：}通过严格的数学证明和反例，明确展示了竞价控制在一般情况下不是最优的，为理解其局限性提供了理论依据。
+
+\item \textbf{建立了渐近最优性理论：}证明了当航段容量和销售量很大时，适当选择的竞价控制是渐近最优的，为大规模网络收益管理提供了理论保证。
+
+\item \textbf{提供了分析上界：}通过拉格朗日对偶理论，为最优收益提供了可计算的分析上界，这在实践中比"完美预见"上界更加高效。
+
+\item \textbf{分析了竞价价格的性质：}深入研究了渐近最优竞价价格的唯一性条件，并证明了这些价格在时间上是常数，即使在需求非平稳的情况下也是如此。
+\end{enumerate}
+
+\subsection{对实践的指导意义}
+
+\begin{enumerate}
+\item \textbf{为航空公司收益管理提供理论支撑：}本文为当时航空公司广泛采用的竞价控制方法提供了坚实的理论基础，验证了这种方法在大规模应用中的有效性。
+
+\item \textbf{指导竞价价格的设定：}通过上界问题的构造和求解，为实践中竞价价格的计算提供了理论指导和算法基础。
+
+\item \textbf{评估不同近似方法的性能：}通过对DLP、PNLP和渐近方法的比较分析，为选择合适的近似方法提供了理论依据。
+
+\item \textbf{处理网络复杂性：}为复杂网络结构下的收益管理问题提供了统一的分析框架，特别是处理了多资源共享和路径选择的复杂性。
+\end{enumerate}
+
+\subsection{与相关文献的比较}
+
+本文在多个方面推进了收益管理理论的发展：
+
+\begin{itemize}
+\item \textbf{相比于单航段模型：}将分析扩展到网络环境，处理了资源共享和路径选择的复杂性
+\item \textbf{相比于确定性模型：}充分考虑了需求的随机性和动态性
+\item \textbf{相比于启发式方法：}提供了严格的理论分析和性能保证
+\item \textbf{相比于仿真研究：}建立了分析性的结果和渐近理论
+\end{itemize}
+
+\section{个人思考与启发}
+
+\subsection{对收益管理理论的理解}
+
+通过深入研读这篇经典文献，我对收益管理理论有了更深层次的理解：
+
+\begin{enumerate}
+\item \textbf{理论与实践的结合：}这篇论文很好地体现了运筹学研究中理论与实践相结合的重要性。竞价控制方法起源于实践需求，但缺乏理论基础。作者通过严格的数学分析，为这一重要的实践方法提供了坚实的理论支撑。
+
+\item \textbf{复杂性与近似的权衡：}网络收益管理的最优解通常在计算上是不可行的，需要寻求实用的近似方法。本文深刻揭示了这种权衡：虽然竞价控制不是严格最优的，但在合理条件下是渐近最优的，为实践应用提供了理论保证。
+
+\item \textbf{渐近分析的价值：}渐近分析在运筹学理论中具有重要价值，它能够揭示大规模问题的本质特征，为实际应用提供理论指导。
+\end{enumerate}
+
+\subsection{对动态规划应用的思考}
+
+\begin{enumerate}
+\item \textbf{状态空间的维度诅咒：}网络收益管理问题的状态空间随着网络规模指数增长，使得精确的动态规划求解变得不可行。这促使研究者寻求有效的近似方法。
+
+\item \textbf{价值函数的结构性质：}通过分析价值函数的结构性质，可以深入理解最优策略的特征，为设计有效的启发式算法提供指导。
+
+\item \textbf{边界条件和收敛性：}在随机动态规划中，边界条件的设定和算法的收敛性分析是关键问题，需要仔细处理。
+\end{enumerate}
+
+\subsection{对网络优化问题的启发}
+
+\begin{enumerate}
+\item \textbf{资源共享的复杂性：}网络环境中多个产品共享有限资源的复杂性，使得简单的贪心策略往往不能达到全局最优。需要考虑资源分配的机会成本。
+
+\item \textbf{分解方法的有效性：}通过适当的分解，可以将复杂的网络问题转化为更易处理的子问题，这是处理大规模优化问题的重要思路。
+
+\item \textbf{对偶理论的应用：}拉格朗日对偶理论在提供上界和指导算法设计方面发挥了重要作用，体现了凸优化理论在随机优化中的价值。
+\end{enumerate}
+
+\subsection{对现代应用的思考}
+
+虽然这篇论文发表于1998年，但其思想在现代有着更广泛的应用：
+
+\begin{enumerate}
+\item \textbf{在线平台的动态定价：}电商平台、共享经济平台等现代应用场景中的动态定价问题，可以借鉴竞价控制的思想。
+
+\item \textbf{云计算资源管理：}云计算环境中的资源分配和定价问题，与网络收益管理有相似的结构。
+
+\item \textbf{广告拍卖和展示优化：}在线广告的实时竞价和展示优化问题，可以应用类似的理论框架。
+
+\item \textbf{供应链管理：}多层级供应链中的库存分配和定价决策，也可以从这一理论中获得启发。
+\end{enumerate}
+
+\subsection{未来研究方向的思考}
+
+\begin{enumerate}
+\item \textbf{学习和适应：}在实际应用中，需求分布通常是未知的，如何在线学习需求参数并自适应调整竞价价格，是一个重要的研究方向。
+
+\item \textbf{竞争环境下的策略：}在多个竞争者存在的环境中，如何设计有效的竞价策略，涉及博弈理论的应用。
+
+\item \textbf{多目标优化：}除了收益最大化，还可能需要考虑公平性、服务质量等多个目标，如何在多目标下设计有效的控制策略。
+
+\item \textbf{机器学习的融合：}如何将现代机器学习方法与传统的运筹学理论相结合，提高决策的智能化水平。
+\end{enumerate}
+
+这篇经典论文不仅在当时推动了收益管理理论的发展，其思想和方法论在今天依然具有重要的指导价值，为解决现代复杂的资源分配和定价问题提供了理论基础和分析工具。
+
+\end{document}

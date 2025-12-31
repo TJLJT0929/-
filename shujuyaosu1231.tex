@@ -1,0 +1,250 @@
+\documentclass[10pt,aspectratio=169]{beamer}
+\usepackage{setspace}
+\setstretch{1.2}
+\usepackage{booktabs}
+
+\usepackage{caption}
+\usepackage{braket}
+\usepackage{graphicx}
+\graphicspath{{pics/}}
+\usepackage{subfigure}  
+\setbeamertemplate{caption}[numbered] 
+\usefonttheme{serif}   
+\renewcommand{\thefootnote}{}    
+\usepackage{caption}
+\usepackage[english]{babel} 
+\usepackage[UTF8]{ctex}
+\usepackage{amsthm}
+
+
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{calligra}
+\setbeamertemplate{navigation symbols}
+
+\usepackage{etoolbox} 
+\makeatletter
+\defbeamertemplate*{footnote}{nonumber}{
+	\parindent 1em\noindent% 
+	\raggedright
+	\insertfootnotetext\par
+}
+\setbeamertemplate{footnote}[nonumber] 
+\makeatother
+
+\usepackage{times}
+\usetheme{CambridgeUS}
+\usecolortheme{dolphin}
+
+\pgfdeclareimage[height=0.6cm]{badge}{badge}
+\logo{\pgfuseimage{badge}}
+
+% Table of contents settings
+\AtBeginSection[]{
+	\begin{frame}
+		\tableofcontents[currentsection]
+	\end{frame}
+}
+
+\title{全国一体化数据市场建设的基本问题与制度构建研究}
+\subtitle{}
+
+\author[Jianting Liu]
+{\fontsize{8}{10}\selectfont
+%	\inst{1} Adam Elmachtoub \& \inst{2} Paul Grigas
+}
+
+\institute[CSU]
+{\fontsize{6}{10}\selectfont
+%	\inst{1} Columbia IEOR\\
+%	\inst{2} UC Berkeley IEOR
+}
+
+\date[\today]
+{\fontsize{8}{10}
+	\selectfont \today}
+
+\setbeamertemplate{section in toc}[circle]
+\setbeamertemplate{subsection in toc}[ball]
+
+\begin{document}
+	\songti
+	\logo{}
+	\begin{frame}
+		\titlepage
+		\begin{center}
+			\vspace{-15pt}
+			\includegraphics[width=0.3\linewidth]{Badge.png}
+		\end{center}
+	\end{frame}
+	
+
+\section{加快培育全国一体化数据市场}
+\begin{frame}{解题：一般到特殊}
+\begin{itemize}
+	\item \textbf{市场一体化}：在全国范围内，各主体通过逐步打破行政壁垒，实现商品和要素跨区域自由流动。\textbf{研究表明}：市场一体化可以提高生产率和经济增长，是实现优化配置、促进协调发展的重要途径。
+	\item \textbf{核心特征}：
+\begin{itemize}
+	\item 统一性：基础制度、流通标准、监管规则全国统一
+	\item 开放性：对所有合规主体开放，打破地域和行业壁垒
+	\item 协同性：区域间优势互补，形成梯度发展格局
+	\item 高效性：要素能够低成本、高可信地流通与融合
+\end{itemize}
+\end{itemize}
+
+\end{frame}	
+
+\begin{frame}
+\begin{itemize}
+	\item \textbf{存在问题}：
+	\begin{itemize}
+	\item 由于历史形成的行政分割体制、地方政府激励机制不完善以及区域发展水平差异等因素，市场分割现象依然存在。
+	\item  更加关注\textbf{行政区划对经济活动的影响}，以及如何通过\textbf{制度改革和政策调整消除地方保护主义}。
+
+	\end{itemize}
+	\item \textbf{传统研究}：国内关于市场一体化的实证研究主要集中在商品和传统要素市场。
+	\begin{itemize}
+		\item \textbf{商品市场一体化}: 地区间贸易壁垒的表现形式和影响因素，如地方保护政策、市场准入限制等
+		\item \textbf{传统要素市场一体化}：劳动力市场研究主要聚焦于户籍制度、社会保障体系分割等对人口流动的限制；资本市场研究则分析了
+		地方金融保护主义、信贷资源地方化配置等问题
+		\item \textbf{研究重心}：随着国内基础设施建设、物流体系的完善以及数字经济的兴起，自然壁垒不断被弱化，研究重心逐渐从\textbf{物理障碍}转向\textbf{制度性因素}，越来越多的学者将制度壁垒视为造成市场分割的重要原因
+	\end{itemize}
+\end{itemize}
+\end{frame}	
+	
+	
+	
+	
+	
+\begin{frame}{数据市场}
+\begin{itemize}
+	\item 数据要素：
+	\begin{itemize}
+		\item 可复制性、非消耗性和非竞争性。消除了传统要素市场的稀缺性约束和竞争性限制。
+		\item 完整性、和情境依赖性。增加了交易复杂性和价值评估难度
+		\item 经济价值与安全属性。与数据要素的流通相矛盾。
+	\end{itemize}
+	\item 数据要素市场：形成以市场为根本的调配机制，实现数据在不同主体间流动、聚集，最大化发挥数字赋能效应。
+
+\end{itemize}
+
+
+\end{frame}		
+	
+\begin{frame}{现实问题与来源}
+\begin{itemize}
+	\item 理论认知与价值实现
+    \begin{itemize}
+	\item 问题：数据作为新型生产要素，其 “技术属性”与“资源属性”双重性尚未被充分认识，导致价值评估困难、定价机制混乱。
+	\item 来源：数据的非竞争性、可复制性与传统产权理论的冲突；数据价值的高度场景依赖性与通用定价的矛盾。
+	\end{itemize}	
+	\item 市场运行与流通机制
+	\begin{itemize}
+		\item 问题：市场 “区域分割”与“条块分割” 严重，形成“数据孤岛”和“蜂窝状”市场。
+		\item 来源：地方政府竞争与本地数据保护主义，与全国统一市场的目标相悖；缺乏统一的流通标准与可信流通环境。
+	\end{itemize}
+	
+\end{itemize}	
+\end{frame}	
+
+\begin{frame}
+	\begin{itemize}
+		\item 主体激励与权益保障
+		\begin{itemize}
+			\item 问题：数据供给方缺乏开放共享动力（担心安全、失去优势），需求方面临“阿罗信息悖论”（不买不了解，了解后价值已泄露）。
+			\item 来源：数据安全、商业秘密、个人隐私保护与数据价值最大化之间的根本矛盾。
+		\end{itemize}	
+		\item 制度空白与协同治理
+		\begin{itemize}
+			\item 问题：顶层设计缺失、制度体系碎片化。产权、资产、核算等基础制度尚在探索，监管存在交叉或空白。
+			\item 来源：数据流通的跨域性与治理的行政属地性之间的矛盾；技术迭代速度快与制度建立速度慢的矛盾。
+		\end{itemize}
+		
+	\end{itemize}	
+\end{frame}	
+
+
+
+\section{研究框架与子课题结构}
+\begin{frame}{研究框架}
+ 
+理论构建 → 机制设计 → 区域协同 → 治理体系 → 制度集成
+
+
+数据要素属性与价值逻辑 → 市场运行机制 → 区域流通与协同 → 安全与治理体系 → 一体化制度体系
+
+\end{frame}	
+
+	
+\begin{frame}{数据要素市场建设的理论基础与价值逻辑构建}	
+	
+	\begin{enumerate}
+		\item 数据要素的双重属性（技术性、资源性）及其对市场构建的影响；
+		\item 数据产权制度：所有权、使用权、收益权的界定与分配机制；
+		\item 数据价值评估理论：基于社会福利与企业利润的协调机制；
+		\item 公共数据与商业数据的分类治理逻辑。
+	\end{enumerate}
+	
+	重点难点：数据产权界定的实践困境；公共数据定价与商业数据定价的协调
+\end{frame}		
+
+
+\begin{frame}{数据要素市场运行机制与定价策略研究}	
+		\begin{enumerate}
+		\item 数据定价机制：基于数据质量、企业利用能力、市场结构的差异化定价模型；
+		\item 交易模式创新：场内交易与场外交易的协同机制；
+		\item 数据供需博弈分析：供方垄断与需方竞争情境下的策略设计；
+		\item 数据流通中的信任机制构建：技术赋能与制度保障。
+	\end{enumerate}
+重点难点：数据定价的标准化与动态调整机制；供需博弈下的市场效率优化。	
+\end{frame}	
+
+\begin{frame}{数据要素跨区域流通与区域协同机制研究}	
+		\begin{enumerate}
+		\item 区域数据资源异质性分析与互补路径；
+		\item 数据流通的“地理势差”与“资源势差”双重影响机制；
+		\item 跨区域数据治理协作机制：标准对接、监管协同、争议仲裁；
+		\item 区域梯度发展路径：从长三角、粤港澳到中西部的“雁阵效应”。
+	\end{enumerate}
+重点难点：区域数据资源目录构建；跨区域协同治理的制度障碍。
+\end{frame}	
+
+
+\begin{frame}{数据要素市场安全、隐私与治理体系研究}	
+		\begin{enumerate}
+		\item 数据安全分级与分类保护制度；
+		\item 隐私计算、区块链等技术在数据流通中的应用与制度适配；
+		\item 数据垄断与不正当竞争的识别与规制；
+		\item 多方协同的数据治理体系：政府、企业、社会协同机制。
+	\end{enumerate}
+重点难点：技术应用与制度设计的融合；数据垄断的界定与规制路径。
+\end{frame}	
+
+	
+
+\begin{frame}{全国一体化数据市场制度构建与实施路径研究}	
+	\begin{enumerate}
+	\item	国家层面数据市场顶层设计：法律体系、政策体系、标准体系；
+	\item 地方试点与全国推广的衔接机制；
+	\item 数据要素市场与数字经济、新质生产力的协同发展路径；
+	\item 国际经验借鉴与中国模式总结。
+\end{enumerate}
+重点难点：顶层设计与地方创新的协调；制度实施中的路径依赖与突破。
+\end{frame}	
+
+
+\section{}
+	\logo{\pgfuseimage{badge}}
+	\begin{frame}
+		\begin{center}
+			\begin{minipage}{1\textwidth}
+				\setbeamercolor{mybox}{fg=white, bg=black!50!blue}
+				\begin{beamercolorbox}[wd=0.70\textwidth, rounded=true, shadow=true]{mybox}
+					\LARGE \centering Thanks for your listening!
+				\end{beamercolorbox}
+			\end{minipage}
+		\end{center}
+	\end{frame}
+	
+\end{document}
